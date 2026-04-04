@@ -13,7 +13,18 @@ export numerical_derivative,
        solve_l_star,
        solve_hs_star,
        lq_approximation,
-       solve_riccati
+       solve_riccati,
+       normcdf,
+       tauchen,
+       steady_state_system,
+       solve_steady_state_newton,
+       is_feasible_static_problem,
+       labor_foc,
+       solve_h_star,
+       compute_h_star,
+       flow_utility,
+       solve_pfi_howard
+
 
 # -------------------------------------------------------
 # Numerical derivative using central difference
