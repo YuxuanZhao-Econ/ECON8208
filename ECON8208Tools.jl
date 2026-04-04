@@ -474,4 +474,475 @@ function solve_riccati(Q, W, R, A, B, beta; tol=1e-10, maxiter=10000)
     error("Riccati iteration did not converge within maxiter.")
 end
 
+# -------------------------------------------------------
+# Standard normal cumulative distribution function
+# Numerical approximation without external packages
+# Input:
+#   x : scalar
+# Output:
+#   Phi(x)
+# -------------------------------------------------------
+function normcdf(x)
+    b1 = 0.319381530
+    b2 = -0.356563782
+    b3 = 1.781477937
+    b4 = -1.821255978
+    b5 = 1.330274429
+    p = 0.2316419
+
+    t = 1.0 / (1.0 + p * abs(x))
+    pdf = exp(-0.5 * x^2) / sqrt(2.0 * pi)
+
+    cdf_pos = 1.0 - pdf * (b1 * t + b2 * t^2 + b3 * t^3 + b4 * t^4 + b5 * t^5)
+
+    if x >= 0.0
+        return cdf_pos
+    else
+        return 1.0 - cdf_pos
+    end
+end
+
+# -------------------------------------------------------
+# Tauchen discretization for log z_t = rho * log z_{t-1} + eps_t
+# Input:
+#   rho      : persistence parameter
+#   sigma_e  : standard deviation of innovation
+#   n_z      : number of grid points
+#   m        : width parameter for Tauchen grid (default: 3.0)
+# Output:
+#   z_grid   : productivity grid in levels
+#   Pz       : Markov transition matrix
+# -------------------------------------------------------
+function tauchen(rho, sigma_e, n_z; m=3.0)
+    sigma_z = sigma_e / sqrt(1.0 - rho^2)
+    logz_max = m * sigma_z
+    logz_min = -m * sigma_z
+
+    logz_grid = collect(range(logz_min, logz_max, length=n_z))
+    step = logz_grid[2] - logz_grid[1]
+
+    Pz = zeros(n_z, n_z)
+
+    for i in 1:n_z
+        for j in 1:n_z
+            if j == 1
+                cutoff = (logz_grid[1] - rho * logz_grid[i] + step / 2.0) / sigma_e
+                Pz[i, j] = normcdf(cutoff)
+            elseif j == n_z
+                cutoff = (logz_grid[n_z] - rho * logz_grid[i] - step / 2.0) / sigma_e
+                Pz[i, j] = 1.0 - normcdf(cutoff)
+            else
+                upper = (logz_grid[j] - rho * logz_grid[i] + step / 2.0) / sigma_e
+                lower = (logz_grid[j] - rho * logz_grid[i] - step / 2.0) / sigma_e
+                Pz[i, j] = normcdf(upper) - normcdf(lower)
+            end
+        end
+    end
+
+    z_grid = exp.(logz_grid)
+
+    return z_grid, Pz
+end
+
+# -------------------------------------------------------
+# Steady-state system for the detrended model
+# Unknowns:
+#   x[1] = k_ss
+#   x[2] = h_ss
+#   x[3] = c_ss
+# Output:
+#   3 equations evaluated at (k_ss, h_ss, c_ss)
+# -------------------------------------------------------
+function steady_state_system(x, beta, psi, theta, delta, gamma_n)
+    k = x[1]
+    h = x[2]
+    c = x[3]
+
+    if k <= 0.0 || c <= 0.0 || h <= 0.0 || h >= 1.0
+        return [NaN, NaN, NaN]
+    end
+
+    F1 = c - k^theta * h^(1.0 - theta) + (gamma_n + delta) * k
+
+    F2 = 1.0 / beta -
+         (1.0 - delta + theta * k^(theta - 1.0) * h^(1.0 - theta)) / (1.0 + gamma_n)
+
+    F3 = ((1.0 - theta) * k^theta * h^(-theta)) / c -
+         psi / (1.0 - h)
+
+    return [F1, F2, F3]
+end
+
+# -------------------------------------------------------
+# Solve the steady-state system by Newton's method
+# Input:
+#   beta, psi, theta, delta, gamma_n : model parameters
+#   x0       : initial guess [k_ss, h_ss, c_ss]
+#   tol      : convergence tolerance
+#   max_iter : maximum number of Newton iterations
+#   hstep    : step size for numerical Jacobian
+# Output:
+#   k_ss, h_ss, c_ss
+# -------------------------------------------------------
+function solve_steady_state_newton(beta, psi, theta, delta, gamma_n;
+                                   x0=[1.0, 0.3, 0.5],
+                                   tol=1e-10, max_iter=100, hstep=1e-6)
+
+    x = Float64.(collect(x0))
+
+    for iter in 1:max_iter
+        f(xx) = steady_state_system(xx, beta, psi, theta, delta, gamma_n)
+        F = f(x)
+
+        if any(!isfinite, F)
+            error("Newton method entered an infeasible region. Try a different initial guess.")
+        end
+
+        if maximum(abs.(F)) < tol
+            println("Steady state converged in ", iter, " iterations.")
+            return x[1], x[2], x[3]
+        end
+
+        J = numerical_jacobian(f, x; h=hstep)
+        step = J \ F
+
+        alpha = 1.0
+        success = false
+
+        for ls_iter in 1:20
+            x_new = x - alpha * step
+            k_new, h_new, c_new = x_new
+
+            if k_new > 0.0 && c_new > 0.0 && 0.0 < h_new < 1.0
+                F_new = f(x_new)
+                if all(isfinite, F_new) && maximum(abs.(F_new)) < maximum(abs.(F))
+                    x = x_new
+                    success = true
+                    break
+                end
+            end
+
+            alpha *= 0.5
+        end
+
+        if !success
+            error("Newton method failed to find a feasible update. Try a different initial guess.")
+        end
+    end
+
+    error("Steady-state Newton solver did not converge within max_iter.")
+end
+
+# -------------------------------------------------------
+# Check whether the static problem is feasible
+# Since c(h) is increasing in h, it is enough to check
+# whether consumption is positive near h = 1
+# Input:
+#   k       : current capital
+#   z       : current productivity
+#   kp      : next-period capital
+#   theta   : capital share
+#   delta   : depreciation rate
+#   gamma_n : population growth rate
+#   hmax    : maximum labor level (default: 1.0)
+# Output:
+#   true if the static problem exists feasible interior solution for c* >= 0 & 0 <= h <= 1
+# -------------------------------------------------------
+function is_feasible_static_problem(k, z, kp, theta, delta, gamma_n; hmax=1.0)
+    cmax = k^theta * (z * hmax)^(1.0 - theta) - (1.0 + gamma_n) * kp + (1.0 - delta) * k
+    return cmax > 0.0
+end
+
+# -------------------------------------------------------
+# Labor FOC
+# Input:
+#   h       : labor
+#   k       : current capital
+#   z       : current productivity
+#   kp      : next-period capital
+#   psi     : leisure weight
+#   theta   : capital share
+#   delta   : depreciation rate
+#   gamma_n : population growth rate
+# Output:
+#   value of the first-order condition
+# -------------------------------------------------------
+function labor_foc(h, k, z, kp, psi, theta, delta, gamma_n)
+    c = k^theta * (z * h)^(1.0 - theta) - (1.0 + gamma_n) * kp + (1.0 - delta) * k
+
+    if c <= 0.0 || h <= 0.0 || h >= 1.0
+        return NaN
+    end
+
+    lhs = (1.0 - theta) * k^theta * z^(1.0 - theta) * h^(-theta) / c
+    rhs = psi / (1.0 - h)
+
+    return lhs - rhs
+end
+
+# -------------------------------------------------------
+# Solve for h*(k, z, k') by damped Newton's method
+# Input:
+#   k, z, kp : current capital, productivity, next-period capital
+#   psi, theta, delta, gamma_n : model parameters
+#   h0       : initial guess for labor
+#   tol      : tolerance for root-finding
+#   max_iter : maximum number of Newton iterations
+#   hstep    : step size for numerical derivative
+#   alpha    : damping factor for Newton update
+# Output:
+#   h_star   : optimal labor supply
+# -------------------------------------------------------
+function solve_h_star(k, z, kp, psi, theta, delta, gamma_n;
+                      h0=0.3, tol=1e-8, max_iter=100, hstep=1e-6, alpha=0.3)
+
+    # If the static problem is infeasible, return NaN immediately
+    if !is_feasible_static_problem(k, z, kp, theta, delta, gamma_n)
+        return NaN
+    end
+
+    h = h0
+
+    for iter in 1:max_iter
+        f(hh) = labor_foc(hh, k, z, kp, psi, theta, delta, gamma_n)
+
+        f_val = f(h)
+
+        if !isfinite(f_val)
+            return NaN
+        end
+
+        if abs(f_val) < tol
+            break
+        end
+
+        fp_val = numerical_derivative(f, h; h=hstep)
+
+        if !isfinite(fp_val) || abs(fp_val) < 1e-12
+            return NaN
+        end
+
+        h_new = h - f_val / fp_val
+
+        # Project the Newton update back into the feasible interval
+        h_new = min(max(h_new, 1e-6), 1.0 - 1e-6)
+
+        # Damped update
+        h = alpha * h_new + (1.0 - alpha) * h
+    end
+
+    # Final feasibility and convergence check
+    c_final = k^theta * (z * h)^(1.0 - theta) - (1.0 + gamma_n) * kp + (1.0 - delta) * k
+    f_final = labor_foc(h, k, z, kp, psi, theta, delta, gamma_n)
+
+    if isfinite(c_final) && c_final > 0.0 && isfinite(f_final) && abs(f_final) < tol
+        return h
+    else
+        return NaN
+    end
+end
+
+# -------------------------------------------------------
+# Compute h_star on the full grid using damped Newton's method
+# Input:
+#   k_grid, z_grid : grids for capital and productivity
+#   psi, theta, delta, gamma_n : model parameters
+#   h0       : initial guess for labor
+#   tol      : tolerance for root-finding
+#   max_iter : maximum number of Newton iterations
+#   hstep    : step size for numerical derivative
+#   alpha    : damping factor for Newton update
+# Output:
+#   h_star[ik, iz, ikp] = h*(k, z, k')
+# -------------------------------------------------------
+function compute_h_star(k_grid, z_grid, psi, theta, delta, gamma_n;
+                        h0=0.3, tol=1e-8, max_iter=100, hstep=1e-6, alpha=0.3)
+
+    n_k = length(k_grid)
+    n_z = length(z_grid)
+
+    h_star = fill(NaN, n_k, n_z, n_k)
+
+    for ik in 1:n_k
+        k = k_grid[ik]
+
+        for iz in 1:n_z
+            z = z_grid[iz]
+
+            # Use the previous successful root as the next initial guess
+            h_init = h0
+
+            for ikp in 1:n_k
+                kp = k_grid[ikp]
+
+                h_guess = solve_h_star(
+                    k, z, kp, psi, theta, delta, gamma_n;
+                    h0=h_init, tol=tol, max_iter=max_iter, hstep=hstep, alpha=alpha
+                )
+
+                h_star[ik, iz, ikp] = h_guess
+
+                # Update the initial guess only if the current solve is successful
+                if isfinite(h_guess)
+                    h_init = h_guess
+                end
+            end
+        end
+    end
+
+    return h_star
+end
+
+# -------------------------------------------------------
+# Flow utility function
+# Input:
+#   c     : detrended consumption
+#   h     : labor
+#   psi   : leisure weight
+#   sigma : coefficient of relative risk aversion
+# Output:
+#   period utility
+# -------------------------------------------------------
+function flow_utility(c, h, psi, sigma)
+    if c <= 0.0 || h <= 0.0 || h >= 1.0
+        return -Inf
+    end
+
+    return ((c * (1.0 - h)^psi)^(1.0 - sigma)) / (1.0 - sigma)
+end
+
+# -------------------------------------------------------
+# Solve the detrended growth model by Howard policy iteration
+# using the precomputed labor supply h_star
+# State variables:
+#   (k_tilde, z)
+# Control variable:
+#   k_tilde_next
+# Labor choice:
+#   recovered from h_star[ik, iz, ikp]
+# Input:
+#   beta, psi, sigma, gamma_n, theta, delta
+#   k_grid, z_grid, Pz, h_star
+#   tol, max_iter, howard_iter
+# Output:
+#   V          : value function
+#   pol_kp     : policy function for next-period capital
+#   pol_h      : policy function for labor
+# -------------------------------------------------------
+function solve_pfi_howard(beta, psi, sigma, gamma_n, theta, delta,
+                          k_grid, z_grid, Pz, h_star;
+                          tol=1e-6, max_iter=1000, howard_iter=20)
+
+    n_k = length(k_grid)
+    n_z = length(z_grid)
+
+    V = zeros(n_k, n_z)
+    V_new = similar(V)
+
+    pol_kp_idx = ones(Int, n_k, n_z)
+    pol_kp = zeros(n_k, n_z)
+    pol_h = zeros(n_k, n_z)
+
+    for iter in 1:max_iter
+        pol_kp_idx_old = copy(pol_kp_idx)
+
+        # Policy improvement
+        for iz in 1:n_z
+            z = z_grid[iz]
+
+            for ik in 1:n_k
+                k = k_grid[ik]
+
+                best_val = -Inf
+                best_kp_idx = 1
+
+                for ikp in 1:n_k
+                    kp = k_grid[ikp]
+                    h = h_star[ik, iz, ikp]
+
+                    if !isfinite(h)
+                        continue
+                    end
+
+                    c = k^theta * (z * h)^(1.0 - theta) -
+                        (1.0 + gamma_n) * kp +
+                        (1.0 - delta) * k
+
+                    u = flow_utility(c, h, psi, sigma)
+
+                    if !isfinite(u)
+                        continue
+                    end
+
+                    EV = 0.0
+                    for izp in 1:n_z
+                        EV += Pz[iz, izp] * V[ikp, izp]
+                    end
+
+                    val = u + beta * EV
+
+                    if val > best_val
+                        best_val = val
+                        best_kp_idx = ikp
+                    end
+                end
+
+                if best_val == -Inf
+                    error("No feasible choice found at state (ik=$ik, iz=$iz).")
+                end
+
+                pol_kp_idx[ik, iz] = best_kp_idx
+            end
+        end
+
+        n_change = count(pol_kp_idx .!= pol_kp_idx_old)
+        println("Howard iteration = ", iter, ", policy changes = ", n_change)
+
+        # Policy evaluation
+        for hiter in 1:howard_iter
+            for iz in 1:n_z
+                z = z_grid[iz]
+
+                for ik in 1:n_k
+                    k = k_grid[ik]
+                    ikp = pol_kp_idx[ik, iz]
+                    kp = k_grid[ikp]
+                    h = h_star[ik, iz, ikp]
+
+                    c = k^theta * (z * h)^(1.0 - theta) -
+                        (1.0 + gamma_n) * kp +
+                        (1.0 - delta) * k
+
+                    u = flow_utility(c, h, psi, sigma)
+
+                    EV = 0.0
+                    for izp in 1:n_z
+                        EV += Pz[iz, izp] * V[ikp, izp]
+                    end
+
+                    V_new[ik, iz] = u + beta * EV
+                end
+            end
+
+            V .= V_new
+        end
+
+        if iter > 1 && n_change == 0
+            for iz in 1:n_z
+                for ik in 1:n_k
+                    ikp = pol_kp_idx[ik, iz]
+                    pol_kp[ik, iz] = k_grid[ikp]
+                    pol_h[ik, iz] = h_star[ik, iz, ikp]
+                end
+            end
+
+            println("Howard policy iteration converged in ", iter, " iterations.")
+            return V, pol_kp, pol_h
+        end
+    end
+
+    error("Howard policy iteration did not converge within max_iter.")
+end
+
+
 end
