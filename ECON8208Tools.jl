@@ -561,22 +561,27 @@ end
 #   x[1] = k_ss
 #   x[2] = h_ss
 #   x[3] = c_ss
+# Input:
+#   beta_tilde : effective discount factor after detrending
+#   gamma_n    : population growth rate
+#   gamma_z    : technology growth rate
 # Output:
 #   3 equations evaluated at (k_ss, h_ss, c_ss)
 # -------------------------------------------------------
-function steady_state_system(x, beta, psi, theta, delta, gamma_n)
+function steady_state_system(x, beta_tilde, psi, theta, delta, gamma_n, gamma_z)
     k = x[1]
     h = x[2]
     c = x[3]
+    G = (1.0 + gamma_n) * (1.0 + gamma_z)
 
     if k <= 0.0 || c <= 0.0 || h <= 0.0 || h >= 1.0
         return [NaN, NaN, NaN]
     end
 
-    F1 = c - k^theta * h^(1.0 - theta) + (gamma_n + delta) * k
+    F1 = c - k^theta * h^(1.0 - theta) + (G - (1.0 - delta)) * k
 
-    F2 = 1.0 / beta -
-         (1.0 - delta + theta * k^(theta - 1.0) * h^(1.0 - theta)) / (1.0 + gamma_n)
+    F2 = 1.0 / beta_tilde -
+         (1.0 - delta + theta * k^(theta - 1.0) * h^(1.0 - theta)) / G
 
     F3 = ((1.0 - theta) * k^theta * h^(-theta)) / c -
          psi / (1.0 - h)
@@ -587,7 +592,7 @@ end
 # -------------------------------------------------------
 # Solve the steady-state system by Newton's method
 # Input:
-#   beta, psi, theta, delta, gamma_n : model parameters
+#   beta_tilde, psi, theta, delta, gamma_n, gamma_z : model parameters
 #   x0       : initial guess [k_ss, h_ss, c_ss]
 #   tol      : convergence tolerance
 #   max_iter : maximum number of Newton iterations
@@ -595,14 +600,14 @@ end
 # Output:
 #   k_ss, h_ss, c_ss
 # -------------------------------------------------------
-function solve_steady_state_newton(beta, psi, theta, delta, gamma_n;
+function solve_steady_state_newton(beta_tilde, psi, theta, delta, gamma_n, gamma_z;
                                    x0=[1.0, 0.3, 0.5],
                                    tol=1e-10, max_iter=100, hstep=1e-6)
 
     x = Float64.(collect(x0))
 
     for iter in 1:max_iter
-        f(xx) = steady_state_system(xx, beta, psi, theta, delta, gamma_n)
+        f(xx) = steady_state_system(xx, beta_tilde, psi, theta, delta, gamma_n, gamma_z)
         F = f(x)
 
         if any(!isfinite, F)
@@ -655,12 +660,14 @@ end
 #   theta   : capital share
 #   delta   : depreciation rate
 #   gamma_n : population growth rate
+#   gamma_z : technology growth rate
 #   hmax    : maximum labor level (default: 1.0)
 # Output:
 #   true if the static problem exists feasible interior solution for c* >= 0 & 0 <= h <= 1
 # -------------------------------------------------------
-function is_feasible_static_problem(k, z, kp, theta, delta, gamma_n; hmax=1.0)
-    cmax = k^theta * (z * hmax)^(1.0 - theta) - (1.0 + gamma_n) * kp + (1.0 - delta) * k
+function is_feasible_static_problem(k, z, kp, theta, delta, gamma_n, gamma_z; hmax=1.0)
+    G = (1.0 + gamma_n) * (1.0 + gamma_z)
+    cmax = k^theta * (z * hmax)^(1.0 - theta) - G * kp + (1.0 - delta) * k
     return cmax > 0.0
 end
 
@@ -675,11 +682,13 @@ end
 #   theta   : capital share
 #   delta   : depreciation rate
 #   gamma_n : population growth rate
+#   gamma_z : technology growth rate
 # Output:
 #   value of the first-order condition
 # -------------------------------------------------------
-function labor_foc(h, k, z, kp, psi, theta, delta, gamma_n)
-    c = k^theta * (z * h)^(1.0 - theta) - (1.0 + gamma_n) * kp + (1.0 - delta) * k
+function labor_foc(h, k, z, kp, psi, theta, delta, gamma_n, gamma_z)
+    G = (1.0 + gamma_n) * (1.0 + gamma_z)
+    c = k^theta * (z * h)^(1.0 - theta) - G * kp + (1.0 - delta) * k
 
     if c <= 0.0 || h <= 0.0 || h >= 1.0
         return NaN
@@ -695,7 +704,7 @@ end
 # Solve for h*(k, z, k') by damped Newton's method
 # Input:
 #   k, z, kp : current capital, productivity, next-period capital
-#   psi, theta, delta, gamma_n : model parameters
+#   psi, theta, delta, gamma_n, gamma_z : model parameters
 #   h0       : initial guess for labor
 #   tol      : tolerance for root-finding
 #   max_iter : maximum number of Newton iterations
@@ -704,18 +713,18 @@ end
 # Output:
 #   h_star   : optimal labor supply
 # -------------------------------------------------------
-function solve_h_star(k, z, kp, psi, theta, delta, gamma_n;
+function solve_h_star(k, z, kp, psi, theta, delta, gamma_n, gamma_z;
                       h0=0.3, tol=1e-8, max_iter=100, hstep=1e-6, alpha=0.3)
 
     # If the static problem is infeasible, return NaN immediately
-    if !is_feasible_static_problem(k, z, kp, theta, delta, gamma_n)
+    if !is_feasible_static_problem(k, z, kp, theta, delta, gamma_n, gamma_z)
         return NaN
     end
 
     h = h0
 
     for iter in 1:max_iter
-        f(hh) = labor_foc(hh, k, z, kp, psi, theta, delta, gamma_n)
+        f(hh) = labor_foc(hh, k, z, kp, psi, theta, delta, gamma_n, gamma_z)
 
         f_val = f(h)
 
@@ -743,8 +752,9 @@ function solve_h_star(k, z, kp, psi, theta, delta, gamma_n;
     end
 
     # Final feasibility and convergence check
-    c_final = k^theta * (z * h)^(1.0 - theta) - (1.0 + gamma_n) * kp + (1.0 - delta) * k
-    f_final = labor_foc(h, k, z, kp, psi, theta, delta, gamma_n)
+    G = (1.0 + gamma_n) * (1.0 + gamma_z)
+    c_final = k^theta * (z * h)^(1.0 - theta) - G * kp + (1.0 - delta) * k
+    f_final = labor_foc(h, k, z, kp, psi, theta, delta, gamma_n, gamma_z)
 
     if isfinite(c_final) && c_final > 0.0 && isfinite(f_final) && abs(f_final) < tol
         return h
@@ -757,7 +767,7 @@ end
 # Compute h_star on the full grid using damped Newton's method
 # Input:
 #   k_grid, z_grid : grids for capital and productivity
-#   psi, theta, delta, gamma_n : model parameters
+#   psi, theta, delta, gamma_n, gamma_z : model parameters
 #   h0       : initial guess for labor
 #   tol      : tolerance for root-finding
 #   max_iter : maximum number of Newton iterations
@@ -766,7 +776,7 @@ end
 # Output:
 #   h_star[ik, iz, ikp] = h*(k, z, k')
 # -------------------------------------------------------
-function compute_h_star(k_grid, z_grid, psi, theta, delta, gamma_n;
+function compute_h_star(k_grid, z_grid, psi, theta, delta, gamma_n, gamma_z;
                         h0=0.3, tol=1e-8, max_iter=100, hstep=1e-6, alpha=0.3)
 
     n_k = length(k_grid)
@@ -787,7 +797,7 @@ function compute_h_star(k_grid, z_grid, psi, theta, delta, gamma_n;
                 kp = k_grid[ikp]
 
                 h_guess = solve_h_star(
-                    k, z, kp, psi, theta, delta, gamma_n;
+                    k, z, kp, psi, theta, delta, gamma_n, gamma_z;
                     h0=h_init, tol=tol, max_iter=max_iter, hstep=hstep, alpha=alpha
                 )
 
@@ -832,7 +842,7 @@ end
 # Labor choice:
 #   recovered from h_star[ik, iz, ikp]
 # Input:
-#   beta, psi, sigma, gamma_n, theta, delta
+#   beta_tilde, psi, sigma, gamma_n, gamma_z, theta, delta
 #   k_grid, z_grid, Pz, h_star
 #   tol, max_iter, howard_iter
 # Output:
@@ -840,12 +850,13 @@ end
 #   pol_kp     : policy function for next-period capital
 #   pol_h      : policy function for labor
 # -------------------------------------------------------
-function solve_pfi_howard(beta, psi, sigma, gamma_n, theta, delta,
+function solve_pfi_howard(beta_tilde, psi, sigma, gamma_n, gamma_z, theta, delta,
                           k_grid, z_grid, Pz, h_star;
                           tol=1e-6, max_iter=1000, howard_iter=20)
 
     n_k = length(k_grid)
     n_z = length(z_grid)
+    G = (1.0 + gamma_n) * (1.0 + gamma_z)
 
     V = zeros(n_k, n_z)
     V_new = similar(V)
@@ -876,7 +887,7 @@ function solve_pfi_howard(beta, psi, sigma, gamma_n, theta, delta,
                     end
 
                     c = k^theta * (z * h)^(1.0 - theta) -
-                        (1.0 + gamma_n) * kp +
+                        G * kp +
                         (1.0 - delta) * k
 
                     u = flow_utility(c, h, psi, sigma)
@@ -890,7 +901,7 @@ function solve_pfi_howard(beta, psi, sigma, gamma_n, theta, delta,
                         EV += Pz[iz, izp] * V[ikp, izp]
                     end
 
-                    val = u + beta * EV
+                    val = u + beta_tilde * EV
 
                     if val > best_val
                         best_val = val
@@ -921,7 +932,7 @@ function solve_pfi_howard(beta, psi, sigma, gamma_n, theta, delta,
                     h = h_star[ik, iz, ikp]
 
                     c = k^theta * (z * h)^(1.0 - theta) -
-                        (1.0 + gamma_n) * kp +
+                        G * kp +
                         (1.0 - delta) * k
 
                     u = flow_utility(c, h, psi, sigma)
@@ -931,7 +942,7 @@ function solve_pfi_howard(beta, psi, sigma, gamma_n, theta, delta,
                         EV += Pz[iz, izp] * V[ikp, izp]
                     end
 
-                    V_new[ik, iz] = u + beta * EV
+                    V_new[ik, iz] = u + beta_tilde * EV
                 end
             end
 
