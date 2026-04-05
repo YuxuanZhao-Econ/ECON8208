@@ -1,6 +1,7 @@
 module ECON8208Tools
 
 using LinearAlgebra
+using Random
 
 export numerical_derivative,
        numerical_jacobian,
@@ -23,7 +24,10 @@ export numerical_derivative,
        solve_h_star,
        compute_h_star,
        flow_utility,
-       solve_pfi_howard
+       solve_pfi_howard,
+       solve_lq_policy_functions,
+       recover_original_policy_functions_lq,
+       simulate_lq_growth_model
 
 
 # -------------------------------------------------------
@@ -964,6 +968,277 @@ function solve_pfi_howard(beta_tilde, psi, sigma, gamma_n, gamma_z, theta, delta
     end
 
     error("Howard policy iteration did not converge within max_iter.")
+end
+
+# -------------------------------------------------------
+# Solve the detrended growth model by LQ approximation
+# and Riccati iteration
+# Input:
+#   beta, psi, sigma, gamma_n, gamma_z, theta, delta, rho : model parameters
+#   x0_ss      : initial guess for steady state [k_ss, h_ss, c_ss]
+#   tol_ss     : steady-state convergence tolerance
+#   max_iter_ss: maximum iterations for steady-state solver
+#   hstep_ss   : step size for steady-state Jacobian
+#   hstep_lq   : step size for local LQ approximation
+# Output:
+#   NamedTuple containing:
+#     - detrended policy functions for k', h, and c
+#     - steady-state objects
+#     - local LQ matrices and Riccati solution
+# -------------------------------------------------------
+function solve_lq_policy_functions(params;
+                                   x0_ss=[1.5, 0.3, 0.4],
+                                   tol_ss=1e-10,
+                                   max_iter_ss=100,
+                                   hstep_ss=1e-6,
+                                   hstep_lq=1e-6)
+
+    beta = params.beta
+    psi = params.psi
+    sigma = params.sigma
+    gamma_n = params.gamma_n
+    gamma_z = params.gamma_z
+    theta = params.theta
+    delta = params.delta
+    rho = params.rho
+
+    Gz = 1.0 + gamma_z
+    G = (1.0 + gamma_n) * Gz
+    beta_tilde = beta * (1.0 + gamma_n) * Gz^(1.0 - sigma)
+
+    k_ss, h_ss, c_ss = solve_steady_state_newton(
+        beta_tilde, psi, theta, delta, gamma_n, gamma_z;
+        x0=x0_ss, tol=tol_ss, max_iter=max_iter_ss, hstep=hstep_ss
+    )
+
+    function r(x, u)
+        k = x[1]
+        a = x[2]
+        kp = u[1]
+        h = u[2]
+
+        c = k^theta * (exp(a) * h)^(1.0 - theta) -
+            G * kp +
+            (1.0 - delta) * k
+
+        return flow_utility(c, h, psi, sigma)
+    end
+
+    function g(x, u)
+        a = x[2]
+        kp = u[1]
+
+        return [kp, rho * a]
+    end
+
+    xbar = [k_ss, 0.0]
+    ubar = [k_ss, h_ss]
+
+    Q, W, R, A_lin, B_lin = lq_approximation(r, g, xbar, ubar; h=hstep_lq)
+    F, P = solve_riccati(Q, W, R, A_lin, B_lin, beta_tilde)
+
+    policy_k_tilde = function(k_tilde, z)
+        a = log(z)
+        return ubar[1] - F[1, 1] * (k_tilde - xbar[1]) - F[1, 2] * (a - xbar[2])
+    end
+
+    policy_h_tilde = function(k_tilde, z)
+        a = log(z)
+        return ubar[2] - F[2, 1] * (k_tilde - xbar[1]) - F[2, 2] * (a - xbar[2])
+    end
+
+    policy_c_tilde = function(k_tilde, z)
+        kp_tilde = policy_k_tilde(k_tilde, z)
+        h_tilde = policy_h_tilde(k_tilde, z)
+
+        return k_tilde^theta * (z * h_tilde)^(1.0 - theta) -
+               G * kp_tilde +
+               (1.0 - delta) * k_tilde
+    end
+
+    return (
+        params=(;
+            beta=beta,
+            psi=psi,
+            sigma=sigma,
+            gamma_n=gamma_n,
+            gamma_z=gamma_z,
+            theta=theta,
+            delta=delta,
+            rho=rho,
+            G=G,
+            Gz=Gz,
+            beta_tilde=beta_tilde
+        ),
+        steady_state=(k_ss=k_ss, h_ss=h_ss, c_ss=c_ss),
+        xbar=xbar,
+        ubar=ubar,
+        Q=Q,
+        W=W,
+        R=R,
+        A_lin=A_lin,
+        B_lin=B_lin,
+        F=F,
+        P=P,
+        policy_k_tilde=policy_k_tilde,
+        policy_h_tilde=policy_h_tilde,
+        policy_c_tilde=policy_c_tilde
+    )
+end
+
+# -------------------------------------------------------
+# Recover the policy functions of the original model
+# from the detrended LQ policy functions
+# Input:
+#   theta, delta, gamma_n, gamma_z : model parameters
+#   lq_solution : output from solve_lq_policy_functions
+# Output:
+#   NamedTuple of policy functions for the original model
+#   Each policy function takes (k, z, t)
+# -------------------------------------------------------
+function recover_original_policy_functions_lq(params, lq_solution)
+    theta = params.theta
+    delta = params.delta
+    gamma_n = params.gamma_n
+    gamma_z = params.gamma_z
+
+    Gz = 1.0 + gamma_z
+    G = (1.0 + gamma_n) * Gz
+
+    policy_k = function(k, z, t)
+        k_tilde = k / Gz^t
+        kp_tilde = lq_solution.policy_k_tilde(k_tilde, z)
+        return kp_tilde * Gz^(t + 1)
+    end
+
+    policy_h = function(k, z, t)
+        k_tilde = k / Gz^t
+        return lq_solution.policy_h_tilde(k_tilde, z)
+    end
+
+    policy_l = function(k, z, t)
+        return 1.0 - policy_h(k, z, t)
+    end
+
+    policy_c = function(k, z, t)
+        k_tilde = k / Gz^t
+        c_tilde = lq_solution.policy_c_tilde(k_tilde, z)
+        return c_tilde * Gz^t
+    end
+
+    policy_x = function(k, z, t)
+        k_tilde = k / Gz^t
+        kp_tilde = lq_solution.policy_k_tilde(k_tilde, z)
+        x_tilde = G * kp_tilde - (1.0 - delta) * k_tilde
+        return x_tilde * Gz^t
+    end
+
+    return (
+        policy_k=policy_k,
+        policy_c=policy_c,
+        policy_x=policy_x,
+        policy_h=policy_h,
+        policy_l=policy_l
+    )
+end
+
+# -------------------------------------------------------
+# Simulate the growth model using the detrended LQ policy
+# functions and recover the original variables
+# Input:
+#   theta, delta, gamma_n, gamma_z, rho, sigma_e : model parameters
+#   lq_solution : output from solve_lq_policy_functions
+#   T           : simulation length
+#   seed        : RNG seed
+#   k0          : initial capital (default: steady-state capital)
+#   z0          : initial productivity level (default: 1.0)
+# Output:
+#   NamedTuple containing simulated series for
+#   c_t, x_t, k_t, z_t, h_t, l_t, epsilon_t, and log z_t
+# -------------------------------------------------------
+function simulate_lq_growth_model(params, lq_solution;
+                                  T=200,
+                                  seed=1234,
+                                  k0=nothing,
+                                  z0=1.0)
+
+    theta = params.theta
+    delta = params.delta
+    gamma_n = params.gamma_n
+    gamma_z = params.gamma_z
+    rho = params.rho
+    sigma_e = params.sigma_e
+
+    rng = MersenneTwister(seed)
+
+    Gz = 1.0 + gamma_z
+    G = (1.0 + gamma_n) * Gz
+
+    if k0 === nothing
+        k0 = lq_solution.steady_state.k_ss
+    end
+
+    epsilon = sigma_e .* randn(rng, T)
+
+    k = zeros(T + 1)
+    z = zeros(T + 1)
+    logz = zeros(T + 1)
+
+    c = zeros(T)
+    x = zeros(T)
+    h = zeros(T)
+    l = zeros(T)
+
+    k[1] = k0
+    z[1] = z0
+    logz[1] = log(z0)
+
+    for t in 0:(T - 1)
+        idx = t + 1
+
+        k_t = k[idx]
+        z_t = z[idx]
+        k_tilde = k_t / Gz^t
+
+        kp_tilde = lq_solution.policy_k_tilde(k_tilde, z_t)
+        h_t = lq_solution.policy_h_tilde(k_tilde, z_t)
+        c_tilde = k_tilde^theta * (z_t * h_t)^(1.0 - theta) -
+                  G * kp_tilde +
+                  (1.0 - delta) * k_tilde
+        x_tilde = G * kp_tilde - (1.0 - delta) * k_tilde
+
+        if kp_tilde < 0.0
+            error("Simulated detrended next-period capital is negative at t=$t.")
+        end
+
+        if h_t <= 0.0 || h_t >= 1.0
+            error("Simulated labor is outside (0,1) at t=$t.")
+        end
+
+        if c_tilde <= 0.0
+            error("Simulated detrended consumption is nonpositive at t=$t.")
+        end
+
+        c[idx] = c_tilde * Gz^t
+        x[idx] = x_tilde * Gz^t
+        h[idx] = h_t
+        l[idx] = 1.0 - h_t
+
+        k[idx + 1] = kp_tilde * Gz^(t + 1)
+        logz[idx + 1] = rho * logz[idx] + epsilon[idx]
+        z[idx + 1] = exp(logz[idx + 1])
+    end
+
+    return (
+        c=c,
+        x=x,
+        k=k,
+        z=z,
+        h=h,
+        l=l,
+        epsilon=epsilon,
+        logz=logz
+    )
 end
 
 
