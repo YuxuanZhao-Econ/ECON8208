@@ -1217,7 +1217,8 @@ function simulate_lq_growth_model(params, lq_solution;
                                   T=200,
                                   seed=1234,
                                   k0=nothing,
-                                  z0=1.0)
+                                  z0=1.0,
+                                  n0=1.0)
 
     theta = params.theta
     delta = params.delta
@@ -1228,8 +1229,9 @@ function simulate_lq_growth_model(params, lq_solution;
 
     rng = MersenneTwister(seed)
 
+    Gn = 1.0 + gamma_n
     Gz = 1.0 + gamma_z
-    G = (1.0 + gamma_n) * Gz
+    G = Gn * Gz
 
     if k0 === nothing
         k0 = lq_solution.steady_state.k_ss
@@ -1237,6 +1239,7 @@ function simulate_lq_growth_model(params, lq_solution;
 
     epsilon = sigma_e .* randn(rng, T)
 
+    n = zeros(T + 1)
     k = zeros(T + 1)
     z = zeros(T + 1)
     logz = zeros(T + 1)
@@ -1246,6 +1249,7 @@ function simulate_lq_growth_model(params, lq_solution;
     h = zeros(T)
     l = zeros(T)
 
+    n[1] = n0
     k[1] = k0
     z[1] = z0
     logz[1] = log(z0)
@@ -1281,6 +1285,7 @@ function simulate_lq_growth_model(params, lq_solution;
         h[idx] = h_t
         l[idx] = 1.0 - h_t
 
+        n[idx + 1] = Gn * n[idx]
         k[idx + 1] = kp_tilde * Gz^(t + 1)
         logz[idx + 1] = rho * logz[idx] + epsilon[idx]
         z[idx + 1] = exp(logz[idx + 1])
@@ -1289,6 +1294,7 @@ function simulate_lq_growth_model(params, lq_solution;
     return (
         c=c,
         x=x,
+        n=n,
         k=k,
         z=z,
         h=h,
