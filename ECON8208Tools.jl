@@ -25,6 +25,8 @@ export numerical_derivative,
        compute_h_star,
        flow_utility,
        solve_pfi_howard,
+       compute_vaughan_H,
+       solve_vaughan,
        solve_lq_policy_functions,
        recover_original_policy_functions_lq,
        simulate_lq_growth_model
@@ -487,6 +489,61 @@ function solve_riccati(Q, W, R, A, B, beta; tol=1e-10, maxiter=10000)
     end
 
     error("Riccati iteration did not converge within maxiter.")
+end
+
+# -------------------------------------------------------
+# Build Vaughan's Hamiltonian matrix
+# Input:
+#   A_tilde, B_tilde, Q_tilde, R : standard-form LQ matrices
+# Output:
+#   H : Hamiltonian matrix
+# -------------------------------------------------------
+function compute_vaughan_H(A_tilde, B_tilde, Q_tilde, R)
+    Ainv = inv(A_tilde)
+    M = Ainv * B_tilde * (R \ B_tilde')
+    H = [Ainv            M;
+         Q_tilde * Ainv  Q_tilde * M + A_tilde']
+    return H
+end
+
+# -------------------------------------------------------
+# Solve the LQ problem using Vaughan's method
+# Input:
+#   Q, W, R, A, B : LQ matrices from the local approximation
+#   beta_lq       : effective discount factor in the detrended problem
+# Output:
+#   F_vaughan     : feedback matrix
+#   P_vaughan     : value-function matrix
+#   H_vaughan     : Hamiltonian matrix
+# -------------------------------------------------------
+function solve_vaughan(Q, W, R, A, B, beta_lq)
+    A_tilde = sqrt(beta_lq) * (A - B * (R \ W'))
+    B_tilde = sqrt(beta_lq) * B
+    Q_tilde = Q - W * (R \ W')
+
+    H = compute_vaughan_H(A_tilde, B_tilde, Q_tilde, R)
+
+    eig = eigen(H)
+    vals = eig.values
+    vecs = eig.vectors
+
+    n = size(A_tilde, 1)
+
+    # Select the eigenvectors associated with roots outside the unit circle
+    idx = sortperm(abs.(vals), rev=true)
+    idx_unstable = idx[1:n]
+
+    V = vecs[:, idx_unstable]
+    V11 = V[1:n, :]
+    V21 = V[n+1:2n, :]
+
+    P_vaughan = real.(V21 / V11)
+    P_vaughan = (P_vaughan + P_vaughan') / 2.0
+
+    F_tilde = (R + B_tilde' * P_vaughan * B_tilde) \ (B_tilde' * P_vaughan * A_tilde)
+    F_vaughan = real.(F_tilde + R \ W')
+
+    return F_vaughan, P_vaughan, H
 end
 
 # -------------------------------------------------------
