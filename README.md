@@ -12,12 +12,14 @@ Every folder is organized with slides, Jupyter notebooks for each homework assig
 
 - `ECON8208Tools.jl`
 
-  This file collects the reusable Julia functions developed across Homework 1, Homework 2, and Homework 3.
+  This file collects the reusable Julia functions developed across Homework 1, Homework 2, Homework 3, Homework 4, and Homework 5.
 
   - It includes numerical differentiation routines such as scalar derivatives, Jacobians, Hessians, and cross-partial derivatives.
   - It contains the fixed-point / Newton solvers used in Homework 1 for both scalar and vector problems.
-  - It also provides the local LQ approximation routine from Homework 2 and the Riccati solver from Homework 3.
+  - It provides the local LQ approximation routine from Homework 2 and the Riccati solver from Homework 3.
+  - It also includes the growth-model routines used in Homework 5, including steady-state computation, Howard policy iteration, Vaughan's method, LQ policy-function solvers, simulation functions, and moment-construction utilities for calibration.
   - The file is organized as a Julia module so that the functions can be imported and reused directly in different notebooks.
+
 
 ### `HW1/`
 
@@ -86,6 +88,30 @@ This folder contains the notebook submission and the homework prompt for Homewor
   - The notebook formulates the problem in terms of current capital and next-period capital, derives the steady state, and constructs the local LQ approximation.
   - It then uses the Riccati solver to obtain the linear policy rule and value-function matrix.
   - The notebook also simulates and plots the equilibrium paths for capital, consumption, and output starting from an initial capital stock below the steady state.
+  
+- ### `HW5/`
+
+This folder contains the notebook submission, helper notebook, raw data file, and the homework prompt for Homework 5.
+
+- `HW5.ipynb`
+
+  This notebook contains the full homework solution.
+
+  - It studies a stochastic neoclassical growth model with labor supply, population growth, and labor-augmenting technology growth.
+  - Part (a) solves the nonlinear model by policy iteration on the Bellman equation.
+  - Part (b) constructs a local LQ approximation and solves the model using the Riccati equation.
+  - Part (c) applies Vaughan's method to solve the same LQ problem through a Hamiltonian / generalized eigenvalue approach.
+  - The notebook also simulates the calibrated model, constructs model moments, and compares them with U.S. national accounts moments.
+
+
+- `data/raw_data.xlsx`
+
+  This file contains the U.S. macroeconomic data used for calibration.
+
+  - It includes national accounts variables such as GDP, investment, private fixed assets, compensation of employees, and related series.
+  - It also includes population and hours data used to construct calibration moments.
+
+
 
 
 
