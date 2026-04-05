@@ -1293,6 +1293,7 @@ function simulate_lq_growth_model(params, lq_solution;
     x = zeros(T)
     h = zeros(T)
     l = zeros(T)
+    z_measured = zeros(T)
 
     n[1] = n0
     k[1] = k0
@@ -1330,6 +1331,9 @@ function simulate_lq_growth_model(params, lq_solution;
         h[idx] = h_t
         l[idx] = 1.0 - h_t
 
+        y_t = c[idx] + x[idx]
+        z_measured[idx] = ((y_t / (k_t^theta))^(1.0 / (1.0 - theta))) / (Gz^t * h_t)
+
         n[idx + 1] = Gn * n[idx]
         k[idx + 1] = kp_tilde * Gz^(t + 1)
         logz[idx + 1] = rho * logz[idx] + epsilon[idx]
@@ -1342,6 +1346,7 @@ function simulate_lq_growth_model(params, lq_solution;
         n=n,
         k=k,
         z=z,
+        z_measured=z_measured,
         h=h,
         l=l,
         epsilon=epsilon,
@@ -1490,10 +1495,16 @@ end
 #   cycle_y_pc : HP-filtered cycle of log output per worker
 #   moments    : NamedTuple of calibration data moments
 # -------------------------------------------------------
-function compute_data_moments(df; hp_lambda=6.25)
+function compute_data_moments(df, params; hp_lambda=6.25)
     df2 = copy(df)
 
+    theta = params.theta
+    gamma_z = params.gamma_z
+    Gz = 1.0 + gamma_z
+
     df2.y_per_capita_real = df2.gdp_real ./ df2.population
+    df2.y_per_capita_nominal = df2.gdp_nominal ./ df2.population
+    df2.k_per_capita = df2.private_fixed_assets ./ df2.population
 
     population_growth_series = diff(log.(df2.population))
     output_per_worker_growth_series = diff(log.(df2.y_per_capita_real))
@@ -1528,11 +1539,12 @@ function compute_data_moments(df; hp_lambda=6.25)
     hours_df.h = hours_df.total_hours ./ hours_df.potential_hours
     hours_df.l = 1 .- hours_df.h
 
-    log_y_pc = log.(df2.y_per_capita_real)
-    trend_y_pc, cycle_y_pc = hp_filter(log_y_pc, hp_lambda)
+    t_index = hours_df.year .- first(hours_df.year)
+    hours_df.z_measured = ((hours_df.y_per_capita_nominal ./ (hours_df.k_per_capita .^ theta)) .^ (1.0 / (1.0 - theta))) ./ ((Gz .^ t_index) .* hours_df.h)
 
-    output_cycle_autocorr = cor(cycle_y_pc[2:end], cycle_y_pc[1:(end - 1)])
-    output_cycle_std = std(cycle_y_pc)
+    log_z_data = log.(hours_df.z_measured)
+    productivity_autocorr = cor(log_z_data[2:end], log_z_data[1:(end - 1)])
+    productivity_std = std(log_z_data)
 
     moments = (
         population_growth = mean(population_growth_series),
@@ -1544,11 +1556,11 @@ function compute_data_moments(df; hp_lambda=6.25)
         capital_output_ratio = mean(df2.capital_output_ratio),
         average_hours = mean(hours_df.h),
         average_leisure = mean(hours_df.l),
-        output_cycle_autocorr = output_cycle_autocorr,
-        output_cycle_std = output_cycle_std
+        productivity_autocorr = productivity_autocorr,
+        productivity_std = productivity_std
     )
 
-    return df2, hours_df, cycle_y_pc, moments
+    return df2, hours_df, hours_df.z_measured, moments
 end
 
 # -------------------------------------------------------
@@ -1561,7 +1573,9 @@ end
 # Output:
 #   NamedTuple of model moments
 # -------------------------------------------------------
-function compute_model_moments(sim, theta; burn_in=100, hp_lambda=6.25)
+function compute_model_moments(sim, params; burn_in=100, hp_lambda=6.25)
+    theta = params.theta
+
     idx_flow = (burn_in + 1):length(sim.c)
     idx_state = (burn_in + 1):length(sim.c)
 
@@ -1571,6 +1585,8 @@ function compute_model_moments(sim, theta; burn_in=100, hp_lambda=6.25)
     l = sim.l[idx_flow]
     n = sim.n[idx_state]
     k = sim.k[idx_state]
+    z_measured = sim.z_measured[idx_flow]
+    log_z_model = log.(z_measured)
 
     y = c .+ x
 
@@ -1585,11 +1601,8 @@ function compute_model_moments(sim, theta; burn_in=100, hp_lambda=6.25)
     average_hours_model = mean(h)
     average_leisure_model = mean(l)
 
-    log_y = log.(y)
-    trend_y, cycle_y = hp_filter(log_y, hp_lambda)
-
-    output_cycle_autocorr_model = cor(cycle_y[2:end], cycle_y[1:(end - 1)])
-    output_cycle_std_model = std(cycle_y)
+    productivity_autocorr_model = cor(log_z_model[2:end], log_z_model[1:(end - 1)])
+    productivity_std_model = std(log_z_model)
 
     return (
         population_growth = population_growth_model,
@@ -1600,8 +1613,8 @@ function compute_model_moments(sim, theta; burn_in=100, hp_lambda=6.25)
         capital_output_ratio = capital_output_ratio_model,
         average_hours = average_hours_model,
         average_leisure = average_leisure_model,
-        output_cycle_autocorr = output_cycle_autocorr_model,
-        output_cycle_std = output_cycle_std_model
+        productivity_autocorr = productivity_autocorr_model,
+        productivity_std = productivity_std_model
     )
 end
 
