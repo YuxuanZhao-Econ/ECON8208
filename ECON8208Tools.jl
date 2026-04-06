@@ -967,37 +967,51 @@ function solve_pfi_howard(beta_tilde, psi, sigma, gamma_n, gamma_z, theta, delta
 
     V = zeros(n_k, n_z)
     V_new = similar(V)
+    reward = fill(-Inf, n_k, n_z, n_k)
 
     pol_kp_idx = ones(Int, n_k, n_z)
     pol_kp = zeros(n_k, n_z)
     pol_h = zeros(n_k, n_z)
+
+    # Precompute the one-period return for each feasible (k, z, k') tuple.
+    for ik in 1:n_k
+        k = k_grid[ik]
+
+        for iz in 1:n_z
+            z = z_grid[iz]
+
+            for ikp in 1:n_k
+                kp = k_grid[ikp]
+                h = h_star[ik, iz, ikp]
+
+                if !isfinite(h)
+                    continue
+                end
+
+                c = k^theta * (z * h)^(1.0 - theta) -
+                    G * kp +
+                    (1.0 - delta) * k
+
+                u = flow_utility(c, h, psi, sigma)
+
+                if isfinite(u)
+                    reward[ik, iz, ikp] = u
+                end
+            end
+        end
+    end
 
     for iter in 1:max_iter
         pol_kp_idx_old = copy(pol_kp_idx)
 
         # Policy improvement
         for iz in 1:n_z
-            z = z_grid[iz]
-
             for ik in 1:n_k
-                k = k_grid[ik]
-
                 best_val = -Inf
                 best_kp_idx = 1
 
                 for ikp in 1:n_k
-                    kp = k_grid[ikp]
-                    h = h_star[ik, iz, ikp]
-
-                    if !isfinite(h)
-                        continue
-                    end
-
-                    c = k^theta * (z * h)^(1.0 - theta) -
-                        G * kp +
-                        (1.0 - delta) * k
-
-                    u = flow_utility(c, h, psi, sigma)
+                    u = reward[ik, iz, ikp]
 
                     if !isfinite(u)
                         continue
@@ -1030,19 +1044,9 @@ function solve_pfi_howard(beta_tilde, psi, sigma, gamma_n, gamma_z, theta, delta
         # Policy evaluation
         for hiter in 1:howard_iter
             for iz in 1:n_z
-                z = z_grid[iz]
-
                 for ik in 1:n_k
-                    k = k_grid[ik]
                     ikp = pol_kp_idx[ik, iz]
-                    kp = k_grid[ikp]
-                    h = h_star[ik, iz, ikp]
-
-                    c = k^theta * (z * h)^(1.0 - theta) -
-                        G * kp +
-                        (1.0 - delta) * k
-
-                    u = flow_utility(c, h, psi, sigma)
+                    u = reward[ik, iz, ikp]
 
                     EV = 0.0
                     for izp in 1:n_z
