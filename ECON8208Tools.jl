@@ -31,6 +31,7 @@ export mean,
        solve_h_star,
        compute_h_star,
        flow_utility,
+       solve_vfi,
        solve_pfi_howard,
        compute_vaughan_H,
        solve_vaughan,
@@ -1070,6 +1071,130 @@ function solve_pfi_howard(beta_tilde, psi, sigma, gamma_n, gamma_z, theta, delta
     end
 
     error("Howard policy iteration did not converge within max_iter.")
+end
+
+# -------------------------------------------------------
+# Solve the detrended growth model by standard value
+# function iteration using the precomputed labor supply h_star
+# State variables:
+#   (k_tilde, z)
+# Control variable:
+#   k_tilde_next
+# Labor choice:
+#   recovered from h_star[ik, iz, ikp]
+# Input:
+#   beta_tilde, psi, sigma, gamma_n, gamma_z, theta, delta
+#   k_grid, z_grid, Pz, h_star
+#   tol, max_iter
+# Output:
+#   V          : value function
+#   pol_kp     : policy function for next-period capital
+#   pol_h      : policy function for labor
+# -------------------------------------------------------
+function solve_vfi(beta_tilde, psi, sigma, gamma_n, gamma_z, theta, delta,
+                   k_grid, z_grid, Pz, h_star;
+                   tol=1e-6, max_iter=1000)
+
+    n_k = length(k_grid)
+    n_z = length(z_grid)
+    G = (1.0 + gamma_n) * (1.0 + gamma_z)
+
+    V = zeros(n_k, n_z)
+    V_new = similar(V)
+    reward = fill(-Inf, n_k, n_z, n_k)
+
+    pol_kp_idx = ones(Int, n_k, n_z)
+    pol_kp = zeros(n_k, n_z)
+    pol_h = zeros(n_k, n_z)
+
+    # Precompute the one-period return for each feasible (k, z, k') tuple.
+    for ik in 1:n_k
+        k = k_grid[ik]
+
+        for iz in 1:n_z
+            z = z_grid[iz]
+
+            for ikp in 1:n_k
+                kp = k_grid[ikp]
+                h = h_star[ik, iz, ikp]
+
+                if !isfinite(h)
+                    continue
+                end
+
+                c = k^theta * (z * h)^(1.0 - theta) -
+                    G * kp +
+                    (1.0 - delta) * k
+
+                u = flow_utility(c, h, psi, sigma)
+
+                if isfinite(u)
+                    reward[ik, iz, ikp] = u
+                end
+            end
+        end
+    end
+
+    for iter in 1:max_iter
+        for iz in 1:n_z
+            for ik in 1:n_k
+                best_val = -Inf
+                best_kp_idx = 1
+
+                for ikp in 1:n_k
+                    u = reward[ik, iz, ikp]
+
+                    if !isfinite(u)
+                        continue
+                    end
+
+                    EV = 0.0
+                    for izp in 1:n_z
+                        EV += Pz[iz, izp] * V[ikp, izp]
+                    end
+
+                    val = u + beta_tilde * EV
+
+                    if val > best_val
+                        best_val = val
+                        best_kp_idx = ikp
+                    end
+                end
+
+                if best_val == -Inf
+                    error("No feasible choice found at state (ik=$ik, iz=$iz).")
+                end
+
+                V_new[ik, iz] = best_val
+                pol_kp_idx[ik, iz] = best_kp_idx
+            end
+        end
+
+        err = maximum(abs.(V_new .- V))
+        if iter % 50 == 0
+            println("VFI iteration = ", iter, ", sup-norm error = ", err)
+        end
+
+        V .= V_new
+
+        if err < tol
+            if iter % 50 != 0
+                println("VFI iteration = ", iter, ", sup-norm error = ", err)
+            end
+            for iz in 1:n_z
+                for ik in 1:n_k
+                    ikp = pol_kp_idx[ik, iz]
+                    pol_kp[ik, iz] = k_grid[ikp]
+                    pol_h[ik, iz] = h_star[ik, iz, ikp]
+                end
+            end
+
+            println("Value function iteration converged in ", iter, " iterations.")
+            return V, pol_kp, pol_h
+        end
+    end
+
+    error("Value function iteration did not converge within max_iter.")
 end
 
 # -------------------------------------------------------
