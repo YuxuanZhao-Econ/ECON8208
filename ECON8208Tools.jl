@@ -21,7 +21,13 @@ export mean,
        solve_l_star,
        solve_hs_star,
        lq_approximation,
+       lq_approximation_with_aggregates,
+       construct_distorted_lq_system,
        solve_riccati,
+       transform_lq_matrices,
+       solve_modified_riccati_equilibrium,
+       compute_distorted_vaughan_H,
+       solve_vaughan_distorted,
        normcdf,
        tauchen,
        steady_state_system,
@@ -494,6 +500,130 @@ function lq_approximation(r, g, xbar, ubar; h=1e-6)
 end
 
 # -------------------------------------------------------
+# Construct a local LQ approximation when the period return
+# depends on individual states y, aggregate variables X3,
+# and controls u, while the transition only describes the
+# next-period law of motion for y.
+# Input:
+#   r    : scalar return function r(y, X3, u)
+#   g    : transition function for y, g(y, X3, u)
+#   ybar : steady-state vector of individual and exogenous states
+#   x3bar: steady-state vector of aggregate variables
+#   ubar : steady-state control vector
+#   h    : step size for finite differences
+# Output:
+#   Q, W, R : local quadratic matrices in the stacked state [y; X3]
+#   Ay, Az  : transition derivatives with respect to y and X3
+#   By      : transition derivative with respect to u
+# -------------------------------------------------------
+function lq_approximation_with_aggregates(r, g, ybar, x3bar, ubar; h=1e-6)
+    ybar = Float64.(collect(ybar))
+    x3bar = Float64.(collect(x3bar))
+    ubar = Float64.(collect(ubar))
+
+    ny = length(ybar)
+    nx3 = length(x3bar)
+    xbar = [ybar; x3bar]
+
+    r_stacked = function(x, u)
+        y = x[1:ny]
+        x3 = x[(ny + 1):(ny + nx3)]
+        return r(y, x3, u)
+    end
+
+    g_stacked = function(x, u)
+        y = x[1:ny]
+        x3 = x[(ny + 1):(ny + nx3)]
+        return g(y, x3, u)
+    end
+
+    r_xx = numerical_hessian(x -> r_stacked(x, ubar), xbar; h=h)
+    r_xu = numerical_cross_hessian(r_stacked, xbar, ubar; h=h)
+    r_uu = numerical_hessian(u -> r_stacked(xbar, u), ubar; h=h)
+
+    Gx = numerical_jacobian(x -> g_stacked(x, ubar), xbar; h=h)
+    By = numerical_jacobian(u -> g_stacked(xbar, u), ubar; h=h)
+
+    Ay = Gx[:, 1:ny]
+    Az = Gx[:, (ny + 1):(ny + nx3)]
+
+    Q = 0.5 * r_xx
+    W = 0.5 * r_xu
+    R = 0.5 * r_uu
+
+    return Q, W, R, Ay, Az, By
+end
+
+# -------------------------------------------------------
+# Construct Lecture 2's distorted-equilibrium matrices from
+# the local quadratic approximation and market-clearing maps
+# Input:
+#   Q, W, R : local quadratic matrices in stacked state [y; X3]
+#   Ay, Az  : transition derivatives with respect to y and X3
+#   By      : transition derivative with respect to u
+#   Theta   : market-clearing matrix on y in X3 = Theta*y + Psi*u
+#   Psi     : market-clearing matrix on u in X3 = Theta*y + Psi*u
+#   beta    : effective discount factor after detrending
+# Output:
+#   NamedTuple containing Q_tilde, A_tilde_y, A_tilde_z,
+#   B_tilde_y, Theta_tilde, Psi_tilde, Qhat, Ahat, Bhat,
+#   Abar, and the intermediate partitions Wy, Wz, Q_tilde_y,
+#   and Q_tilde_z
+# -------------------------------------------------------
+function construct_distorted_lq_system(Q, W, R, Ay, Az, By, Theta, Psi, beta)
+    Q = Float64.(Q)
+    W = Float64.(W)
+    R = Float64.(R)
+    Ay = Float64.(Ay)
+    Az = Float64.(Az)
+    By = Float64.(By)
+    Theta = Float64.(Theta)
+    Psi = Float64.(Psi)
+
+    ny = size(Ay, 1)
+    nx3 = size(Az, 2)
+
+    Wy = W[1:ny, :]
+    Wz = W[(ny + 1):(ny + nx3), :]
+
+    Q_tilde = Q - W * (R \ W')
+    Q_tilde_y = Q_tilde[1:ny, 1:ny]
+    Q_tilde_z = Q_tilde[1:ny, (ny + 1):(ny + nx3)]
+
+    A_tilde_y = sqrt(beta) * (Ay - By * (R \ Wy'))
+    A_tilde_z = sqrt(beta) * (Az - By * (R \ Wz'))
+    B_tilde_y = sqrt(beta) * By
+
+    I_x3 = Matrix{Float64}(I, size(Psi, 1), size(Psi, 1))
+    temp = I_x3 + Psi * (R \ Wz')
+
+    Theta_tilde = temp \ (Theta - Psi * (R \ Wy'))
+    Psi_tilde = temp \ Psi
+
+    Ahat = A_tilde_y + A_tilde_z * Theta_tilde
+    Qhat = Q_tilde_y + Q_tilde_z * Theta_tilde
+    Bhat = B_tilde_y + A_tilde_z * Psi_tilde
+    Abar = A_tilde_y - B_tilde_y * (R \ (Psi_tilde' * Q_tilde_z'))
+
+    return (
+        Wy=Wy,
+        Wz=Wz,
+        Q_tilde=Q_tilde,
+        Q_tilde_y=Q_tilde_y,
+        Q_tilde_z=Q_tilde_z,
+        A_tilde_y=A_tilde_y,
+        A_tilde_z=A_tilde_z,
+        B_tilde_y=B_tilde_y,
+        Theta_tilde=Theta_tilde,
+        Psi_tilde=Psi_tilde,
+        Qhat=Qhat,
+        Ahat=Ahat,
+        Bhat=Bhat,
+        Abar=Abar
+    )
+end
+
+# -------------------------------------------------------
 # Solve the LQ Riccati equation by fixed-point iteration
 # Input:
 #   Q    : return matrix on states
@@ -535,6 +665,135 @@ function solve_riccati(Q, W, R, A, B, beta; tol=1e-10, maxiter=10000)
     end
 
     error("Riccati iteration did not converge within maxiter.")
+end
+
+# -------------------------------------------------------
+# Remove discounting and cross-product terms from a local
+# LQ approximation
+# Input:
+#   Q, W, R, A, B : local LQ matrices with discount factor beta
+#   beta          : effective discount factor
+# Output:
+#   Q_tilde, A_tilde, B_tilde : transformed matrices for the
+#   undiscounted representation used in Lecture 2
+# -------------------------------------------------------
+function transform_lq_matrices(Q, W, R, A, B, beta)
+    Q_tilde = Q - W * (R \ W')
+    A_tilde = sqrt(beta) * (A - B * (R \ W'))
+    B_tilde = sqrt(beta) * B
+
+    return Q_tilde, A_tilde, B_tilde
+end
+
+# -------------------------------------------------------
+# Solve the modified Riccati equation from Lecture 2
+# Input:
+#   Qhat      : modified quadratic matrix on states
+#   Ahat      : modified transition matrix on states
+#   Bhat      : modified transition matrix on controls
+#   Abar      : modified costate transition matrix
+#   Btilde_y  : partition of transformed control matrix
+#   R         : quadratic matrix on controls
+#   tol       : convergence tolerance
+#   maxiter   : maximum number of iterations
+#   verbose_every : print the sup-norm error every this many iterations
+# Output:
+#   F         : equilibrium feedback matrix, so u_t = -F y_t
+#   P         : value-function / costate matrix
+# -------------------------------------------------------
+function solve_modified_riccati_equilibrium(Qhat, Ahat, Bhat, Abar, Btilde_y, R;
+                                            tol=1e-10,
+                                            maxiter=10000,
+                                            verbose_every=50)
+    Qhat = Float64.(Qhat)
+    Ahat = Float64.(Ahat)
+    Bhat = Float64.(Bhat)
+    Abar = Float64.(Abar)
+    Btilde_y = Float64.(Btilde_y)
+    R = Float64.(R)
+
+    n = size(Ahat, 1)
+    P = -1.0 .* Matrix{Float64}(I, n, n)
+
+    for iter in 1:maxiter
+        middle = R + Btilde_y' * P * Bhat
+        gain = middle \ (Btilde_y' * P * Ahat)
+
+        P_new = Qhat + Abar' * P * Ahat - Abar' * P * Bhat * gain
+        P_new = 0.5 * (P_new + P_new')
+        err = norm(P_new - P)
+
+        if verbose_every > 0 && iter % verbose_every == 0
+            println("Modified Riccati iteration = ", iter, ", sup-norm error = ", err)
+        end
+
+        P = P_new
+
+        if err < tol
+            if verbose_every > 0 && iter % verbose_every != 0
+                println("Modified Riccati iteration = ", iter, ", sup-norm error = ", err)
+            end
+
+            F = (R + Btilde_y' * P * Bhat) \ (Btilde_y' * P * Ahat)
+            println("Modified Riccati iteration converged in ", iter, " iterations.")
+            return F, P
+        end
+    end
+
+    error("Modified Riccati iteration did not converge within maxiter.")
+end
+
+# -------------------------------------------------------
+# Build the distorted Vaughan Hamiltonian matrix from
+# Lecture 2
+# Input:
+#   Ahat, Qhat, Bhat, Abar, Btilde_y, R : distorted-equilibrium matrices
+# Output:
+#   H : distorted Hamiltonian matrix
+# -------------------------------------------------------
+function compute_distorted_vaughan_H(Ahat, Qhat, Bhat, Abar, Btilde_y, R)
+    Ainv = inv(Ahat)
+    M = Ainv * Bhat * (R \ Btilde_y')
+
+    H = [Ainv         M;
+         Qhat * Ainv  Qhat * M + Abar']
+
+    return H
+end
+
+# -------------------------------------------------------
+# Solve the distorted local equilibrium using Vaughan's
+# method from Lecture 2
+# Input:
+#   Qhat, Ahat, Bhat, Abar, Btilde_y, R : distorted-equilibrium matrices
+# Output:
+#   F_vaughan : equilibrium feedback matrix, so u_t = -F_vaughan y_t
+#   P_vaughan : value-function / costate matrix
+#   H         : distorted Hamiltonian matrix
+# -------------------------------------------------------
+function solve_vaughan_distorted(Qhat, Ahat, Bhat, Abar, Btilde_y, R)
+    H = compute_distorted_vaughan_H(Ahat, Qhat, Bhat, Abar, Btilde_y, R)
+
+    eig = eigen(H)
+    vals = eig.values
+    vecs = eig.vectors
+
+    n = size(Ahat, 1)
+
+    idx = sortperm(abs.(vals), rev=true)
+    idx_unstable = idx[1:n]
+
+    V = vecs[:, idx_unstable]
+    V11 = V[1:n, :]
+    V21 = V[n+1:2n, :]
+
+    P_vaughan = real.(V21 / V11)
+    P_vaughan = 0.5 * (P_vaughan + P_vaughan')
+
+    F_vaughan = (R + Btilde_y' * P_vaughan * Bhat) \ (Btilde_y' * P_vaughan * Ahat)
+    F_vaughan = real.(F_vaughan)
+
+    return F_vaughan, P_vaughan, H
 end
 
 # -------------------------------------------------------
