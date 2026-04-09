@@ -1638,20 +1638,46 @@ end
 # Input:
 #   theta, delta, gamma_n, gamma_z, rho, sigma_e : model parameters
 #   lq_solution : output from solve_lq_policy_functions
-#   T           : simulation length
-#   seed        : RNG seed
+#   T              : simulation length
+#   seed           : base RNG seed
 #   k0          : initial capital (default: steady-state capital)
 #   z0          : initial productivity level (default: 1.0)
+#   n_replications : number of independent simulations to generate
+#   seed_step      : increment applied to the base seed across replications
 # Output:
-#   NamedTuple containing simulated series for
+#   If n_replications = 1, a NamedTuple containing simulated series for
 #   c_t, x_t, k_t, z_t, h_t, l_t, epsilon_t, and log z_t
+#   If n_replications > 1, a vector of such NamedTuples
 # -------------------------------------------------------
 function simulate_lq_growth_model(params, lq_solution;
                                   T=200,
                                   seed=1234,
                                   k0=nothing,
                                   z0=1.0,
-                                  n0=1.0)
+                                  n0=1.0,
+                                  n_replications=1,
+                                  seed_step=1)
+
+    if n_replications < 1
+        error("n_replications must be at least 1.")
+    end
+
+    if n_replications > 1
+        return [
+            simulate_lq_growth_model(
+                params,
+                lq_solution;
+                T=T,
+                seed=seed + seed_step * (rep - 1),
+                k0=k0,
+                z0=z0,
+                n0=n0,
+                n_replications=1,
+                seed_step=seed_step
+            )
+            for rep in 1:n_replications
+        ]
+    end
 
     theta = params.theta
     delta = params.delta
@@ -1942,16 +1968,32 @@ end
 # -------------------------------------------------------
 # Compute model moments from simulated series
 # Input:
-#   sim       : output from simulate_lq_growth_model
-#   theta     : capital share parameter
-#   burn_in   : number of initial periods to discard
-#   hp_lambda : smoothing parameter for HP filter
+#   sim           : output from simulate_lq_growth_model
+#   theta         : capital share parameter
+#   burn_in       : number of initial periods to discard
+#   hp_lambda     : smoothing parameter for HP filter
+#   sample_length : number of post-burn-in observations used for moment calculation;
+#                   if omitted, use all remaining observations
 # Output:
 #   NamedTuple of model moments
 # -------------------------------------------------------
-function compute_model_moments(sim, theta; burn_in=100, hp_lambda=6.25)
-    idx_flow = (burn_in + 1):length(sim.c)
-    idx_state = (burn_in + 1):length(sim.c)
+function compute_model_moments(sim, theta; burn_in=100, hp_lambda=6.25, sample_length=nothing)
+    start_idx = burn_in + 1
+    last_idx = length(sim.c)
+
+    if sample_length !== nothing
+        if sample_length < 3
+            error("sample_length must be at least 3.")
+        end
+        last_idx = burn_in + sample_length
+    end
+
+    if start_idx > length(sim.c) || last_idx > length(sim.c)
+        error("Not enough simulated observations after burn-in for the requested sample_length.")
+    end
+
+    idx_flow = start_idx:last_idx
+    idx_state = start_idx:last_idx
 
     c = sim.c[idx_flow]
     x = sim.x[idx_flow]
@@ -1991,6 +2033,33 @@ function compute_model_moments(sim, theta; burn_in=100, hp_lambda=6.25)
         output_cycle_autocorr = output_cycle_autocorr_model,
         output_cycle_std = output_cycle_std_model
     )
+end
+
+# -------------------------------------------------------
+# Compute averaged model moments from multiple simulations
+# Input:
+#   sims          : vector of outputs from simulate_lq_growth_model
+#   theta         : capital share parameter
+#   burn_in       : number of initial periods to discard
+#   hp_lambda     : smoothing parameter for HP filter
+#   sample_length : number of post-burn-in observations used for moment calculation
+# Output:
+#   NamedTuple of averaged model moments across simulations
+# -------------------------------------------------------
+function compute_model_moments(sims::AbstractVector, theta; burn_in=100, hp_lambda=6.25, sample_length=nothing)
+    if isempty(sims)
+        error("sims must contain at least one simulation.")
+    end
+
+    rep_moments = [
+        compute_model_moments(sim, theta; burn_in=burn_in, hp_lambda=hp_lambda, sample_length=sample_length)
+        for sim in sims
+    ]
+
+    fields = keys(rep_moments[1])
+    averaged = (; (name => mean([getproperty(m, name) for m in rep_moments]) for name in fields)...)
+
+    return averaged
 end
 
 end
