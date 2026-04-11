@@ -43,6 +43,7 @@ export mean,
        solve_pfi_howard,
        compute_vaughan_H,
        solve_vaughan,
+       solve_vaughan_equilibrium,
        solve_lq_policy_functions,
        recover_original_policy_functions_lq,
        simulate_lq_growth_model
@@ -2315,6 +2316,63 @@ function quadratic_approximation(r, Xbar, ubar; h=1e-6)
     R = 0.5 * r_uu
 
     return Q, W, R
+end
+
+
+# -------------------------------------------------------
+# Solve for the distorted equilibrium using Vaughan's method
+#
+# Input:
+#   Qhat, Ahat, Bhat, Abar : matrices from Lecture 2
+#   B_tilde_y              : transformed control matrix
+#   R                      : control quadratic matrix
+#
+# Output:
+#   F_vaughan : transformed feedback matrix
+#   P_vaughan : value-function matrix
+# -------------------------------------------------------
+function solve_vaughan_equilibrium(
+    Qhat, Ahat, Bhat, Abar, B_tilde_y, R;
+    verbose=true
+)
+    n = size(Ahat, 1)
+
+    # Construct Vaughan Hamiltonian matrix from Lecture 2 eq. (45)
+    Ahat_inv = inv(Ahat)
+    M = Ahat_inv * Bhat * (R \ B_tilde_y')
+
+    H_vaughan = [
+        Ahat_inv            M
+        Qhat * Ahat_inv     Qhat * M + Abar'
+    ]
+
+    # Eigen-decomposition:
+    # select the n eigenvalues outside the unit circle
+    eig = eigen(H_vaughan)
+    vals = eig.values
+    vecs = eig.vectors
+
+    idx = sortperm(abs.(vals), rev=true)
+    idx_pick = idx[1:n]
+
+    V = vecs[:, idx_pick]
+    V11 = V[1:n, :]
+    V21 = V[n+1:2n, :]
+
+    # Recover P from the invariant subspace
+    P_vaughan = real.(V21 / V11)
+    P_vaughan = (P_vaughan + P_vaughan') / 2
+
+    # Recover transformed feedback rule from Lecture 2 eq. (46)
+    F_vaughan =
+        (R + B_tilde_y' * P_vaughan * Bhat) \ (B_tilde_y' * P_vaughan * Ahat)
+
+    if verbose
+        println("Selected |eigenvalues(H)| = ",
+                round.(abs.(vals[idx_pick]), digits=6))
+    end
+
+    return F_vaughan, P_vaughan
 end
 
 
