@@ -32,6 +32,7 @@ export mean,
        tauchen,
        steady_state_system,
        solve_steady_state_newton,
+       solve_hw6_steady_state,
        is_feasible_static_problem,
        labor_foc,
        solve_h_star,
@@ -1014,6 +1015,7 @@ function solve_steady_state_newton(beta_tilde, psi, theta, delta, gamma_n, gamma
 
     error("Steady-state Newton solver did not converge within max_iter.")
 end
+
 
 # -------------------------------------------------------
 # Check whether the static problem is feasible
@@ -2061,5 +2063,215 @@ function compute_model_moments(sims::AbstractVector, theta; burn_in=100, hp_lamb
 
     return averaged
 end
+
+
+
+
+
+# -------------------------------------------------------
+# Solve the deterministic steady state of the HW6 model
+# by Newton's method using numerical Jacobians
+#
+# Unknowns:
+#   x = [k_ss, h_ss]
+#
+# Steady-state conditions used in the solver:
+#   (1) intratemporal labor FOC
+#   (2) steady-state Euler equation
+#
+# After solving for (k_ss, h_ss), recover all remaining
+# steady-state objects:
+#   c_ss, x_ss, y_ss, r_ss, w_ss, kappa_ss,
+#   and the full Lecture 2 state/control blocks
+#   X1_ss, X2_ss, X3_ss, y_ss, u_ss, Xbar
+#
+# Input:
+#   params   : NamedTuple containing model parameters
+#              Required fields:
+#                beta, psi, sigma, gamma_n, gamma_z,
+#                theta, delta, P0, P
+#   x0       : initial guess for [k_ss, h_ss]
+#              default = [2.0, 0.30]
+#   tol      : convergence tolerance for the sup-norm
+#              of the residual vector
+#   max_iter : maximum number of Newton iterations
+#   hstep    : step size for numerical Jacobian
+#   verbose  : if true, print iteration progress
+#   alpha    : damping parameter for Newton updates
+#
+# Output:
+#   NamedTuple containing:
+#     converged   : convergence flag
+#     iterations  : number of Newton iterations used
+#     residual    : residual vector at the solution
+#     X1_ss       : steady state of individual state block
+#     X2_ss       : steady state of exogenous state block
+#     X3_ss       : steady state of aggregate state block
+#     y_ss        : stacked known-state vector [X1_ss; X2_ss]
+#     u_ss        : steady-state control vector
+#     Xbar        : full stacked state vector [y_ss; X3_ss]
+#     k_ss        : steady-state detrended capital
+#     h_ss        : steady-state labor
+#     l_ss        : steady-state leisure
+#     c_ss        : steady-state detrended consumption
+#     x_ss        : steady-state detrended investment
+#     y_output_ss : steady-state detrended output
+#     r_ss        : steady-state rental rate of capital
+#     w_ss        : steady-state detrended wage
+#     kappa_ss    : steady-state detrended transfer
+#     z_ss        : steady-state level of detrended productivity
+#     g_ss        : steady-state level of detrended government spending
+#     tau_c_ss    : steady-state consumption tax rate
+#     tau_h_ss    : steady-state labor income tax rate
+#     tau_d_ss    : steady-state distribution tax rate
+#     tau_p_ss    : steady-state profit tax rate
+# -------------------------------------------------------
+function solve_hw6_steady_state(params;
+                                x0=[2.0, 0.30],
+                                tol=1e-10,
+                                max_iter=200,
+                                hstep=1e-6,
+                                verbose=true,
+                                alpha=0.5)
+
+    beta = params.beta
+    psi = params.psi
+    sigma = params.sigma
+    gamma_n = params.gamma_n
+    gamma_z = params.gamma_z
+    theta = params.theta
+    delta = params.delta
+    P0 = Float64.(collect(params.P0))
+    P = Float64.(Matrix(params.P))
+
+    G = (1.0 + gamma_n) * (1.0 + gamma_z)
+    beta_tilde = beta * (1.0 + gamma_n) * (1.0 + gamma_z)^(1.0 - sigma)
+
+    # Recover the deterministic steady state of the exogenous process
+    # from Sbar = P0 + P * Sbar.
+    nS = length(P0)
+    Sbar = (Matrix{Float64}(I, nS, nS) - P) \ P0
+
+    a_ss = Sbar[1]
+    tau_c_ss = Sbar[2]
+    tau_h_ss = Sbar[3]
+    tau_d_ss = Sbar[4]
+    tau_p_ss = Sbar[5]
+    logg_ss = Sbar[6]
+
+    z_ss = exp(a_ss)
+    g_ss = exp(logg_ss)
+
+    function ss_residuals(x)
+        k = x[1]
+        h = x[2]
+
+        if k <= 0.0 || h <= 0.0 || h >= 1.0
+            return [1e8, 1e8]
+        end
+
+        K = k
+        H = h
+
+        y = K^theta * (z_ss * H)^(1.0 - theta)
+        r = theta * K^(theta - 1.0) * (z_ss * H)^(1.0 - theta)
+        w = (1.0 - theta) * K^theta * z_ss^(1.0 - theta) * H^(-theta)
+
+        x_ss = (G - 1.0 + delta) * k
+        c_ss = y - x_ss - g_ss
+
+        if c_ss <= 0.0
+            return [1e8, 1e8]
+        end
+
+        eq1 = psi * c_ss / (1.0 - h) - (1.0 - tau_h_ss) * w / (1.0 + tau_c_ss)
+        eq2 = G - beta_tilde * (1.0 + (1.0 - tau_p_ss) * (r - delta))
+
+        return [eq1, eq2]
+    end
+
+    x = Float64.(collect(x0))
+
+    for iter in 1:max_iter
+        F = ss_residuals(x)
+
+        if norm(F, Inf) < tol
+            k_ss = x[1]
+            h_ss = x[2]
+
+            K_ss = k_ss
+            H_ss = h_ss
+            Y_ss = K_ss^theta * (z_ss * H_ss)^(1.0 - theta)
+            r_ss = theta * K_ss^(theta - 1.0) * (z_ss * H_ss)^(1.0 - theta)
+            w_ss = (1.0 - theta) * K_ss^theta * z_ss^(1.0 - theta) * H_ss^(-theta)
+
+            X_ss = (G - 1.0 + delta) * K_ss
+            C_ss = Y_ss - X_ss - g_ss
+            l_ss = 1.0 - h_ss
+
+            kappa_ss =
+                tau_c_ss * C_ss +
+                tau_h_ss * w_ss * H_ss +
+                tau_p_ss * (r_ss * K_ss - delta * K_ss) +
+                tau_d_ss * (
+                    r_ss * K_ss - X_ss -
+                    tau_p_ss * (r_ss * K_ss - delta * K_ss)
+                ) -
+                g_ss
+
+            X1_ss = [k_ss]
+            X2_ss = Sbar
+            X3_ss = [K_ss, H_ss, K_ss]
+            y_ss = [X1_ss; X2_ss]
+            u_ss = [k_ss, h_ss]
+            Xbar = [y_ss; X3_ss]
+
+            return (
+                converged=true,
+                iterations=iter,
+                residual=F,
+                X1_ss=X1_ss,
+                X2_ss=X2_ss,
+                X3_ss=X3_ss,
+                y_ss=y_ss,
+                u_ss=u_ss,
+                Xbar=Xbar,
+                k_ss=k_ss,
+                h_ss=h_ss,
+                l_ss=l_ss,
+                c_ss=C_ss,
+                x_ss=X_ss,
+                y_output_ss=Y_ss,
+                r_ss=r_ss,
+                w_ss=w_ss,
+                kappa_ss=kappa_ss,
+                z_ss=z_ss,
+                g_ss=g_ss,
+                tau_c_ss=tau_c_ss,
+                tau_h_ss=tau_h_ss,
+                tau_d_ss=tau_d_ss,
+                tau_p_ss=tau_p_ss
+            )
+        end
+
+        J = numerical_jacobian(ss_residuals, x; h=hstep)
+        dx = J \ F
+        x_new = x - dx
+
+        if verbose
+            println(
+                "HW6 steady-state iteration = ", iter,
+                ", sup-norm residual = ", norm(F, Inf),
+                ", x = ", x
+            )
+        end
+
+        x = alpha * x_new + (1.0 - alpha) * x
+    end
+
+    error("HW6 steady-state Newton solver did not converge within max_iter.")
+end
+
+
 
 end
