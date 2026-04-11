@@ -28,6 +28,7 @@ export mean,
        solve_modified_riccati_equilibrium,
        compute_distorted_vaughan_H,
        solve_vaughan_distorted,
+       quadratic_approximation,
        normcdf,
        tauchen,
        steady_state_system,
@@ -2270,6 +2271,50 @@ function solve_hw6_steady_state(params;
     end
 
     error("HW6 steady-state Newton solver did not converge within max_iter.")
+end
+
+
+# -------------------------------------------------------
+# Construct a local quadratic approximation of a scalar
+# return function r(X, u) around a steady state (Xbar, ubar)
+#
+# Local approximation:
+#   r(X_t, u_t) ≈ X_t'QX_t + u_t'Ru_t + 2X_t'Wu_t
+#
+# Input:
+#   r    : scalar return function r(X, u)
+#          with X in R^n and u in R^m
+#   Xbar : n-dimensional steady-state state vector
+#   ubar : m-dimensional steady-state control vector
+#   h    : finite-difference step size
+#
+# Output:
+#   Q : n x n quadratic matrix for states
+#   W : n x m cross term matrix
+#   R : m x m quadratic matrix for controls
+#
+# Notes:
+#   - Q and R are returned in the same convention used in
+#     lq_approximation, namely one-half of the numerical
+#     Hessians so that
+#       r(X, u) ≈ X'QX + u'Ru + 2X'Wu
+#   - The constant and linear terms are omitted because
+#     they do not affect the LQ policy problem after
+#     expanding around the steady state
+# -------------------------------------------------------
+function quadratic_approximation(r, Xbar, ubar; h=1e-6)
+    Xbar = Float64.(collect(Xbar))
+    ubar = Float64.(collect(ubar))
+
+    r_xx = numerical_hessian(X -> r(X, ubar), Xbar; h=h)
+    r_xu = numerical_cross_hessian(r, Xbar, ubar; h=h)
+    r_uu = numerical_hessian(u -> r(Xbar, u), ubar; h=h)
+
+    Q = 0.5 * r_xx
+    W = 0.5 * r_xu
+    R = 0.5 * r_uu
+
+    return Q, W, R
 end
 
 
