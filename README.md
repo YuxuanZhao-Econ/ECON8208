@@ -114,7 +114,7 @@ This folder contains the notebook submission, helper notebook, raw data file, an
 
 
 
-### `HW6/`
+- ### `HW6/`
 
 This folder contains the notebook submission, the homework prompt, and the calibration data for Homework 6.
 
