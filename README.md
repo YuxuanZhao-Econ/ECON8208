@@ -12,12 +12,13 @@ Every folder is organized with slides, Jupyter notebooks for each homework assig
 
 - `ECON8208Tools.jl`
 
-  This file collects the reusable Julia functions developed across Homework 1, Homework 2, Homework 3, Homework 4, and Homework 5.
+  This file collects the reusable Julia functions developed across Homework 1, Homework 2, Homework 3, Homework 4, Homework 5, and Homework 6.
 
   - It includes numerical differentiation routines such as scalar derivatives, Jacobians, Hessians, and cross-partial derivatives.
   - It contains the fixed-point / Newton solvers used in Homework 1 for both scalar and vector problems.
   - It provides the local LQ approximation routine from Homework 2 and the Riccati solver from Homework 3.
   - It also includes the growth-model routines used in Homework 5, including steady-state computation, Howard policy iteration, Vaughan's method, LQ policy-function solvers, simulation functions, and moment-construction utilities for calibration.
+  - It also includes the distorted-RBC routines used in Homework 6, including the distorted steady-state solver, the local quadratic approximation for models with fiscal wedges, the modified Riccati solver, Vaughan's method for the distorted Lecture 2 system, and the HW6-specific policy-recovery, simulation, data-loading, and moment-construction functions used for calibration.
   - The file is organized as a Julia module so that the functions can be imported and reused directly in different notebooks.
 
 
@@ -113,6 +114,36 @@ This folder contains the notebook submission, helper notebook, raw data file, an
 
 
 
+# HW6
+
+This folder contains the notebook submission, the homework prompt, and the calibration data for Homework 6.
+
+Homework 6 studies a stochastic neoclassical growth model with distortionary fiscal wedges and government spending shocks. The model extends the Homework 5 RBC environment by introducing consumption taxes, labor income taxes, profit taxes, distribution taxes, and an exogenous government spending process.
+
+## Files and Folders
+
+### `HW6.ipynb`
+
+This notebook contains the full homework solution.
+
+- It derives the distorted household, firm, and government conditions.
+- It solves for the deterministic distorted steady state.
+- It constructs the local LQ approximation around the distorted steady state.
+- It maps the model into the Lecture 2 distorted-LQ system using the matrices `Q`, `W`, `R`, `A_y`, `A_z`, `B_y`, `\Theta`, and `\Psi`.
+- It solves the transformed system using both the modified Riccati equation and Vaughan's method.
+- It recovers the policy functions in the original detrended variables.
+- It simulates the calibrated model, constructs model moments, and compares them with U.S. data moments.
+- It calibrates both real-side parameters and fiscal-process parameters using U.S. national accounts moments.
+
+
+
+### `data/raw_data.xlsx`
+
+This file contains the U.S. macroeconomic and fiscal data used for calibration.
+
+- It includes the macro series already used in Homework 5, such as GDP, investment, private fixed assets, compensation of employees, population, and hours.
+- It also includes BEA fiscal series used to construct effective tax-rate proxies and the government spending share.
+- These data are used to build the empirical moments matched in the calibration section of `HW6.ipynb`.
 
 
 
