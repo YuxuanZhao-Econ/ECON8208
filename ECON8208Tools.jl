@@ -8,8 +8,11 @@ export mean,
        cor,
        hp_filter,
        load_raw_data,
+       load_raw_data_hw6,
        compute_data_moments,
+       compute_data_moments_hw6,
        compute_model_moments,
+       compute_model_moments_hw6,
        numerical_derivative,
        numerical_jacobian,
        numerical_hessian,
@@ -44,6 +47,11 @@ export mean,
        compute_vaughan_H,
        solve_vaughan,
        solve_vaughan_equilibrium,
+       make_hw6_params,
+       recover_detrended_static_objects_hw6,
+       solve_hw6_lq_policy_functions,
+       recover_original_policy_functions_hw6,
+       simulate_hw6_lq_growth_model,
        solve_lq_policy_functions,
        recover_original_policy_functions_lq,
        simulate_lq_growth_model
@@ -2040,6 +2048,123 @@ function compute_model_moments(sim, theta; burn_in=100, hp_lambda=6.25, sample_l
 end
 
 # -------------------------------------------------------
+# Compute HW6 model moments from simulated series
+# Input:
+#   sim           : output from simulate_hw6_lq_growth_model
+#   theta         : capital share parameter
+#   burn_in       : number of initial periods to discard
+#   hp_lambda     : smoothing parameter for HP filter
+#   sample_length : number of post-burn-in observations used
+#                   for moment calculation; if omitted, use
+#                   all remaining observations
+# Output:
+#   NamedTuple of real-side and fiscal model moments
+# -------------------------------------------------------
+function compute_model_moments_hw6(sim, theta; burn_in=100, hp_lambda=6.25, sample_length=nothing)
+    start_idx = burn_in + 1
+    last_idx = length(sim.c)
+
+    if sample_length !== nothing
+        if sample_length < 3
+            error("sample_length must be at least 3.")
+        end
+        last_idx = burn_in + sample_length
+    end
+
+    if start_idx > length(sim.c) || last_idx > length(sim.c)
+        error("Not enough simulated observations after burn-in for the requested sample_length.")
+    end
+
+    idx_flow = start_idx:last_idx
+    idx_state = start_idx:last_idx
+
+    c = sim.c[idx_flow]
+    x = sim.x[idx_flow]
+    y = sim.y[idx_flow]
+    h = sim.h[idx_flow]
+    l = sim.l[idx_flow]
+    n = sim.n[idx_state]
+    k = sim.k[idx_state]
+
+    X2 = sim.X2_path[idx_state, :]
+    tau_c = vec(X2[:, 2])
+    tau_h = vec(X2[:, 3])
+    tau_p = vec(X2[:, 5])
+
+    g_over_y = sim.g[idx_flow] ./ sim.y[idx_flow]
+    log_g_over_y = log.(g_over_y)
+
+    population_growth_model = mean(diff(log.(n)))
+    output_per_worker_growth_model = mean(diff(log.(y)))
+
+    labor_share_model = 1.0 - theta
+    capital_share_model = theta
+    investment_capital_ratio_model = mean(x ./ k)
+    capital_output_ratio_model = mean(k ./ y)
+
+    average_hours_model = mean(h)
+    average_leisure_model = mean(l)
+
+    log_y = log.(y)
+    _, cycle_y = hp_filter(log_y, hp_lambda)
+
+    output_cycle_autocorr_model = cor(cycle_y[2:end], cycle_y[1:(end - 1)])
+    output_cycle_std_model = std(cycle_y)
+
+    return (
+        population_growth = population_growth_model,
+        output_per_worker_growth = output_per_worker_growth_model,
+        labor_share = labor_share_model,
+        capital_share = capital_share_model,
+        investment_capital_ratio = investment_capital_ratio_model,
+        capital_output_ratio = capital_output_ratio_model,
+        average_hours = average_hours_model,
+        average_leisure = average_leisure_model,
+        output_cycle_autocorr = output_cycle_autocorr_model,
+        output_cycle_std = output_cycle_std_model,
+        tau_c = mean(tau_c),
+        tau_h = mean(tau_h),
+        tau_p = mean(tau_p),
+        g_over_y = mean(g_over_y),
+        tau_c_autocorr = cor(tau_c[2:end], tau_c[1:(end - 1)]),
+        tau_h_autocorr = cor(tau_h[2:end], tau_h[1:(end - 1)]),
+        tau_p_autocorr = cor(tau_p[2:end], tau_p[1:(end - 1)]),
+        log_g_over_y_autocorr = cor(log_g_over_y[2:end], log_g_over_y[1:(end - 1)]),
+        tau_c_std = std(tau_c),
+        tau_h_std = std(tau_h),
+        tau_p_std = std(tau_p),
+        log_g_over_y_std = std(log_g_over_y)
+    )
+end
+
+# -------------------------------------------------------
+# Compute averaged HW6 model moments from multiple simulations
+# Input:
+#   sims          : vector of outputs from simulate_hw6_lq_growth_model
+#   theta         : capital share parameter
+#   burn_in       : number of initial periods to discard
+#   hp_lambda     : smoothing parameter for HP filter
+#   sample_length : number of post-burn-in observations used
+# Output:
+#   NamedTuple of averaged model moments across simulations
+# -------------------------------------------------------
+function compute_model_moments_hw6(sims::AbstractVector, theta; burn_in=100, hp_lambda=6.25, sample_length=nothing)
+    if isempty(sims)
+        error("sims must contain at least one simulation.")
+    end
+
+    rep_moments = [
+        compute_model_moments_hw6(sim, theta; burn_in=burn_in, hp_lambda=hp_lambda, sample_length=sample_length)
+        for sim in sims
+    ]
+
+    fields = keys(rep_moments[1])
+    averaged = (; (name => mean([getproperty(m, name) for m in rep_moments]) for name in fields)...)
+
+    return averaged
+end
+
+# -------------------------------------------------------
 # Compute averaged model moments from multiple simulations
 # Input:
 #   sims          : vector of outputs from simulate_lq_growth_model
@@ -2373,6 +2498,968 @@ function solve_vaughan_equilibrium(
     end
 
     return F_vaughan, P_vaughan
+end
+
+
+# -------------------------------------------------------
+# Load raw data for HW6 calibration
+# Input:
+#   path       : path to raw_data.xlsx
+#   sheet_name : Excel sheet name
+#   start_year : first year kept in the sample
+# Output:
+#   DataFrame with real-side and fiscal raw series
+# -------------------------------------------------------
+function load_raw_data_hw6(path; sheet_name="Sheet1", start_year=1948)
+    xf = XLSX.readxlsx(path)
+    ws = xf[sheet_name]
+
+    raw = ws[:, :]
+
+    source_row = vec(raw[1, :])
+    table_row = vec(raw[2, :])
+    var_row = vec(raw[3, :])
+
+    function find_col(; source_contains="", table_contains="", var_contains="")
+        idx = findall(1:length(var_row)) do j
+            s = isnothing(source_row[j]) || ismissing(source_row[j]) ? "" : string(source_row[j])
+            t = isnothing(table_row[j]) || ismissing(table_row[j]) ? "" : string(table_row[j])
+            v = isnothing(var_row[j]) || ismissing(var_row[j]) ? "" : string(var_row[j])
+
+            occursin(source_contains, s) &&
+            occursin(table_contains, t) &&
+            occursin(var_contains, v)
+        end
+
+        if length(idx) != 1
+            error("Expected exactly one column for source='$source_contains', table='$table_contains', var='$var_contains', found $(length(idx)).")
+        end
+
+        return idx[1]
+    end
+
+    function to_float_col(col_idx)
+        x = raw[5:end, col_idx]
+        out = Vector{Union{Missing, Float64}}(undef, length(x))
+        for i in eachindex(x)
+            if ismissing(x[i]) || x[i] === nothing || string(x[i]) == ""
+                out[i] = missing
+            else
+                out[i] = Float64(x[i])
+            end
+        end
+        return out
+    end
+
+    col_year = 1
+
+    # Real-side columns from HW5
+    col_gdp_real = find_col(source_contains="BEA", table_contains="1.1.6", var_contains="GDP 2017 prices")
+    col_employment = find_col(source_contains="BEA", table_contains="6.4A", var_contains="Employment")
+    col_gdp_nominal = find_col(source_contains="BEA", table_contains="1.1.5", var_contains="GDP current prices")
+    col_comp_employees = find_col(source_contains="BEA", table_contains="6.2A", var_contains="Compensation of Employees")
+    col_proprietors = find_col(source_contains="BEA", table_contains="6.12A", var_contains="Proprietors' Income")
+    col_taxes = find_col(source_contains="BEA", table_contains="3.5", var_contains="Taxes on Production and Imports")
+    col_subsidies = find_col(source_contains="BEA", table_contains="3.13", var_contains="Subsidies")
+    col_gross_investment = find_col(source_contains="BEA", table_contains="5.1", var_contains="Gross Domestic Investment")
+    col_depreciation = find_col(source_contains="BEA", table_contains="5.1", var_contains="Consumption of Fixed Capital")
+    col_private_assets = find_col(source_contains="BEA", table_contains="6.1", var_contains="Private fixed assets")
+    col_population = find_col(source_contains="World Bank", var_contains="total")
+    col_hours_employees = find_col(source_contains="BEA", table_contains="6.9B", var_contains="Hours Worked by Employees")
+    col_self_employed = find_col(source_contains="BEA", table_contains="6.7B", var_contains="Self-Employed Workers")
+
+    # Fiscal columns added for HW6
+    col_pce = find_col(source_contains="BEA", table_contains="1.1.5", var_contains="PCE")
+    col_fed_excise = find_col(source_contains="BEA", table_contains="3.5", var_contains="Federal excise taxes")
+    col_sales_taxes = find_col(source_contains="BEA", table_contains="3.5", var_contains="Sales taxes")
+    col_state_sales = find_col(source_contains="BEA", table_contains="3.5", var_contains="State general sales taxes")
+    col_local_sales = find_col(source_contains="BEA", table_contains="3.5", var_contains="Local general sales taxes")
+    col_state_local_excise = find_col(source_contains="BEA", table_contains="3.5", var_contains="State and local excise taxes")
+    col_comp_112 = find_col(source_contains="BEA", table_contains="1.12", var_contains="Compensation of employees")
+    col_contrib = find_col(source_contains="BEA", table_contains="2.1", var_contains="Contributions for government social insurance")
+    col_personal_taxes = find_col(source_contains="BEA", table_contains="2.1", var_contains="Personal current taxes")
+    col_corp_profits = find_col(source_contains="BEA", table_contains="1.12", var_contains="Corporate profits with IVA and CCAdj")
+    col_corp_taxes = find_col(source_contains="BEA", table_contains="1.12", var_contains="Taxes on corporate income")
+    col_gov_consumption = find_col(source_contains="BEA", table_contains="1.1.5", var_contains="Government consumption expenditures and gross investment")
+
+    years = Int.(raw[5:end, col_year])
+
+    df = DataFrame(
+        year=years,
+        gdp_real=to_float_col(col_gdp_real),
+        employment=to_float_col(col_employment),
+        gdp_nominal=to_float_col(col_gdp_nominal),
+        comp_employees=to_float_col(col_comp_employees),
+        proprietors_income=to_float_col(col_proprietors),
+        taxes_prod_imports=to_float_col(col_taxes),
+        subsidies=to_float_col(col_subsidies),
+        gross_investment=to_float_col(col_gross_investment),
+        depreciation=to_float_col(col_depreciation),
+        private_fixed_assets=to_float_col(col_private_assets),
+        population=to_float_col(col_population),
+        hours_employees=to_float_col(col_hours_employees),
+        self_employed_workers=to_float_col(col_self_employed),
+        pce=to_float_col(col_pce),
+        federal_excise_taxes=to_float_col(col_fed_excise),
+        sales_taxes=to_float_col(col_sales_taxes),
+        state_general_sales_taxes=to_float_col(col_state_sales),
+        local_general_sales_taxes=to_float_col(col_local_sales),
+        state_local_excise_taxes=to_float_col(col_state_local_excise),
+        compensation_bea_112=to_float_col(col_comp_112),
+        contributions_social_insurance=to_float_col(col_contrib),
+        personal_current_taxes=to_float_col(col_personal_taxes),
+        corporate_profits_iva_ccadj=to_float_col(col_corp_profits),
+        taxes_corporate_income=to_float_col(col_corp_taxes),
+        gov_consumption_gross_investment=to_float_col(col_gov_consumption)
+    )
+
+    df = dropmissing(df, [
+        :year, :gdp_real, :employment, :gdp_nominal, :comp_employees,
+        :proprietors_income, :taxes_prod_imports, :gross_investment,
+        :depreciation, :private_fixed_assets, :population, :pce,
+        :federal_excise_taxes, :state_local_excise_taxes,
+        :compensation_bea_112, :contributions_social_insurance,
+        :personal_current_taxes, :corporate_profits_iva_ccadj,
+        :taxes_corporate_income, :gov_consumption_gross_investment
+    ])
+
+    df = filter(row -> row.year >= start_year, df)
+
+    return df
+end
+
+
+# -------------------------------------------------------
+# Construct data moments for HW6 calibration
+# Input:
+#   df        : DataFrame from load_raw_data_hw6
+#   hp_lambda : smoothing parameter for HP filter
+# Output:
+#   df2        : enriched data DataFrame
+#   hours_df   : DataFrame used for hours construction
+#   cycle_y_pc : HP-filtered cycle of log output per worker
+#   moments    : NamedTuple of real-side and fiscal data moments
+# -------------------------------------------------------
+function compute_data_moments_hw6(df; hp_lambda=6.25)
+    df2 = copy(df)
+
+    df2.y_per_capita_real = df2.gdp_real ./ df2.population
+
+    population_growth_series = diff(log.(df2.population))
+    output_per_worker_growth_series = diff(log.(df2.y_per_capita_real))
+
+    factor_income = df2.gdp_nominal .-
+                    df2.proprietors_income .-
+                    df2.taxes_prod_imports .+
+                    coalesce.(df2.subsidies, 0.0)
+
+    df2.labor_share = df2.comp_employees ./ factor_income
+    df2.capital_share = 1 .- df2.labor_share
+
+    df2.investment_capital_ratio = df2.gross_investment ./ df2.private_fixed_assets
+    df2.capital_output_ratio = df2.private_fixed_assets ./ df2.gdp_nominal
+    df2.depreciation_capital_ratio = df2.depreciation ./ df2.private_fixed_assets
+
+    hours_mask = .!ismissing.(df2.hours_employees) .& .!ismissing.(df2.self_employed_workers)
+    hours_df = df2[hours_mask, :]
+
+    hours_df.self_employed_hours =
+        (hours_df.hours_employees ./ hours_df.employment) .* hours_df.self_employed_workers
+
+    hours_df.total_hours =
+        hours_df.hours_employees .+ hours_df.self_employed_hours
+
+    hours_df.total_workers =
+        hours_df.employment .+ hours_df.self_employed_workers
+
+    hours_df.potential_hours =
+        hours_df.total_workers .* 52.0 .* 100.0 ./ 1000.0
+
+    hours_df.h = hours_df.total_hours ./ hours_df.potential_hours
+    hours_df.l = 1 .- hours_df.h
+
+    log_y_pc = log.(df2.y_per_capita_real)
+    _, cycle_y_pc = hp_filter(log_y_pc, hp_lambda)
+
+    output_cycle_autocorr = cor(cycle_y_pc[2:end], cycle_y_pc[1:(end - 1)])
+    output_cycle_std = std(cycle_y_pc)
+
+    # Fiscal proxies
+    df2.tau_c = (
+        df2.sales_taxes .+
+        df2.federal_excise_taxes .+
+        df2.state_local_excise_taxes
+    ) ./ df2.pce
+
+    df2.tau_h_payroll = df2.contributions_social_insurance ./ df2.compensation_bea_112
+    df2.tau_h = (df2.contributions_social_insurance .+ df2.personal_current_taxes) ./ df2.compensation_bea_112
+    df2.tau_p = df2.taxes_corporate_income ./ df2.corporate_profits_iva_ccadj
+    df2.g_over_y = df2.gov_consumption_gross_investment ./ df2.gdp_nominal
+    df2.log_g_over_y = log.(df2.g_over_y)
+
+    tau_c_series = collect(skipmissing(df2.tau_c))
+    tau_h_series = collect(skipmissing(df2.tau_h))
+    tau_h_payroll_series = collect(skipmissing(df2.tau_h_payroll))
+
+    tau_p_mask = .!ismissing.(df2.tau_p) .& (df2.corporate_profits_iva_ccadj .> 0.0)
+    tau_p_series = collect(df2.tau_p[tau_p_mask])
+
+    g_over_y_series = collect(skipmissing(df2.g_over_y))
+    log_g_over_y_series = collect(skipmissing(df2.log_g_over_y))
+
+    moments = (
+        population_growth=mean(population_growth_series),
+        output_per_worker_growth=mean(output_per_worker_growth_series),
+        labor_share=mean(df2.labor_share),
+        capital_share=mean(df2.capital_share),
+        investment_capital_ratio=mean(df2.investment_capital_ratio),
+        depreciation_capital_ratio=mean(df2.depreciation_capital_ratio),
+        capital_output_ratio=mean(df2.capital_output_ratio),
+        average_hours=mean(hours_df.h),
+        average_leisure=mean(hours_df.l),
+        output_cycle_autocorr=output_cycle_autocorr,
+        output_cycle_std=output_cycle_std,
+        tau_c=mean(tau_c_series),
+        tau_h=mean(tau_h_series),
+        tau_h_payroll=mean(tau_h_payroll_series),
+        tau_p=mean(tau_p_series),
+        g_over_y=mean(g_over_y_series),
+        tau_c_autocorr=cor(tau_c_series[2:end], tau_c_series[1:(end - 1)]),
+        tau_h_autocorr=cor(tau_h_series[2:end], tau_h_series[1:(end - 1)]),
+        tau_p_autocorr=cor(tau_p_series[2:end], tau_p_series[1:(end - 1)]),
+        log_g_over_y_autocorr=cor(log_g_over_y_series[2:end], log_g_over_y_series[1:(end - 1)]),
+        tau_c_std=std(tau_c_series),
+        tau_h_std=std(tau_h_series),
+        tau_p_std=std(tau_p_series),
+        log_g_over_y_std=std(log_g_over_y_series)
+    )
+
+    return df2, hours_df, cycle_y_pc, moments
+end
+
+
+# -------------------------------------------------------
+# Build the HW6 parameter NamedTuple
+#
+# Input:
+#   Structural parameters:
+#     beta, psi, sigma, gamma_n, gamma_z, theta, delta
+#
+#   Steady-state exogenous targets:
+#     log_z_ss, tau_c_ss, tau_h_ss, tau_d_ss, tau_p_ss, g_ss
+#
+#   AR(1) persistence parameters:
+#     rho_z, rho_tau_c, rho_tau_h, rho_tau_d, rho_tau_p, rho_g
+#
+#   Shock standard deviations:
+#     sigma_z, sigma_tau_c, sigma_tau_h, sigma_tau_d, sigma_tau_p, sigma_g
+#
+# Assumptions:
+#   1. The exogenous state is
+#        S_t = [log z_t, tau_c_t, tau_h_t, tau_d_t, tau_p_t, log g_tilde]'
+#   2. P is diagonal
+#   3. Q is diagonal
+#
+# Output:
+#   params : NamedTuple containing all objects needed for HW6,
+#            including P0, P, Q, beta_tilde, and Sbar
+# -------------------------------------------------------
+function make_hw6_params(;
+    beta,
+    psi,
+    sigma,
+    gamma_n,
+    gamma_z,
+    theta,
+    delta,
+    log_z_ss,
+    tau_c_ss,
+    tau_h_ss,
+    tau_d_ss,
+    tau_p_ss,
+    g_ss,
+    rho_z,
+    rho_tau_c,
+    rho_tau_h,
+    rho_tau_d,
+    rho_tau_p,
+    rho_g,
+    sigma_z,
+    sigma_tau_c,
+    sigma_tau_h,
+    sigma_tau_d,
+    sigma_tau_p,
+    sigma_g
+)
+    Sbar = [
+        log_z_ss,
+        tau_c_ss,
+        tau_h_ss,
+        tau_d_ss,
+        tau_p_ss,
+        log(g_ss)
+    ]
+
+    P = Diagonal([
+        rho_z,
+        rho_tau_c,
+        rho_tau_h,
+        rho_tau_d,
+        rho_tau_p,
+        rho_g
+    ])
+
+    Q = Diagonal([
+        sigma_z,
+        sigma_tau_c,
+        sigma_tau_h,
+        sigma_tau_d,
+        sigma_tau_p,
+        sigma_g
+    ])
+
+    P0 = (I - Matrix(P)) * Sbar
+    beta_tilde = beta * (1.0 + gamma_n) * (1.0 + gamma_z)^(1.0 - sigma)
+
+    return (
+        beta=beta,
+        psi=psi,
+        sigma=sigma,
+        gamma_n=gamma_n,
+        gamma_z=gamma_z,
+        theta=theta,
+        delta=delta,
+        log_z_ss=log_z_ss,
+        tau_c_ss=tau_c_ss,
+        tau_h_ss=tau_h_ss,
+        tau_d_ss=tau_d_ss,
+        tau_p_ss=tau_p_ss,
+        g_ss=g_ss,
+        Sbar=Sbar,
+        P0=P0,
+        P=P,
+        Q=Q,
+        beta_tilde=beta_tilde,
+        rho_z=rho_z,
+        rho_tau_c=rho_tau_c,
+        rho_tau_h=rho_tau_h,
+        rho_tau_d=rho_tau_d,
+        rho_tau_p=rho_tau_p,
+        rho_g=rho_g,
+        sigma_z=sigma_z,
+        sigma_tau_c=sigma_tau_c,
+        sigma_tau_h=sigma_tau_h,
+        sigma_tau_d=sigma_tau_d,
+        sigma_tau_p=sigma_tau_p,
+        sigma_g=sigma_g
+    )
+end
+
+
+# -------------------------------------------------------
+# Recover all detrended equilibrium objects from the
+# current detrended state and current controls
+#
+# Input:
+#   params    : HW6 parameter NamedTuple
+#   k_tilde   : current detrended individual capital
+#   X2        : current exogenous state
+#               [a, tau_c, tau_h, tau_d, tau_p, log_g_tilde]
+#   kp_tilde  : next-period detrended capital
+#   h_tilde   : current detrended labor
+#
+# Output:
+#   NamedTuple with detrended equilibrium objects
+# -------------------------------------------------------
+function recover_detrended_static_objects_hw6(params, k_tilde, X2, kp_tilde, h_tilde)
+    gamma_n = params.gamma_n
+    gamma_z = params.gamma_z
+    theta = params.theta
+    delta = params.delta
+
+    a_t = X2[1]
+    tau_c_t = X2[2]
+    tau_h_t = X2[3]
+    tau_d_t = X2[4]
+    tau_p_t = X2[5]
+    logg_t = X2[6]
+
+    z_t = exp(a_t)
+    g_tilde = exp(logg_t)
+    G = (1.0 + gamma_n) * (1.0 + gamma_z)
+
+    K_tilde = k_tilde
+    H_tilde = h_tilde
+    Kp_tilde = kp_tilde
+
+    Y_tilde = K_tilde^theta * (z_t * H_tilde)^(1.0 - theta)
+    r_tilde = theta * K_tilde^(theta - 1.0) * (z_t * H_tilde)^(1.0 - theta)
+    w_tilde = (1.0 - theta) * K_tilde^theta * z_t^(1.0 - theta) * H_tilde^(-theta)
+
+    X_tilde = G * Kp_tilde - (1.0 - delta) * K_tilde
+    C_tilde = Y_tilde - X_tilde - g_tilde
+
+    kappa_tilde =
+        tau_c_t * C_tilde +
+        tau_h_t * w_tilde * H_tilde +
+        tau_p_t * (r_tilde * K_tilde - delta * K_tilde) +
+        tau_d_t * (
+            r_tilde * K_tilde - X_tilde -
+            tau_p_t * (r_tilde * K_tilde - delta * K_tilde)
+        ) -
+        g_tilde
+
+    x_tilde = G * kp_tilde - (1.0 - delta) * k_tilde
+    c_tilde = (
+        r_tilde * k_tilde + w_tilde * h_tilde + kappa_tilde
+        - tau_h_t * w_tilde * h_tilde
+        - tau_p_t * (r_tilde * k_tilde - delta * k_tilde)
+        - tau_d_t * (
+            r_tilde * k_tilde - x_tilde -
+            tau_p_t * (r_tilde * k_tilde - delta * k_tilde)
+        )
+        - x_tilde
+    ) / (1.0 + tau_c_t)
+
+    l_tilde = 1.0 - h_tilde
+
+    return (
+        a_t=a_t,
+        z_t=z_t,
+        tau_c_t=tau_c_t,
+        tau_h_t=tau_h_t,
+        tau_d_t=tau_d_t,
+        tau_p_t=tau_p_t,
+        g_tilde=g_tilde,
+        k_tilde=k_tilde,
+        kp_tilde=kp_tilde,
+        h_tilde=h_tilde,
+        l_tilde=l_tilde,
+        K_tilde=K_tilde,
+        H_tilde=H_tilde,
+        Kp_tilde=Kp_tilde,
+        Y_tilde=Y_tilde,
+        C_tilde=C_tilde,
+        X_tilde=X_tilde,
+        r_tilde=r_tilde,
+        w_tilde=w_tilde,
+        kappa_tilde=kappa_tilde,
+        c_tilde=c_tilde,
+        x_tilde=x_tilde
+    )
+end
+
+
+# -------------------------------------------------------
+# Solve HW6 local policy functions using modified Riccati
+#
+# This function:
+#   1. solves the distorted steady state
+#   2. builds the nonlinear return function r(X, u)
+#   3. computes Q, W, R
+#   4. defines Ay, Az, By, C, Theta, Psi
+#   5. constructs the transformed distorted LQ system
+#   6. solves the modified Riccati equation
+#   7. recovers the original detrended feedback matrix
+#
+# Input:
+#   params                : HW6 parameter NamedTuple
+#   x0_ss                 : initial guess for steady state [k_ss, h_ss]
+#   tol_ss                : tolerance for steady-state solver
+#   max_iter_ss           : maximum steady-state iterations
+#   hstep_ss              : finite-difference step for steady-state solver
+#   alpha_ss              : damping parameter in steady-state solver
+#   hstep_lq              : finite-difference step for LQ approximation
+#   tol_riccati           : tolerance for modified Riccati iteration
+#   maxiter_riccati       : maximum Riccati iterations
+#   verbose_every_riccati : print interval for Riccati iteration
+#
+# Output:
+#   NamedTuple containing steady state, matrices,
+#   and detrended policy functions
+# -------------------------------------------------------
+function solve_hw6_lq_policy_functions(
+    params;
+    x0_ss=[1.0, 0.30],
+    tol_ss=1e-10,
+    max_iter_ss=200,
+    hstep_ss=1e-6,
+    alpha_ss=0.5,
+    hstep_lq=1e-6,
+    tol_riccati=1e-10,
+    maxiter_riccati=10000,
+    verbose_every_riccati=50
+)
+    beta = params.beta
+    psi = params.psi
+    sigma = params.sigma
+    gamma_n = params.gamma_n
+    gamma_z = params.gamma_z
+    theta = params.theta
+    delta = params.delta
+    P = Float64.(Matrix(params.P))
+    Qshock = Float64.(Matrix(params.Q))
+
+    beta_tilde = beta * (1.0 + gamma_n) * (1.0 + gamma_z)^(1.0 - sigma)
+
+    ss = solve_hw6_steady_state(
+        params;
+        x0=x0_ss,
+        tol=tol_ss,
+        max_iter=max_iter_ss,
+        hstep=hstep_ss,
+        verbose=false,
+        alpha=alpha_ss
+    )
+
+    y_ss = ss.y_ss
+    X3_ss = ss.X3_ss
+    u_ss = ss.u_ss
+    Xbar = ss.Xbar
+
+    ny = length(y_ss)
+    nx3 = length(X3_ss)
+
+    function r_hw6(X, u)
+        k = X[1]
+        X2 = X[2:7]
+        K = X[8]
+        H = X[9]
+        Kp = X[10]
+
+        kp = u[1]
+        h = u[2]
+
+        a_t = X2[1]
+        tau_c_t = X2[2]
+        tau_h_t = X2[3]
+        tau_d_t = X2[4]
+        tau_p_t = X2[5]
+        logg_t = X2[6]
+
+        z_t = exp(a_t)
+        g_tilde = exp(logg_t)
+        G = (1.0 + gamma_n) * (1.0 + gamma_z)
+
+        if k <= 0.0 || K <= 0.0 || Kp <= 0.0 || kp <= 0.0 ||
+           h <= 0.0 || h >= 1.0 || H <= 0.0 || H >= 1.0
+            return -1.0e12
+        end
+
+        Y = K^theta * (z_t * H)^(1.0 - theta)
+        r = theta * K^(theta - 1.0) * (z_t * H)^(1.0 - theta)
+        w = (1.0 - theta) * K^theta * z_t^(1.0 - theta) * H^(-theta)
+
+        Xagg = G * Kp - (1.0 - delta) * K
+        Cagg = Y - Xagg - g_tilde
+
+        if Cagg <= 0.0
+            return -1.0e12
+        end
+
+        kappa =
+            tau_c_t * Cagg +
+            tau_h_t * w * H +
+            tau_p_t * (r * K - delta * K) +
+            tau_d_t * (r * K - Xagg - tau_p_t * (r * K - delta * K)) -
+            g_tilde
+
+        x = G * kp - (1.0 - delta) * k
+        c = (
+            r * k + w * h + kappa
+            - tau_h_t * w * h
+            - tau_p_t * (r * k - delta * k)
+            - tau_d_t * (r * k - x - tau_p_t * (r * k - delta * k))
+            - x
+        ) / (1.0 + tau_c_t)
+
+        l = 1.0 - h
+        if c <= 0.0 || l <= 0.0
+            return -1.0e12
+        end
+
+        return ((c * l^psi)^(1.0 - sigma)) / (1.0 - sigma)
+    end
+
+    Q, W, R = quadratic_approximation(r_hw6, Xbar, u_ss; h=hstep_lq)
+
+    Ay = [
+        0.0 zeros(1, 6)
+        zeros(6, 1) P
+    ]
+
+    By = [
+        1.0 0.0
+        0.0 0.0
+        0.0 0.0
+        0.0 0.0
+        0.0 0.0
+        0.0 0.0
+        0.0 0.0
+    ]
+
+    Az = zeros(ny, nx3)
+
+    C = [
+        zeros(1, size(Qshock, 2))
+        Qshock
+    ]
+
+    Theta = [
+        1.0 0.0 0.0 0.0 0.0 0.0 0.0
+        0.0 0.0 0.0 0.0 0.0 0.0 0.0
+        0.0 0.0 0.0 0.0 0.0 0.0 0.0
+    ]
+
+    Psi = [
+        0.0 0.0
+        0.0 1.0
+        1.0 0.0
+    ]
+
+    Wy = W[1:ny, :]
+    Wz = W[(ny + 1):(ny + nx3), :]
+
+    Q_tilde = Q - W * (R \ W')
+    A_tilde_y = sqrt(beta_tilde) * (Ay - By * (R \ Wy'))
+    A_tilde_z = sqrt(beta_tilde) * (Az - By * (R \ Wz'))
+    B_tilde_y = sqrt(beta_tilde) * By
+
+    Q_tilde_y = Q_tilde[1:ny, 1:ny]
+    Q_tilde_z = Q_tilde[1:ny, (ny + 1):(ny + nx3)]
+
+    temp = Matrix{Float64}(I, nx3, nx3) + Psi * (R \ Wz')
+    Theta_tilde = temp \ (Theta - Psi * (R \ Wy'))
+    Psi_tilde = temp \ Psi
+
+    Ahat = A_tilde_y + A_tilde_z * Theta_tilde
+    Qhat = Q_tilde_y + Q_tilde_z * Theta_tilde
+    Bhat = B_tilde_y + A_tilde_z * Psi_tilde
+    Abar = A_tilde_y - B_tilde_y * (R \ (Psi_tilde' * Q_tilde_z'))
+
+    F_Riccati, P_Riccati = solve_modified_riccati_equilibrium(
+        Qhat, Ahat, Bhat, Abar, B_tilde_y, R;
+        tol=tol_riccati,
+        maxiter=maxiter_riccati,
+        verbose_every=verbose_every_riccati
+    )
+
+    m = size(R, 1)
+    T_eq = Matrix(I, m, m) + R \ (Wz' * Psi)
+    F_orig_riccati = T_eq \ (F_Riccati + R \ (Wy' + Wz' * Theta))
+
+    policy_mu_hat = function(k_tilde, X2)
+        y_hat = [
+            k_tilde - ss.k_ss
+            X2 .- ss.X2_ss
+        ]
+        return -F_orig_riccati * y_hat
+    end
+
+    policy_k_tilde = function(k_tilde, X2)
+        mu_hat = policy_mu_hat(k_tilde, X2)
+        return ss.k_ss + mu_hat[1]
+    end
+
+    policy_h_tilde = function(k_tilde, X2)
+        mu_hat = policy_mu_hat(k_tilde, X2)
+        return ss.h_ss + mu_hat[2]
+    end
+
+    policy_detrended_objects = function(k_tilde, X2)
+        kp_tilde = policy_k_tilde(k_tilde, X2)
+        h_tilde = policy_h_tilde(k_tilde, X2)
+        return recover_detrended_static_objects_hw6(params, k_tilde, X2, kp_tilde, h_tilde)
+    end
+
+    return (
+        steady_state=ss,
+        beta_tilde=beta_tilde,
+        Q=Q,
+        W=W,
+        R=R,
+        Wy=Wy,
+        Wz=Wz,
+        Ay=Ay,
+        Az=Az,
+        By=By,
+        C=C,
+        Theta=Theta,
+        Psi=Psi,
+        Q_tilde=Q_tilde,
+        Q_tilde_y=Q_tilde_y,
+        Q_tilde_z=Q_tilde_z,
+        A_tilde_y=A_tilde_y,
+        A_tilde_z=A_tilde_z,
+        B_tilde_y=B_tilde_y,
+        Theta_tilde=Theta_tilde,
+        Psi_tilde=Psi_tilde,
+        Qhat=Qhat,
+        Ahat=Ahat,
+        Bhat=Bhat,
+        Abar=Abar,
+        F_Riccati=F_Riccati,
+        P_Riccati=P_Riccati,
+        F_orig_riccati=F_orig_riccati,
+        policy_mu_hat=policy_mu_hat,
+        policy_k_tilde=policy_k_tilde,
+        policy_h_tilde=policy_h_tilde,
+        policy_detrended_objects=policy_detrended_objects
+    )
+end
+
+
+# -------------------------------------------------------
+# Recover policy functions for original variables
+#
+# Input:
+#   params      : HW6 parameter NamedTuple
+#   lq_solution : output from solve_hw6_lq_policy_functions
+#
+# Output:
+#   NamedTuple of policy functions in original variables
+#
+# Convention:
+#   input state at time t:
+#       k_t  : per-capita capital in original units
+#       X2_t : exogenous state vector
+#       t    : time index, with t = 0 at the initial date
+# -------------------------------------------------------
+function recover_original_policy_functions_hw6(params, lq_solution)
+    gamma_z = params.gamma_z
+
+    policy_k = function(k, X2, t)
+        k_tilde = k / (1.0 + gamma_z)^t
+        kp_tilde = lq_solution.policy_k_tilde(k_tilde, X2)
+        return (1.0 + gamma_z)^(t + 1) * kp_tilde
+    end
+
+    policy_h = function(k, X2, t)
+        k_tilde = k / (1.0 + gamma_z)^t
+        return lq_solution.policy_h_tilde(k_tilde, X2)
+    end
+
+    policy_l = function(k, X2, t)
+        return 1.0 - policy_h(k, X2, t)
+    end
+
+    policy_c = function(k, X2, t)
+        k_tilde = k / (1.0 + gamma_z)^t
+        objs = lq_solution.policy_detrended_objects(k_tilde, X2)
+        return (1.0 + gamma_z)^t * objs.c_tilde
+    end
+
+    policy_x = function(k, X2, t)
+        k_tilde = k / (1.0 + gamma_z)^t
+        objs = lq_solution.policy_detrended_objects(k_tilde, X2)
+        return (1.0 + gamma_z)^t * objs.x_tilde
+    end
+
+    policy_y = function(k, X2, t)
+        k_tilde = k / (1.0 + gamma_z)^t
+        objs = lq_solution.policy_detrended_objects(k_tilde, X2)
+        return (1.0 + gamma_z)^t * objs.Y_tilde
+    end
+
+    return (
+        policy_k=policy_k,
+        policy_h=policy_h,
+        policy_l=policy_l,
+        policy_c=policy_c,
+        policy_x=policy_x,
+        policy_y=policy_y
+    )
+end
+
+
+# -------------------------------------------------------
+# Simulate the HW6 model using the local Riccati solution
+#
+# Input:
+#   params      : HW6 parameter NamedTuple
+#   lq_solution : output from solve_hw6_lq_policy_functions
+#
+# Optional input:
+#   T        : simulation length
+#   seed     : random seed
+#   k0_tilde : initial detrended capital
+#   X2_0     : initial exogenous state vector
+#   n0       : initial population level
+#
+# Output:
+#   NamedTuple with simulated detrended and original series
+# -------------------------------------------------------
+function simulate_hw6_lq_growth_model(
+    params,
+    lq_solution;
+    T=1000,
+    seed=1234,
+    k0_tilde=lq_solution.steady_state.k_ss,
+    X2_0=copy(lq_solution.steady_state.X2_ss),
+    n0=1.0,
+    n_replications=1,
+    seed_step=1
+)
+    if n_replications < 1
+        error("n_replications must be at least 1.")
+    end
+
+    if n_replications > 1
+        return [
+            simulate_hw6_lq_growth_model(
+                params,
+                lq_solution;
+                T=T,
+                seed=seed + seed_step * (rep - 1),
+                k0_tilde=k0_tilde,
+                X2_0=copy(X2_0),
+                n0=n0,
+                n_replications=1,
+                seed_step=seed_step
+            )
+            for rep in 1:n_replications
+        ]
+    end
+
+    gamma_n = params.gamma_n
+    gamma_z = params.gamma_z
+    P0 = Float64.(collect(params.P0))
+    P = Float64.(Matrix(params.P))
+    Qshock = Float64.(Matrix(params.Q))
+
+    rng = MersenneTwister(seed)
+
+    nX2 = length(X2_0)
+    neps = size(Qshock, 2)
+
+    k_tilde = zeros(T + 1)
+    kp_tilde = zeros(T)
+    h_tilde = zeros(T)
+    l_tilde = zeros(T)
+    c_tilde = zeros(T)
+    x_tilde = zeros(T)
+    y_tilde = zeros(T)
+    r_tilde = zeros(T)
+    w_tilde = zeros(T)
+    kappa_tilde = zeros(T)
+    g_tilde = zeros(T)
+    X2_path = zeros(T + 1, nX2)
+
+    n = zeros(T)
+    k = zeros(T)
+    kp = zeros(T)
+    c = zeros(T)
+    x = zeros(T)
+    y = zeros(T)
+    h = zeros(T)
+    l = zeros(T)
+    r = zeros(T)
+    w = zeros(T)
+    kappa = zeros(T)
+    g = zeros(T)
+
+    K = zeros(T)
+    C = zeros(T)
+    X = zeros(T)
+    Y = zeros(T)
+    H = zeros(T)
+    G = zeros(T)
+
+    eps_path = zeros(T, neps)
+
+    k_tilde[1] = k0_tilde
+    X2_path[1, :] .= X2_0
+
+    for t in 1:T
+        X2_t = vec(X2_path[t, :])
+
+        objs = lq_solution.policy_detrended_objects(k_tilde[t], X2_t)
+
+        kp_tilde[t] = objs.kp_tilde
+        h_tilde[t] = objs.h_tilde
+        l_tilde[t] = objs.l_tilde
+        c_tilde[t] = objs.c_tilde
+        x_tilde[t] = objs.x_tilde
+        y_tilde[t] = objs.Y_tilde
+        r_tilde[t] = objs.r_tilde
+        w_tilde[t] = objs.w_tilde
+        kappa_tilde[t] = objs.kappa_tilde
+        g_tilde[t] = objs.g_tilde
+
+        if kp_tilde[t] <= 0.0
+            error("Simulated detrended next-period capital is nonpositive at t=$t.")
+        end
+        if h_tilde[t] <= 0.0 || h_tilde[t] >= 1.0
+            error("Simulated labor is outside (0,1) at t=$t.")
+        end
+        if c_tilde[t] <= 0.0
+            error("Simulated detrended consumption is nonpositive at t=$t.")
+        end
+
+        trend = (1.0 + gamma_z)^(t - 1)
+        trend_next = (1.0 + gamma_z)^t
+        n[t] = n0 * (1.0 + gamma_n)^(t - 1)
+
+        k[t] = trend * k_tilde[t]
+        kp[t] = trend_next * kp_tilde[t]
+        c[t] = trend * c_tilde[t]
+        x[t] = trend * x_tilde[t]
+        y[t] = trend * y_tilde[t]
+        h[t] = h_tilde[t]
+        l[t] = l_tilde[t]
+        r[t] = r_tilde[t]
+        w[t] = trend * w_tilde[t]
+        kappa[t] = trend * kappa_tilde[t]
+        g[t] = trend * g_tilde[t]
+
+        K[t] = n[t] * k[t]
+        C[t] = n[t] * c[t]
+        X[t] = n[t] * x[t]
+        Y[t] = n[t] * y[t]
+        H[t] = n[t] * h[t]
+        G[t] = n[t] * g[t]
+
+        k_tilde[t + 1] = kp_tilde[t]
+
+        eps_t = randn(rng, neps)
+        eps_path[t, :] .= eps_t
+        X2_next = P0 + P * X2_t + Qshock * eps_t
+        X2_path[t + 1, :] .= X2_next
+    end
+
+    return (
+        k_tilde=k_tilde,
+        kp_tilde=kp_tilde,
+        c_tilde=c_tilde,
+        x_tilde=x_tilde,
+        y_tilde=y_tilde,
+        h_tilde=h_tilde,
+        l_tilde=l_tilde,
+        r_tilde=r_tilde,
+        w_tilde=w_tilde,
+        kappa_tilde=kappa_tilde,
+        g_tilde=g_tilde,
+        X2_path=X2_path,
+        eps_path=eps_path,
+        n=n,
+        k=k,
+        kp=kp,
+        c=c,
+        x=x,
+        y=y,
+        h=h,
+        l=l,
+        r=r,
+        w=w,
+        kappa=kappa,
+        g=g,
+        K=K,
+        C=C,
+        X=X,
+        Y=Y,
+        H=H,
+        G=G
+    )
 end
 
 
