@@ -1771,7 +1771,9 @@ function simulate_lq_growth_model(params, lq_solution;
         h=h,
         l=l,
         epsilon=epsilon,
-        logz=logz
+        logz=logz,
+        gamma_z=gamma_z,
+        Gz=Gz
     )
 end
 
@@ -1909,20 +1911,22 @@ end
 # Construct data moments for calibration
 # Input:
 #   df        : DataFrame from load_hw5_raw_data
-#   hp_lambda : smoothing parameter for HP filter
+#   gamma_z   : deterministic growth rate used for detrending;
+#               if omitted, infer it from average output growth
 # Output:
 #   df2        : enriched data DataFrame
 #   hours_df   : DataFrame used for hours construction
-#   cycle_y_pc : HP-filtered cycle of log output per worker
+#   cycle_y_pc : demeaned log-detrended output-per-capita series
 #   moments    : NamedTuple of calibration data moments
 # -------------------------------------------------------
-function compute_data_moments(df; hp_lambda=6.25)
+function compute_data_moments(df; gamma_z=nothing)
     df2 = copy(df)
 
     df2.y_per_capita_real = df2.gdp_real ./ df2.population
 
     population_growth_series = diff(log.(df2.population))
     output_per_worker_growth_series = diff(log.(df2.y_per_capita_real))
+    gamma_z_data = isnothing(gamma_z) ? exp(mean(output_per_worker_growth_series)) - 1.0 : gamma_z
 
     factor_income = df2.gdp_nominal .-
                     df2.proprietors_income .-
@@ -1954,8 +1958,10 @@ function compute_data_moments(df; hp_lambda=6.25)
     hours_df.h = hours_df.total_hours ./ hours_df.potential_hours
     hours_df.l = 1 .- hours_df.h
 
+    t_index = 0:(nrow(df2) - 1)
     log_y_pc = log.(df2.y_per_capita_real)
-    trend_y_pc, cycle_y_pc = hp_filter(log_y_pc, hp_lambda)
+    cycle_y_pc = log_y_pc .- t_index .* log(1.0 + gamma_z_data)
+    cycle_y_pc = cycle_y_pc .- mean(cycle_y_pc)
 
     output_cycle_autocorr = cor(cycle_y_pc[2:end], cycle_y_pc[1:(end - 1)])
     output_cycle_std = std(cycle_y_pc)
@@ -1982,14 +1988,14 @@ end
 # Input:
 #   sim           : output from simulate_lq_growth_model
 #   theta         : capital share parameter
+#   gamma_z       : deterministic growth rate used for detrending
 #   burn_in       : number of initial periods to discard
-#   hp_lambda     : smoothing parameter for HP filter
 #   sample_length : number of post-burn-in observations used for moment calculation;
 #                   if omitted, use all remaining observations
 # Output:
 #   NamedTuple of model moments
 # -------------------------------------------------------
-function compute_model_moments(sim, theta; burn_in=100, hp_lambda=6.25, sample_length=nothing)
+function compute_model_moments(sim, theta, gamma_z; burn_in=100, sample_length=nothing)
     start_idx = burn_in + 1
     last_idx = length(sim.c)
 
@@ -2027,8 +2033,10 @@ function compute_model_moments(sim, theta; burn_in=100, hp_lambda=6.25, sample_l
     average_hours_model = mean(h)
     average_leisure_model = mean(l)
 
+    t_index = 0:(length(y) - 1)
     log_y = log.(y)
-    trend_y, cycle_y = hp_filter(log_y, hp_lambda)
+    cycle_y = log_y .- t_index .* log(1.0 + gamma_z)
+    cycle_y = cycle_y .- mean(cycle_y)
 
     output_cycle_autocorr_model = cor(cycle_y[2:end], cycle_y[1:(end - 1)])
     output_cycle_std_model = std(cycle_y)
@@ -2169,19 +2177,19 @@ end
 # Input:
 #   sims          : vector of outputs from simulate_lq_growth_model
 #   theta         : capital share parameter
+#   gamma_z       : deterministic growth rate used for detrending
 #   burn_in       : number of initial periods to discard
-#   hp_lambda     : smoothing parameter for HP filter
 #   sample_length : number of post-burn-in observations used for moment calculation
 # Output:
 #   NamedTuple of averaged model moments across simulations
 # -------------------------------------------------------
-function compute_model_moments(sims::AbstractVector, theta; burn_in=100, hp_lambda=6.25, sample_length=nothing)
+function compute_model_moments(sims::AbstractVector, theta, gamma_z; burn_in=100, sample_length=nothing)
     if isempty(sims)
         error("sims must contain at least one simulation.")
     end
 
     rep_moments = [
-        compute_model_moments(sim, theta; burn_in=burn_in, hp_lambda=hp_lambda, sample_length=sample_length)
+        compute_model_moments(sim, theta, gamma_z; burn_in=burn_in, sample_length=sample_length)
         for sim in sims
     ]
 
