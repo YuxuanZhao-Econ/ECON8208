@@ -2061,14 +2061,14 @@ end
 #   sim           : output from simulate_hw6_lq_growth_model
 #   theta         : capital share parameter
 #   burn_in       : number of initial periods to discard
-#   hp_lambda     : smoothing parameter for HP filter
+#   gamma_z       : deterministic growth rate used for detrending
 #   sample_length : number of post-burn-in observations used
 #                   for moment calculation; if omitted, use
 #                   all remaining observations
 # Output:
 #   NamedTuple of real-side and fiscal model moments
 # -------------------------------------------------------
-function compute_model_moments_hw6(sim, theta; burn_in=100, hp_lambda=6.25, sample_length=nothing)
+function compute_model_moments_hw6(sim, theta, gamma_z; burn_in=100, sample_length=nothing)
     start_idx = burn_in + 1
     last_idx = length(sim.c)
 
@@ -2113,8 +2113,10 @@ function compute_model_moments_hw6(sim, theta; burn_in=100, hp_lambda=6.25, samp
     average_hours_model = mean(h)
     average_leisure_model = mean(l)
 
+    t_index = 0:(length(y) - 1)
     log_y = log.(y)
-    _, cycle_y = hp_filter(log_y, hp_lambda)
+    cycle_y = log_y .- t_index .* log(1.0 + gamma_z)
+    cycle_y = cycle_y .- mean(cycle_y)
 
     output_cycle_autocorr_model = cor(cycle_y[2:end], cycle_y[1:(end - 1)])
     output_cycle_std_model = std(cycle_y)
@@ -2151,18 +2153,18 @@ end
 #   sims          : vector of outputs from simulate_hw6_lq_growth_model
 #   theta         : capital share parameter
 #   burn_in       : number of initial periods to discard
-#   hp_lambda     : smoothing parameter for HP filter
+#   gamma_z       : deterministic growth rate used for detrending
 #   sample_length : number of post-burn-in observations used
 # Output:
 #   NamedTuple of averaged model moments across simulations
 # -------------------------------------------------------
-function compute_model_moments_hw6(sims::AbstractVector, theta; burn_in=100, hp_lambda=6.25, sample_length=nothing)
+function compute_model_moments_hw6(sims::AbstractVector, theta, gamma_z; burn_in=100, sample_length=nothing)
     if isempty(sims)
         error("sims must contain at least one simulation.")
     end
 
     rep_moments = [
-        compute_model_moments_hw6(sim, theta; burn_in=burn_in, hp_lambda=hp_lambda, sample_length=sample_length)
+        compute_model_moments_hw6(sim, theta, gamma_z; burn_in=burn_in, sample_length=sample_length)
         for sim in sims
     ]
 
@@ -2641,20 +2643,22 @@ end
 # Construct data moments for HW6 calibration
 # Input:
 #   df        : DataFrame from load_raw_data_hw6
-#   hp_lambda : smoothing parameter for HP filter
+#   gamma_z   : deterministic growth rate used for detrending;
+#               if omitted, infer it from average output growth
 # Output:
 #   df2        : enriched data DataFrame
 #   hours_df   : DataFrame used for hours construction
-#   cycle_y_pc : HP-filtered cycle of log output per worker
+#   cycle_y_pc : demeaned log-detrended output-per-capita series
 #   moments    : NamedTuple of real-side and fiscal data moments
 # -------------------------------------------------------
-function compute_data_moments_hw6(df; hp_lambda=6.25)
+function compute_data_moments_hw6(df; gamma_z=nothing)
     df2 = copy(df)
 
     df2.y_per_capita_real = df2.gdp_real ./ df2.population
 
     population_growth_series = diff(log.(df2.population))
     output_per_worker_growth_series = diff(log.(df2.y_per_capita_real))
+    gamma_z_data = isnothing(gamma_z) ? exp(mean(output_per_worker_growth_series)) - 1.0 : gamma_z
 
     factor_income = df2.gdp_nominal .-
                     df2.proprietors_income .-
@@ -2686,8 +2690,10 @@ function compute_data_moments_hw6(df; hp_lambda=6.25)
     hours_df.h = hours_df.total_hours ./ hours_df.potential_hours
     hours_df.l = 1 .- hours_df.h
 
+    t_index = 0:(nrow(df2) - 1)
     log_y_pc = log.(df2.y_per_capita_real)
-    _, cycle_y_pc = hp_filter(log_y_pc, hp_lambda)
+    cycle_y_pc = log_y_pc .- t_index .* log(1.0 + gamma_z_data)
+    cycle_y_pc = cycle_y_pc .- mean(cycle_y_pc)
 
     output_cycle_autocorr = cor(cycle_y_pc[2:end], cycle_y_pc[1:(end - 1)])
     output_cycle_std = std(cycle_y_pc)
