@@ -1,0 +1,31 @@
+Table 1.10. Relation of Real Gross Domestic Product, Real Gross National 
+Product, and Real Net National Product
+[Billions of chained (1996) dollars]
+Warning: Do not add Chained Dollars
+Bureau of Economic Analysis
+Downloaded on 6/26/02 At 2:30:38 PM    Published date is 5/28/2002
+0, Year
+1,Gross domestic product
+2,Plus: Income receipts from the rest of the world
+3,Less: Income payments to the rest of the world
+4,Equals: Gross national product
+5,Less: Consumption of fixed capital
+6,        Private
+7,        Government
+8,          General government
+9,          Government enterprises
+10,Equals: Net national product
+11,  Gross domestic income\1\
+12,  Gross national income\2\
+13,  Net domestic product
+
+ 1. Gross domestic income deflated by the implicit price deflator for gross 
+     domestic product.
+ 2. Gross national income deflated by the implicit price deflator for gross 
+     national product.
+  Note.  Except as noted in footnotes 1 and 2, chained (1996) dollar series are
+     calculated as the product of the chain-type quantity index and the 1996 
+     current-dollar value of the corresponding series, divided by 100.
+     Because the formula for the chain-type quantity indexes uses weights 
+     of more than one period, the corresponding chained-dollar estimates 
+     are usually not additive.

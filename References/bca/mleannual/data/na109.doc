@@ -1,0 +1,35 @@
+Table 1.9. Relation of Gross Domestic Product, Gross National Product, 
+Net National Product, National Income, and Personal Income
+[Billions of dollars]
+Bureau of Economic Analysis
+Downloaded on 6/24/02 At 5:49:40 PM    Published date is 5/28/2002
+0, Year
+1,Gross domestic product
+2,Plus: Income receipts from the rest of the world
+3,Less: Income payments to the rest of the world
+4,Equals: Gross national product
+5,Less: Consumption of fixed capital
+6,        Private
+7,          Capital consumption allowances
+8,          Less: Capital consumption adjustment
+9,        Government
+10,          General government
+11,          Government enterprises
+12,Equals: Net national product
+13,Less: Indirect business tax and nontax liability
+14,      Business transfer payments
+15,      Statistical discrepancy
+16,Plus: Subsidies less current surplus of government enterprises
+17,Equals: National income
+18,Less: Corporate profits with inventory valuation and capital consumption adjustments
+19,      Net interest
+20,      Contributions for social insurance
+21,      Wage accruals less disbursements
+22,Plus: Personal interest income
+23,      Personal dividend income
+24,      Government transfer payments to persons
+25,      Business transfer payments to persons
+26,Equals: Personal income
+27,  Gross domestic income
+28,  Gross national income
+29,  Net domestic product

@@ -1,0 +1,30 @@
+popu_us.dat     Sources: 
+                U.S. Department of Commerce, Bureau of the Census (1975)
+                Historical Statistics of the US, Colonial to 1970, 
+                Bicentennial edition 
+                Washington DC: U.S. Government Printing Office.
+                Series A6-8. Annual Population Estimates for the US: 1790-1970
+                (in thousands) p. 8 for columns (2)-(4). 
+                Series A39.  Annual Estimates of the Population, by Age: 
+                1790-1970 (in thousands) p. 10 for column (5). 
+
+                Economic Report of the President (2001)
+                Washington DC: U.S. Government Printing Office.
+                Table B-34. Population by age group, 1929-00 (thousands),
+                p. 321 for columns (3) and (5), 1970-00.
+
+                Columns: (1)  Year 
+                         (2)  Total resident population
+                         (3)  Total including Armed Forces Overseas
+                         (4)  Total civilian resident population
+                         (5)  Total population, 16 and over
+
+                      NOTES:  (2)-(5) 1959 is first year with Alaska & Hawaii
+                              For (5), 1900-1916,1920-1939 is resident 
+                              population; 1940-1970 is total population 
+                              including Armed Forces overseas; 1917-1919
+                              is total population found by adding the
+                              difference between columns (3) and (2) to
+                              the resident population reported in A39.
+                                       
+

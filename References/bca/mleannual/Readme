@@ -1,0 +1,42 @@
+This directory contains files used to do the maximum likelihood
+estimation for the period 1901-1940 in
+
+    Business Cycle Accounting
+    Staff Report 328
+    by V.V. Chari, Patrick Kehoe, and Ellen McGrattan
+
+The output files runmle1.out and runmle1cu.out summarize the
+results.  For full details on computation and estimation, see 
+the appendix in directory ./tex/appendices.
+
+
+FILE             DESCRIPTION
+------------     ----------------------------------------------------
+./data           Directory with data files and details on data sources
+batch            command for running batch
+initpw.m         Computes MLE estimates for 1901--2000 to initialize postwar
+mle1.m           Likelihood function, benchmark model, used for 1901-40
+mle1_check.m     A check on computation of equilibrium in mle1.m
+mle1adj.m        Likelihood function, model with adjustment costs
+mle1cu.m         Likelihood function, variable capital utilization
+mlese1.m         Version of mle1.m used in computing standard errors
+mlese1adj.m      Version of mle1adj.m used in computing standard errors
+mlese1cu.m       Version of mle1cu.m used in computing standard errors
+res_adjust.m     FOCs for adjustment-cost model 
+res_wedge.m      FOCs for benchmark model
+restart*.m       Restart files used when bootstrap draw implies no equilibrium
+runmle1.m        Computes MLE estimates and standard errors
+runmle1.mat      Workspace for runmle1.m
+runmle1.out      Output from runmle1.m
+runmle1cu.*      Analogue of runmle1 for variable capital utilization model
+runmle1adj.*     Analogue of runmle1 for adjustment-cost model
+runmle1adje.*    Analogue of runmle1 for extreme adjustment-cost model
+usdata.m         Constructs time series based on raw NIPA data
+uszvar1.dat      Data input for MLE, 1901-1940
+wedges.m         Computes wedges used in ./depression/setup.m    
+wedgesadj.m      Computes wedges used in ./depression/setupadj.m
+wedgescu.m       Computes wedges used in ./depression/setupcu.m
+
+Ellen McGrattan
+October, 2006
+

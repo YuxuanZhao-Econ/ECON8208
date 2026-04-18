@@ -1,0 +1,340 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}  % already defined in main document
+\usepackage{amsmath,amsthm,amssymb,mathtools}  % already defined
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{float}
+
+
+\title{Calvo Pricing in the Simple Monetary Sticky-Price Model}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\section{Setup}
+
+We keep the \emph{real side} of the lecture notes unchanged and only replace the pricing friction.
+The original notes impose a simple environment with no capital in production, linear technology,
+and a money-demand relation that implies consumption equals real balances in logs. In particular,
+we retain:
+\begin{align}
+y_t &= c_t, \\
+m_t - p_t &= c_t, \\
+w_t &= \gamma y_t.
+\end{align}
+Combining the first two equations gives
+\begin{equation}
+y_t = m_t - p_t,
+\end{equation}
+and hence
+\begin{equation}
+w_t = \gamma (m_t - p_t).
+\end{equation}
+
+Here:
+\begin{itemize}
+    \item $m_t$ is the log money stock,
+    \item $p_t$ is the log aggregate price level,
+    \item $y_t$ is log output,
+    \item $w_t$ is the log real wage,
+    \item $\gamma>0$ measures how strongly real marginal cost responds to output.
+\end{itemize}
+
+The only change relative to the lecture notes is that we replace the fixed-duration pricing scheme
+($N=2$ staggered pricing) with \emph{Calvo pricing}.
+
+\section{Calvo pricing}
+
+In each period, a firm receives an opportunity to reset its price with probability $1-\theta$.
+With probability $\theta$, it cannot reoptimize and must keep its previous nominal price.
+
+Let $p_t^*$ denote the optimal reset price chosen by firms that can adjust in period $t$.
+Under Calvo pricing, a firm that resets in period $t$ chooses $p_t^*$ to maximize expected discounted
+profits over the random duration for which the price remains in effect.
+
+Because we keep the rest of the model unchanged, the firm's nominal marginal cost in logs is
+\begin{equation}
+p_t + w_t.
+\end{equation}
+Therefore, the linearized optimal reset-price equation is
+\begin{equation}
+p_t^* = (1-\beta\theta)\sum_{j=0}^{\infty} (\beta\theta)^j E_t\bigl[p_{t+j}+w_{t+j}\bigr].
+\label{eq:reset_infinite}
+\end{equation}
+This is the standard Calvo reset-price formula: the newly chosen price is a discounted weighted
+average of current and future nominal marginal costs.
+
+Equation \eqref{eq:reset_infinite} can be written recursively as
+\begin{equation}
+p_t^* = (1-\beta\theta)(p_t+w_t) + \beta\theta E_t p_{t+1}^*.
+\label{eq:reset_recursive}
+\end{equation}
+
+\section{Aggregate price dynamics}
+
+Under Calvo pricing, the aggregate price level is a weighted average of firms that do not adjust
+and firms that do adjust. In log-linear form,
+\begin{equation}
+p_t = \theta p_{t-1} + (1-\theta)p_t^*.
+\label{eq:aggregate_price}
+\end{equation}
+Define inflation by
+\begin{equation}
+\pi_t \equiv p_t - p_{t-1}.
+\end{equation}
+Then \eqref{eq:aggregate_price} implies
+\begin{equation}
+\pi_t = (1-\theta)(p_t^* - p_{t-1}).
+\label{eq:inflation_reset_gap}
+\end{equation}
+From this,
+\begin{align}
+p_t^* - p_t
+&= p_t^* - \bigl[\theta p_{t-1} + (1-\theta)p_t^*\bigr] \\
+&= \theta(p_t^* - p_{t-1}) \\
+&= \frac{\theta}{1-\theta}\pi_t.
+\end{align}
+Thus,
+\begin{equation}
+p_t^* - p_t = \frac{\theta}{1-\theta}\pi_t.
+\label{eq:gap_pi}
+\end{equation}
+
+\section{Derivation of the Phillips curve}
+
+Subtract $p_t$ from both sides of \eqref{eq:reset_recursive}:
+\begin{align}
+p_t^* - p_t
+&= (1-\beta\theta)w_t + \beta\theta E_t p_{t+1}^* - \beta\theta p_t \\
+&= (1-\beta\theta)w_t + \beta\theta E_t\bigl[(p_{t+1}^*-p_{t+1}) + (p_{t+1}-p_t)\bigr] \\
+&= (1-\beta\theta)w_t + \beta\theta E_t(p_{t+1}^* - p_{t+1}) + \beta\theta E_t\pi_{t+1}.
+\end{align}
+Now use \eqref{eq:gap_pi} both at time $t$ and $t+1$:
+\begin{equation}
+p_t^* - p_t = \frac{\theta}{1-\theta}\pi_t,
+\qquad
+p_{t+1}^* - p_{t+1} = \frac{\theta}{1-\theta}\pi_{t+1}.
+\end{equation}
+Substituting these into the previous equation yields
+\begin{equation}
+\frac{\theta}{1-\theta}\pi_t
+=
+(1-\beta\theta)w_t
++
+\beta\theta E_t\left(\frac{\theta}{1-\theta}\pi_{t+1}\right)
++
+\beta\theta E_t\pi_{t+1}.
+\end{equation}
+Multiply both sides by $(1-\theta)/\theta$:
+\begin{equation}
+\pi_t
+=
+\frac{(1-\theta)(1-\beta\theta)}{\theta}w_t
++
+\beta E_t\pi_{t+1}.
+\end{equation}
+Define
+\begin{equation}
+\kappa \equiv \frac{(1-\theta)(1-\beta\theta)}{\theta}.
+\end{equation}
+Then the Phillips curve is
+\begin{equation}
+\pi_t = \beta E_t\pi_{t+1} + \kappa w_t.
+\label{eq:nkpc_w}
+\end{equation}
+Using $w_t=\gamma y_t$, we obtain
+\begin{equation}
+\boxed{\pi_t = \beta E_t\pi_{t+1} + \kappa\gamma y_t.}
+\label{eq:nkpc_y}
+\end{equation}
+
+This is the Calvo analogue of the pricing equation in the lecture notes. The key difference is that
+the fixed $N=2$ pricing block is replaced by a forward-looking Phillips curve.
+
+\section{Combining the Phillips curve with money demand}
+
+Since
+\begin{equation}
+y_t = m_t - p_t,
+\end{equation}
+we may write
+\begin{equation}
+p_t = m_t - y_t.
+\end{equation}
+Therefore inflation is
+\begin{align}
+\pi_t
+&= p_t - p_{t-1} \\
+&= (m_t - y_t) - (m_{t-1} - y_{t-1}) \\
+&= \Delta m_t - (y_t - y_{t-1}),
+\end{align}
+where
+\begin{equation}
+\Delta m_t \equiv m_t - m_{t-1}.
+\end{equation}
+Hence
+\begin{equation}
+\boxed{\pi_t = y_{t-1} + \Delta m_t - y_t.}
+\label{eq:pi_output}
+\end{equation}
+
+Substitute \eqref{eq:pi_output} into \eqref{eq:nkpc_y}:
+\begin{equation}
+y_{t-1} + \Delta m_t - y_t
+=
+\beta E_t\pi_{t+1} + \kappa\gamma y_t.
+\end{equation}
+But from \eqref{eq:pi_output} one period ahead,
+\begin{equation}
+\pi_{t+1} = y_t + \Delta m_{t+1} - y_{t+1}.
+\end{equation}
+Thus,
+\begin{equation}
+y_{t-1} + \Delta m_t - y_t
+=
+\beta E_t\bigl[y_t + \Delta m_{t+1} - y_{t+1}\bigr]
++
+\kappa\gamma y_t.
+\label{eq:master}
+\end{equation}
+
+Equation \eqref{eq:master} is the equilibrium law of motion for output in the Calvo version of the model.
+
+\section{Special case: money is a random walk}
+
+Suppose the money stock follows
+\begin{equation}
+m_t = m_{t-1} + \varepsilon_t,
+\qquad
+E_t\varepsilon_{t+1}=0.
+\end{equation}
+Then
+\begin{equation}
+\Delta m_t = \varepsilon_t,
+\qquad
+E_t\Delta m_{t+1}=0.
+\end{equation}
+Substituting this into \eqref{eq:master} gives
+\begin{equation}
+y_{t-1} + \varepsilon_t - y_t
+=
+\beta\bigl(y_t - E_t y_{t+1}\bigr)
++
+\kappa\gamma y_t.
+\label{eq:rw_equation}
+\end{equation}
+
+Now conjecture a linear solution of the form
+\begin{equation}
+y_t = a y_{t-1} + b\varepsilon_t.
+\label{eq:guess}
+\end{equation}
+Then
+\begin{equation}
+E_t y_{t+1} = a y_t.
+\end{equation}
+Substituting into \eqref{eq:rw_equation},
+\begin{equation}
+y_{t-1} + \varepsilon_t - y_t
+=
+\beta(1-a)y_t + \kappa\gamma y_t.
+\end{equation}
+Rearrange:
+\begin{equation}
+y_{t-1} + \varepsilon_t
+=
+\bigl[1 + \beta(1-a) + \kappa\gamma\bigr]y_t.
+\end{equation}
+Using the guess \eqref{eq:guess},
+\begin{equation}
+y_{t-1} + \varepsilon_t
+=
+\bigl[1 + \beta(1-a) + \kappa\gamma\bigr](a y_{t-1} + b\varepsilon_t).
+\end{equation}
+Matching coefficients on $y_{t-1}$ and $\varepsilon_t$ implies
+\begin{equation}
+a=b,
+\end{equation}
+and
+\begin{equation}
+1 = \bigl[1 + \beta(1-a) + \kappa\gamma\bigr]a.
+\end{equation}
+Expanding,
+\begin{equation}
+1 = a + \beta a - \beta a^2 + \kappa\gamma a,
+\end{equation}
+or equivalently
+\begin{equation}
+\boxed{\beta a^2 - (1+\beta+\kappa\gamma)a + 1 = 0.}
+\label{eq:a_quadratic}
+\end{equation}
+The stable root is the one inside the unit circle:
+\begin{equation}
+\boxed{
+a
+=
+\frac{(1+\beta+\kappa\gamma)
+-
+\sqrt{(1+\beta+\kappa\gamma)^2 - 4\beta}}
+{2\beta}.
+}
+\label{eq:a_root}
+\end{equation}
+Therefore output obeys
+\begin{equation}
+\boxed{y_t = a y_{t-1} + a\varepsilon_t.}
+\label{eq:y_solution}
+\end{equation}
+Using \eqref{eq:pi_output},
+\begin{equation}
+\pi_t = y_{t-1} + \varepsilon_t - y_t
+= (1-a)(y_{t-1} + \varepsilon_t).
+\end{equation}
+Hence
+\begin{equation}
+\boxed{\pi_t = (1-a)(y_{t-1} + \varepsilon_t).}
+\label{eq:pi_solution}
+\end{equation}
+
+\section{Interpretation}
+
+Compared with the original fixed-duration pricing model in the lecture notes, the Calvo version
+changes the dynamic structure of inflation and output.
+
+In the lecture notes, the fixed $N=2$ pricing scheme implies a scalar root
+\begin{equation}
+a_{\text{Taylor}} = \frac{1-\sqrt{\gamma}}{1+\sqrt{\gamma}},
+\end{equation}
+which becomes negative when $\gamma>1$. That negative root is what generates the undesirable
+oscillatory or non-persistent behavior emphasized in the notes.
+
+Under Calvo pricing instead, the persistence parameter $a$ is determined by
+\begin{equation}
+\beta a^2 - (1+\beta+\kappa\gamma)a + 1 = 0.
+\end{equation}
+The stable root satisfies
+\begin{equation}
+0<a<1.
+\end{equation}
+Therefore a monetary expansion $\varepsilon_t>0$ raises output on impact:
+\begin{equation}
+\frac{\partial y_t}{\partial \varepsilon_t} = a > 0.
+\end{equation}
+So replacing fixed-duration pricing by Calvo pricing eliminates the negative-root pathology.
+
+However, the model still retains the same underlying force emphasized in the lecture notes:
+if $\gamma$ is very large, then the term $\kappa\gamma$ is large, and the stable root $a$ becomes small.
+That means the positive effect of monetary shocks on output is not very persistent.
+
+Thus, changing only the nominal rigidity from fixed-duration pricing to Calvo pricing improves the
+qualitative behavior of the model, but it does not remove the deeper issue that real marginal cost
+responds too strongly to output.
+
+\end{document}

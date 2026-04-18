@@ -1,0 +1,27 @@
+mhrs_us.dat     Sources: 
+                John W. Kendrick (1961)
+                Productivity Trends in the United States.
+                Princeton, NJ: Princeton University Press.
+                Table A-X. National Economy: Manhours, by Major Sector,
+                1869-1957 (millions), pp. 311-13 for years 1869-1947.
+
+                John W. Kendrick (1973)
+                Postwar Productivity Trends in the United States, 1948-1969.  
+                New York, NY: National Bureau of Economic Research.
+                Table A-10. National Economy: Manhours by Sector,
+                1948-1966 (millions), p. 226.
+
+                Columns: (1)  Year
+                         (2)  Total manhours (incl. military)
+                         (3)  _ civilian economy
+                         (4)  _ general government
+                         (5)  ___ military 
+                         (6)  ___ civilian
+                         (7)  _ private economy
+                         (8)  ___ farm
+                         (9)  ___ nonfarm
+
+                       NOTE:  (7)     After 1948, add business + households
+                              (9)     After 1948, add nonfarm + households
+
+
