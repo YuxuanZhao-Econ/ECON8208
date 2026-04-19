@@ -1,0 +1,392 @@
+#!MC 900
+$!VarSet |LFDSFN1| = '"pwfig2_4d.dat" "taukfig3mx.dat" "taukfig3mx_cd.dat"'
+$!VarSet |LFDSVL1| = '"V1" "V2" "V3" "V4" "V5"'
+$!SETSTYLEBASE FACTORY
+$!PAPER 
+  BACKGROUNDCOLOR = WHITE
+  ISTRANSPARENT = YES
+  ORIENTPORTRAIT = YES
+  SHOWGRID = YES
+  SHOWRULER = YES
+  SHOWPAPER = YES
+  PAPERSIZE = LETTER
+  PAPERSIZEINFO
+    {
+    LETTER
+      {
+      WIDTH = 8.5
+      HEIGHT = 11
+      LEFTHARDCLIPOFFSET = 0.125
+      RIGHTHARDCLIPOFFSET = 0.125
+      TOPHARDCLIPOFFSET = 0.125
+      BOTTOMHARDCLIPOFFSET = 0.125
+      }
+    }
+  RULERSPACING = ONEINCH
+  PAPERGRIDSPACING = HALFINCH
+  REGIONINWORKAREA
+    {
+    X1 = -0.05
+    Y1 = -0.05
+    X2 = 8.55
+    Y2 = 11.05
+    }
+$!COLORMAP 
+  CONTOURCOLORMAP = SMRAINBOW
+$!COLORMAPCONTROL RESETTOFACTORY
+### Frame Number 1 ###
+$!READDATASET  '|LFDSFN1|' 
+  INCLUDETEXT = NO
+  INCLUDEGEOM = NO
+  VARLOADMODE = BYNAME
+  VARNAMELIST = '|LFDSVL1|' 
+$!REMOVEVAR |LFDSVL1|
+$!FRAMELAYOUT 
+  SHOWBORDER = NO
+  HEADERCOLOR = RED
+  XYPOS
+    {
+    X = 0.125
+    Y = 0.125
+    }
+  WIDTH = 8.25
+  HEIGHT = 10.75
+$!FRAMEMODE  = XY
+$!FRAMENAME  = 'Frame 001' 
+$!DELETEXYMAPS 
+$!ACTIVEXYMAPS  =  [1-4]
+$!GLOBALXY 
+  DATALABELS
+    {
+    DISTANCESKIP = 5
+    }
+  LEGEND
+    {
+    XYPOS
+      {
+      X = 60.275
+      Y = 84.791
+      }
+    }
+$!XYMAP  [1]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    ZONE = 2
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = CUSTOM3
+    LINETHICKNESS = 0.25
+    }
+  SYMBOLS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  BARCHARTS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  ERRORBARS
+    {
+    COLOR = BLUE
+    }
+$!XYMAP  [2]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    ZONE = 3
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = RED
+    LINETHICKNESS = 0.25
+    }
+  SYMBOLS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  BARCHARTS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  ERRORBARS
+    {
+    COLOR = BLUE
+    }
+$!XYMAP  [3]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINETHICKNESS = 0.25
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [4]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    ZONE = 2
+    XAXISVAR = 1
+    YAXISVAR = 5
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = DOTTED
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYAXIS 
+  XDETAIL 1
+    {
+    SHOWLABELS = NO
+    AUTOGRID = NO
+    AXISPOSITION = 20
+    RANGEMIN = 1979
+    RANGEMAX = 1986
+    GRANCHOR = 1
+    GRSPACING = 1
+    LINETHICKNESS = 0.2
+    NUMMINORTICKS = 3
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 0.5
+      LINETHICKNESS = 0.2
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  YDETAIL 1
+    {
+    AUTOGRID = NO
+    RANGEMIN = 90
+    RANGEMAX = 102
+    GRSPACING = 2
+    LINETHICKNESS = 0.2
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 0.5
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  GRIDAREA
+    {
+    EXTENTS
+      {
+      Y1 = 20
+      Y2 = 75
+      }
+    DRAWBORDER = YES
+    LINETHICKNESS = 0.2
+    }
+  DEPXTOYRATIO = 1
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 19
+    Y = 76.8465116279
+    }
+  ZONE = 3
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 18
+    }
+  TEXT = ' ' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 19
+    Y = 24.144744186
+    }
+  ZONE = 3
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 18
+    }
+  TEXT = ' ' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 8.5
+    Y = 83.5
+    }
+  ZONE = 3
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 19
+    }
+  TEXT = '\n' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 62.7
+    Y = 28
+    }
+  ZONE = 3
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = 'U.S. Output' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 18.6
+    Y = 77.2
+    }
+  ZONE = 3
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 16
+    }
+  LINESPACING = 1.3
+  TEXT = '                                       Figure A8\n  U.S. Output and Predictions of the Model with Just the `t_k \n       Investment Wedge and Extreme Adjustment Costs' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 15.5
+    Y = 17.6
+    }
+  ZONE = 3
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = '1979         1980         1981         1982         1983         1984         1985' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 15.5993653085
+    Y = 32.7393390791
+    }
+  ZONE = 3
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 16
+    }
+  LINESPACING = 1.1
+  TEXT = 'Prediction Using an\nAlternative Methodology\n(Christiano-Davis 2006)' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 21.6639148895
+    Y = 67.5148859679
+    }
+  ZONE = 3
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 16
+    }
+  LINESPACING = 1.1
+  TEXT = 'Prediction Using a Theoretically-\nConsistent Methodology (CKM 2006)' 
+$!ATTACHGEOM 
+  XYZPOS
+    {
+    X = 1980.43321096
+    Y = 100.218586267
+    }
+  ARROWHEADSTYLE = FILLED
+  ARROWHEADATTACHMENT = ATEND
+  ARROWHEADSIZE = 1
+  RAWDATA
+1
+2
+0 0 
+-0.234217092395 -0.664661943913 
+$!ATTACHGEOM 
+  XYZPOS
+    {
+    X = 1981.40911549
+    Y = 93.7818602025
+    }
+  ARROWHEADSTYLE = FILLED
+  ARROWHEADATTACHMENT = ATEND
+  ARROWHEADSIZE = 1
+  RAWDATA
+1
+2
+0 0 
+1.11253118515 1.57419931889 
+$!REMOVEVAR |LFDSFN1|
+$!SETSTYLEBASE CONFIG

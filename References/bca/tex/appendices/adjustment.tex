@@ -1,0 +1,67 @@
+
+\documentclass[12pt,leqno,fleqn]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{srbv5}
+
+%TCIDATA{TCIstyle=frb/frb.lat,srbv5,sr}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Created=Thu Feb 03 13:40:29 2005}
+%TCIDATA{LastRevised=Thu Feb 03 13:58:15 2005}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="frb\Staff Report Style B (v5) [footnotes]">}
+%TCIDATA{CSTFile=sr.cst}
+
+\input{tcilatex}
+\input{lefttag.sty}
+
+\begin{document}
+
+
+\[
+k_{t+1}=(1-\delta )k_{t}+\phi (x_{t}/k_{t})k_{t}
+\]
+The elasticity of the price of capital wrt $x/k$ is
+\[
+\eta (\frac{x}{k})=-\frac{\phi ^{\prime \prime }}{\phi ^{\prime }}\frac{x}{k}
+\]
+In our notation
+\[
+k_{t+1}=(1-\delta )k_{t}+\left[ \frac{x_{t}}{k_{t}}-g(\frac{x_{t}}{k_{t}})%
+\right] k_{t}
+\]
+So
+\[
+\phi (x_{t}/k_{t})=\frac{x_{t}}{k_{t}}-g(\frac{x_{t}}{k_{t}})
+\]
+\[
+\phi ^{\prime }=1-g^{\prime }\text{ and }\phi ^{\prime \prime }=-g^{\prime
+\prime }
+\]
+At a steady state, let $x/k=b$ where $b=$ $\delta +g$ then the steady state
+elasticity is  
+\[
+\eta =-\frac{\phi ^{\prime \prime }(b)}{\phi ^{\prime }(b)}b=\frac{g^{\prime
+\prime }(b)}{1-g^{\prime }(b)}b
+\]
+Our functional form is 
+\[
+g(\frac{x}{k})=\frac{a}{2}\left( \frac{x}{k}-b\right) ^{2}
+\]
+so 
+\[
+g^{\prime }(\frac{x}{k})=a\left( \frac{x}{k}-b\right) \text{ and }g^{\prime
+\prime }(\frac{x}{k})=a
+\]
+Hence
+\[
+\eta =ab
+\]
+Bernanke, Gertler, Gilchrist use $\eta =.25,$ Baxter and Crucini (IER) use $%
+\eta =\frac{1}{15}=.07,$ King and Wolman use $\eta =1/2$ (to see this look
+at table 1. p 40 in the King Wolman, Inflation targeting in a st. louis
+model of the 21 century, NBER wp 5507). 
+
+We suggest $\eta =.25$
+
+\end{document}

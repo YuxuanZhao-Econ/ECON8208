@@ -1,0 +1,2544 @@
+
+\documentclass[fleqn,leqno,11pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amssymb}
+\usepackage{econ}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2953}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Tue Feb 10 10:33:10 1998}
+%TCIDATA{LastRevised=Monday, December 18, 2006 11:28:06}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{Language=American English}
+%TCIDATA{CSTFile=Econ.cst}
+
+\input{tcilatex}
+\renewenvironment{description}
+                {\list{}{\listparindent -\parindent
+                  \let\makelabel\descriptionlabel
+                  \itemsep       8pt
+                  \parsep        0pt
+                        \itemindent    \listparindent
+                        \leftmargin    \parindent}}
+                {\endlist}
+\input{lefttag.sty}
+\setstretch{1.48}
+\setlength{\topmargin}{.3in}
+\setlength{\oddsidemargin}{.75in}
+\setlength{\evensidemargin}{.75in}
+\setlength{\textwidth}{6.9in}
+\setlength{\textheight}{9.05in}
+\setlength{\footskip}{0.4in}
+\setlength{\parindent}{0.4in}
+\setcounter{page}{1}
+\font\smcaps=cmcsc10
+
+\begin{document}
+
+\title{BUSINESS CYCLE ACCOUNTING}
+\author{V. V. Chari, Patrick J. Kehoe, and Ellen R. McGrattan\thanks{%
+We thank the co-editor and three referees for useful comments. We also thank
+Kathy Rolfe for excellent editorial assistance and the National Science
+Foundation for financial support. The views expressed herein are those of
+the authors and not necessarily those of the Federal Reserve Bank of
+Minneapolis or the Federal Reserve System.}}
+\maketitle
+
+\begin{abstract}
+We propose a simple method to help researchers develop quantitative models
+of economic fluctuations. The method rests on the insight that many models
+are equivalent to a prototype growth model with time-varying wedges which
+resemble productivity, labor and investment taxes, and government
+consumption. Wedges corresponding to these variables---\textit{efficiency}, 
+\textit{labor}, \textit{investment,} and \textit{government consumption
+wedges}---are measured and then fed back into the model in order to assess
+the fraction of various fluctuations they account for. Applying this method
+to U.S. data for the Great Depression and the 1982 recession reveals that
+the efficiency and labor wedges together account for essentially all of the
+fluctuations; the investment wedge plays a decidedly tertiary role, and the
+government consumption wedge, none. Analyses of the entire postwar period
+and alternative model specifications support these results. Models with
+frictions manifested primarily as investment wedges are thus not promising
+for the study of business cycles.\newline
+\end{abstract}
+
+\noindent In building detailed, quantitative models of economic
+fluctuations, researchers face hard choices about where to introduce
+frictions into their models in order to allow the models to generate
+business cycle fluctuations similar to those in the data. Here we propose a
+simple method to guide these choices, and we demonstrate how to use it.
+
+Our method has two components: an equivalence result and an accounting
+procedure. The \textit{equivalence result} is that a large class of models,
+including models with various types of frictions, are equivalent to a
+prototype model with various types of time-varying wedges that distort the
+equilibrium decisions of agents operating in otherwise competitive markets.
+At face value, these wedges look like time-varying productivity, labor
+income taxes, investment taxes, and government consumption. We thus label
+the wedges \textit{efficiency wedges}, \textit{labor wedges}, \textit{%
+investment wedges}, and \textit{government consumption wedges}.
+
+The \textit{accounting procedure} also has two components. It begins by
+measuring the wedges, using data together with the equilibrium conditions of
+a prototype model. The measured wedge values are then fed back into the
+prototype model, one at a time and in combinations, in order to assess how
+much of the observed movements of output, labor, and investment can be
+attributed to each wedge, separately and in combinations. By construction,
+all four wedges account for all of these observed movements. This accounting
+procedure leads us to label our method \textit{business cycle accounting}.
+
+To demonstrate how the accounting procedure works, we apply it to two actual
+U.S. business cycle episodes: the most extreme in U.S. history, the Great
+Depression (1929--39), and a downturn less severe and more like those seen
+since World War II, the 1982 recession. For the Great Depression period, we
+find that, in combination, the efficiency and labor wedges produce declines
+in output, labor, and investment from 1929 to 1933 only slightly more severe
+than in the data. These two wedges also account fairly well for the behavior
+of those variables in the recovery. Over the entire Depression period,
+however, the investment wedge actually drives output the wrong way, leading
+to an increase in output during much of the 1930s. Thus, the investment
+wedge cannot account for either the long, deep downturn or the subsequent
+slow recovery. Our analysis of the more typical 1982 U.S. recession produces
+essentially the same results for the efficiency and labor wedges in
+combination. Here the investment wedge plays essentially no role. In both
+episodes, the government consumption wedge plays virtually no role.
+
+We extend our analysis to the entire postwar period by developing some
+summary statistics for 1959--2004. The statistics we focus on are the output
+fluctuations induced by each wedge alone and the correlations between those
+fluctuations and those actually in the data. Our findings from these
+statistics suggest that over the entire postwar period the investment wedge
+plays a somewhat larger role in business cycle fluctuations than in the 1982
+recession, but its role is substantially smaller than that of either the
+labor or efficiency wedges.
+
+We begin our demonstration of our proposed method by establishing
+equivalence results that link the four wedges to detailed models. We start
+with detailed model economies in which technologies and preferences are
+similar to those in a benchmark prototype economy and show that frictions in
+the detailed economies manifest themselves as wedges in the prototype
+economy. We show that an economy in which the technology is constant but
+input-financing frictions vary over time is equivalent to a growth model
+with efficiency wedges. We show that an economy with sticky wages and
+monetary shocks, like that of Bordo, Erceg, and Evans (2000), is equivalent
+to a growth model with labor wedges. In the appendix, we show that an
+economy with the type of credit market frictions considered by those of
+Bernanke, Gertler, and Gilchrist (1999) is equivalent to a growth model with
+investment wedges. Also in the appendix, we show that an open economy model
+with fluctuating borrowing and lending is equivalent to a prototype
+(closed-economy) model with government consumption wedges. In the working
+paper version of this paper (Chari, Kehoe, and McGrattan (2004)), we also
+show that an economy with the type of credit market frictions considered by
+Carlstrom and Fuerst (1997) is equivalent to a growth model with investment
+wedges and that an economy with unions and antitrust policy shocks, like
+that of Cole and Ohanian (2004), is equivalent to a growth model with labor
+wedges.
+
+Similar equivalence results can be established when technology and
+preferences in detailed economies are very different from those in the
+prototype economy. In such situations, the prototype economy can have wedges
+even if the detailed economies have no frictions. We show how wedges in the
+benchmark prototype economy can be decomposed into a part due to frictions
+and a part due to differences in technology and preferences by constructing
+alternative prototype economies which have technologies and preferences
+similar to those in the detailed economy.
+
+Our quantitative findings suggest that financial frictions which manifest
+themselves primarily as investment wedges do not play a primary role in the
+Great Depression or postwar recessions. Such financial frictions play a
+prominent role in the models of Bernanke and Gertler (1989), Carlstrom and
+Fuerst (1997), Kiyotaki and Moore (1997), and Bernanke, Gertler, and
+Gilchrist (1999). More promising, our findings suggest, are models in which
+the underlying frictions manifest themselves as efficiency and labor wedges.
+One such model is the input-financing friction model described here in which
+financial frictions manifest themselves primarily as efficiency wedges. This
+model is consistent with the views of Bernanke (1983) on the importance of
+financial frictions. Also promising are sticky wage models with monetary
+shocks, such as that of Bordo, Erceg, and Evans (2000), and models with
+monopoly power, such as that of Cole and Ohanian (2004) in which the
+underlying frictions manifest themselves primarily as labor wedges. In
+general, this application of our method suggests that successful future work
+will likely include mechanisms in which efficiency and labor wedges have a
+primary role and the investment wedge has, at best, a tertiary role. We view
+this finding as our key substantive contribution.
+
+In our quantitative work, we also analyze some detailed economies with quite
+different technology and preferences than those in our benchmark prototype
+economy. These include variable instead of fixed capital utilization,
+different labor supply elasticities, and costs of adjusting investment. For
+these alternative detailed economies, we decompose the benchmark prototype
+wedges into their two sources, frictions and specification differences, by
+constructing alternative prototype economies that are equivalent to the
+detailed economies and so can measure the part of the wedges due to
+frictions. We find that with regard to the investment wedge's role in the
+business cycle, frictions driving that wedge are unchanged by different
+labor supply elasticities and worsened by variable capital
+utilization---with the latter specification, for example, the investment
+wedge boosts output even more during the Great Depression than it did in the
+benchmark economy. With investment adjustment costs, the frictions driving
+investment wedges do at least depress output during the downturns, but only
+modestly. Altogether, these analyses reinforce our conclusion that the
+investment wedge plays a decidedly tertiary role in business cycle
+fluctuations.
+
+Our business cycle accounting method is intended to shed light on promising
+classes of mechanisms through which primitive shocks lead to economic
+fluctuations. It is not intended to identify the primitive sources of
+shocks. Many economists think, for example, that monetary shocks drove the
+U.S. Great Depression, but these economists disagree about the details of
+the driving mechanism. Our analysis suggests that models in which financial
+frictions show up primarily as investment wedges are not promising while
+models in which financial frictions show up as efficiency or labor wedges
+may well be. Thus, we conclude that researchers interested in developing
+models in which monetary shocks lead to the Great Depression should focus on
+detailed models in which financial frictions manifest themselves as
+efficiency and labor wedges.
+
+Other economists, including Cole and Ohanian (1999 and 2004) and Prescott
+(1999), emphasize nonmonetary factors behind the Great Depression,
+downplaying the importance of money and banking shocks. For such economists,
+our analysis guides them to promising models, like that of Cole and Ohanian
+(2004), in which fluctuations in the power of unions and cartels lead to
+labor wedges, and other models in which poor government policies lead to
+efficiency wedges.
+
+In terms of method, the equivalence result provides the logical foundation
+for the way our accounting procedure uses the measured wedges. At a
+mechanical level, the wedges represent deviations in the prototype model's
+first-order conditions and in its relationship between inputs and outputs.
+One interpretation of these deviations, of course, is that they are simply
+errors, so that their size indicates the goodness-of-fit of the model. Under
+that interpretation, however, feeding the measured wedges back into the
+model makes no sense. Our equivalence result leads to a more economically
+useful interpretation of the deviations by linking them directly to classes
+of models; that link provides the rationale for feeding the measured wedges
+back into the model.
+
+Also in terms of method, the accounting procedure goes beyond simply
+plotting the wedges. Such plots, by themselves, are not useful in evaluating
+the quantitative importance of competing mechanisms of business cycles
+because they tell us little about the equilibrium responses to the wedges.
+Feeding the measured wedges back into the prototype model and measuring the
+model's resulting equilibrium responses is what allows us to discriminate
+between competing mechanisms.
+
+Finally, in terms of method, our decomposition of business cycle
+fluctuations is quite different from traditional decompositions. Those
+decompositions attempt to isolate the effects of (so-called) primitive
+shocks on equilibrium outcomes by making identifying assumptions, typically
+zero-one restrictions on variables and shocks. The problem with the
+traditional approach is that finding identifying assumptions that apply to a
+broad class of detailed models is hard. Hence, this approach is not useful
+in pointing researchers toward classes of promising models. Our approach, in
+contrast, can be applied to a broad class of detailed models. Our
+equivalence results, which provide a mapping from wedges to frictions in
+particular detailed models, play the role of the identifying assumptions in
+the traditional approach. This mapping is detailed-model specific and is the
+key to interpreting the properties of the wedges we document. For any
+detailed model of interest, researchers can use the mapping that is relevant
+for their model to learn whether it is promising. In this sense our
+approach, while being purposefully less ambitious than the traditional
+approach, is much more flexible than that approach.
+
+Our accounting procedure is intended to be a useful first step in guiding
+the construction of detailed models with various frictions, to help
+researchers decide which frictions are quantitatively important to business
+cycle fluctuations. The procedure is not a way to test particular detailed
+models. If a detailed model is at hand, then it makes sense to confront that
+model directly with the data. Nevertheless, our procedure is useful in
+analyzing models with many frictions. For example, some researchers, such as
+Bernanke, Gertler, and Gilchrist (1999) and Christiano, Gust, and Roldos
+(2004), have argued that the data are well accounted for by models which
+include a host of frictions (such as credit market frictions, sticky wages,
+and sticky prices). Our analysis suggests that the features of these models
+which primarily lead to investment wedges can be dropped while only modestly
+affecting the models' ability to account for the data.
+
+Our work here is related to a vast business cycle literature that we discuss
+in detail after we describe and apply our new method.
+
+\bigskip
+
+\begin{center}
+1. \textsc{Demonstrating the Equivalence Result}
+\end{center}
+
+Here we show how various detailed models with underlying distortions are
+equivalent to a prototype growth model with one or more wedges.
+
+\bigskip
+
+\begin{center}
+1.1. \emph{The Benchmark Prototype Economy}
+\end{center}
+
+The \emph{benchmark }prototype economy that we use later in our accounting
+procedure is a stochastic growth model. In each period $t,$ the economy
+experiences one of finitely many events $s_{t},$ which index the shocks. We
+denote by $s^{t}=(s_{0},...,s_{t})$ the history of events up through and
+including period $t$ and often refer to $s^{t}$ as the \textit{state}. The
+probability, as of period $0$, of any particular history $s^{t}$ is $\pi
+_{t}(s^{t})$. The initial realization $s_{0}$ is given. The economy has four
+exogenous stochastic variables, all of which are functions of the underlying
+random variable $s^{t}$: the \textit{efficiency wedge }$A_{t}(s^{t}),$ the 
+\textit{labor wedge }$1-\tau _{lt}(s^{t}),$ the \textit{investment wedge} $%
+1/[1+\tau _{xt}(s^{t})]$, and the \textit{government consumption wedge }$%
+g_{t}(s^{t})$.
+
+In the model, consumers maximize expected utility over per capita
+consumption $c_{t}$ and per capita labor $l_{t}$, 
+\[
+\sum_{t=0}^{\infty }\sum_{s^{t}}\beta ^{t}\pi _{t}(s^{t})U\text{{\large (}}%
+c_{t}(s^{t}),l_{t}(s^{t})\text{{\large )}}N_{t}, 
+\]%
+subject to the budget constraint 
+\[
+c_{t}+[1+\tau _{xt}(s^{t})]x_{t}(s^{t})=[1-\tau
+_{lt}(s^{t})]w_{t}(s^{t})l_{t}(s^{t})+r_{t}(s^{t})k_{t}(s^{t-1})+T_{t}(s^{t}) 
+\]%
+and the capital accumulation law 
+\begin{equation}
+(1+\gamma _{n})k_{t+1}(s^{t})=(1-\delta )k_{t}(s^{t-1})+x_{t}(s^{t}),
+\label{1}
+\end{equation}%
+where $k_{t}(s^{t-1})$ denotes the per capita capital stock, $x_{t}(s^{t})$
+per capita investment, $w_{t}(s^{t})$ the wage rate, $r_{t}(s^{t})$ the
+rental rate on capital, $\beta $ the discount factor, $\delta $ the
+depreciation rate of capital, $N_{t}$ the population with growth rate equal
+to $1+\gamma _{n}$, and $T_{t}(s^{t})$ per capita lump-sum transfers.
+
+The production function is $F${\large (}$k_{t}(s^{t-1}),(1+\gamma
+)^{t}l_{t}(s^{t})${\large )}, where $1+\gamma $ is the rate of
+labor-augmenting technical progress, which is assumed to be a constant.
+Firms maximize profits given by $A_{t}(s^{t})F${\large (}$%
+k_{t}(s^{t-1}),(1+\gamma )^{t}l_{t}(s^{t})${\large )}$%
+-r_{t}(s^{t})k_{t}(s^{t-1})-w_{t}(s^{t})l_{t}(s^{t})$.
+
+The equilibrium of this benchmark prototype economy is summarized by the
+resource constraint, 
+\begin{equation}
+c_{t}(s^{t})+x_{t}(s^{t})+g_{t}(s^{t})=y_{t}(s^{t}),  \label{resource}
+\end{equation}%
+where $y_{t}(s^{t})$\ denotes per capita output, together with 
+\begin{equation}
+y_{t}(s^{t})=A_{t}(s^{t})F\text{{\large (}}k_{t}(s^{t-1}),(1+\gamma
+)^{t}l_{t}(s^{t})\text{{\large )}},  \label{AA}
+\end{equation}%
+\begin{equation}
+-\frac{U_{lt}(s^{t})}{U_{ct}(s^{t})}=[1-\tau
+_{lt}(s^{t})]A_{t}(s^{t})(1+\gamma )^{t}F_{lt},\text{ and }  \label{taun}
+\end{equation}%
+\begin{equation}
+U_{ct}(s^{t})[1+\tau _{xt}(s^{t})]  \label{taux}
+\end{equation}%
+\[
+=\beta \sum_{s^{t+1}}\pi
+_{t}(s^{t+1}|s^{t})U_{ct+1}(s^{t+1})\{A_{t+1}(s^{t+1})F_{kt+1}(s^{t+1})+(1-%
+\delta )[1+\tau _{xt+1}(s^{t+1})]\}, 
+\]%
+where, here and throughout, notations like $U_{ct}$, $U_{lt}$, $F_{lt}$, and 
+$F_{kt}$ denote the derivatives of the utility function and the production
+function with respect to their arguments and $\pi _{t}(s^{t+1}|s^{t})$
+denotes the conditional probability $\pi _{t}(s^{t+1})/\pi _{t}(s^{t})$. We
+assume that $g_{t}(s^{t})$ fluctuates around a trend of $(1+\gamma )^{t}.$
+
+Notice that in this benchmark prototype economy, the efficiency wedge
+resembles a blueprint technology parameter, and the labor wedge and the
+investment wedge resemble tax rates on labor income and investment. Other
+more elaborate models could be considered, models with other kinds of
+frictions that look like taxes on consumption or on capital income.
+Consumption taxes induce a wedge between the consumption-leisure marginal
+rate of substitution and the marginal product of labor in the same way as do
+labor income taxes. Such taxes, if time-varying, also distort the
+intertemporal margins in (\ref{taux}). Capital income taxes induce a wedge
+between the intertemporal marginal rate of substitution and the marginal
+product of capital which is only slightly different from the distortion
+induced by a tax on investment. We experimented with intertemporal
+distortions that resemble capital income taxes rather than investment taxes
+and found that our substantive conclusions are unaffected. (For details, see
+Chari, Kehoe, and McGrattan (2006), hereafter referred to as the \emph{%
+technical appendix}.)
+
+We emphasize that each of the wedges represents the overall distortion to
+the relevant equilibrium condition of the model. For example, distortions
+both to labor supply affecting consumers and to labor demand affecting firms
+distort the static first-order condition (\ref{taun}). Our labor wedge
+represents the sum of these distortions. Thus, our method identifies the
+overall wedge induced by both distortions and does not identify each
+separately. Likewise, liquidity constraints on consumers distort the
+consumer's intertemporal Euler equation, while investment financing
+frictions on firms distort the firm's intertemporal Euler equation. Our
+method combines the Euler equations for the consumer and the firm and
+therefore identifies only the overall wedge in the combined Euler equation
+given by (\ref{taux}). We focus on the overall wedges because what matters
+in determining business cycle fluctuations is the overall wedges, not each
+distortion separately.
+
+\bigskip
+
+\begin{center}
+1.2. \emph{The Mapping---From Frictions to Wedges}
+\end{center}
+
+Now we illustrate the mapping between detailed economies and prototype
+economies for two types of wedges. We show that input-financing frictions in
+a detailed economy map into efficiency wedges in our prototype economy.
+Sticky wages in a monetary economy map into our prototype (real) economy
+with labor wedges. In an appendix, we show as well that investment-financing
+frictions map into investment wedges and that fluctuations in net exports in
+an open economy map into government consumption wedges in our prototype
+(closed) economy. In general, our approach is to show that the frictions
+associated with specific economic environments manifest themselves as
+distortions in first-order conditions and resource constraints in a growth
+model. We refer to these distortions as \emph{wedges}.
+
+We choose simple models in order to illustrate how the detailed models map
+into the prototypes. Since many models map into the same configuration of
+wedges, identifying one particular configuration does not uniquely identify
+a model; rather, it identifies a whole class of models consistent with that
+configuration. In this sense, our method does not uniquely determine the
+model most promising to analyze business cycle fluctuations. It does,
+however, guide researchers to focus on the key margins that need to be
+distorted in order to capture the nature of the fluctuations.
+
+\bigskip \newpage
+
+\noindent a. \emph{Efficiency Wedges}
+
+In many economies, underlying frictions either within or across firms cause
+factor inputs to be used inefficiently. These frictions in an underlying
+economy often show up as aggregate productivity shocks in a prototype
+economy similar to our benchmark economy. Schmitz (2005) presents an
+interesting example of within-firm frictions resulting from work rules that
+lower measured productivity at the firm level. Lagos (2006) studies how
+labor market policies lead to misallocations of labor across firms and,
+thus, to lower aggregate productivity. And Chu (2001) and Restuccia and
+Rogerson (2003) show how government policies at the levels of plants and
+establishments lead to lower aggregate productivity.
+
+Here we develop a detailed economy with input-financing frictions and use it
+to make two points. This economy illustrates the general idea that frictions
+which lead to inefficient factor utilization map into efficiency wedges in a
+prototype economy. Beyond that, however, the economy also demonstrates that
+financial frictions can show up as efficiency wedges rather than as
+investment wedges. In our detailed economy, financing frictions lead some
+firms to pay higher interest rates for working capital than do other firms.
+Thus, these frictions lead to an inefficient allocation of inputs across
+firms.
+
+\bigskip
+
+\noindent $\square $ \emph{A Detailed Economy With Input-Financing Frictions}
+
+Consider a simple detailed economy with financing frictions which distort
+the allocation of intermediate inputs across two types of firms. Both types
+of firms must borrow to pay for an intermediate input in advance of
+production. One type of firm is more financially constrained, in the sense
+that it pays a higher interest rate on borrowing than does the other type.
+We think of these frictions as capturing the idea that some firms, such as
+small firms, often have difficulty borrowing. One motivation for the higher
+interest rate faced by the financially constrained firms is that moral
+hazard problems are more severe for small firms.
+
+Specifically, consider the following economy. Aggregate gross output $q_{t}$
+is a combination of the gross output $q_{it}$ from the economy's two
+sectors, indexed $i=1,2$, where 1 indicates the sector of firms that are
+more financially constrained and 2 the sector of firms that are less
+financially constrained. The sectors' gross output is combined\ according to 
+\begin{equation}
+q_{t}=q_{1t}^{\phi }q_{2t}^{1-\phi },  \label{q}
+\end{equation}
+where $0<\phi <1.$ The representative producer of the gross output $q_{t}$
+chooses $q_{1t}$ and $q_{2t}$ to solve this problem: 
+\[
+\max \ q_{t}-p_{1t}q_{1t}-p_{2t}q_{2t} 
+\]
+subject to (\ref{q}), where $p_{it}$ is the price of the output of sector $i$%
+.
+
+The resource constraint for gross output in this economy is 
+\begin{equation}
+c_{t}+k_{t+1}+m_{1t}+m_{2t}=q_{t}+(1-\delta )k_{t},  \label{gross output}
+\end{equation}
+where $c_{t}$ is consumption, $k_{t}$ is the capital stock, and $m_{1t}$ and 
+$m_{2t}$ are intermediate goods used in sectors 1 and 2, respectively. Final
+output, given by $y_{t}=$ $q_{t}-$ $m_{1t}-$ $m_{2t}$, is gross output less
+the intermediate goods used.
+
+The gross output of each sector $i$, $q_{it}$, is made from intermediate
+goods $m_{it}$ and a composite value-added good $z_{it}$ according to 
+\begin{equation}
+q_{it}=m_{it}^{\theta }z_{it}^{1-\theta },  \label{stupid}
+\end{equation}
+where $0<\theta <1.$ The composite value-added good is produced from capital 
+$k_{t}$ and labor $l_{t}$ according to 
+\begin{equation}
+z_{1t}+z_{2t}=z_{t}=F(k_{t},l_{t}).  \label{z}
+\end{equation}
+
+The producer of gross output of sector $i$ chooses the composite good $%
+z_{it} $ and the intermediate good $m_{it}$ to solve this problem: 
+\[
+\max \ p_{it}q_{it}-v_{t}z_{it}-R_{it}m_{it} 
+\]
+subject to (\ref{stupid}). Here $v_{t}$ is the price of the composite good
+and $R_{it}$ is the gross within-period interest rate paid on borrowing by
+firms in sector $i.$ If firms in sector $1$ are more financially constrained
+than those in sector 2, then $R_{1t}>R_{2t}.$ Let $R_{it}=R_{t}(1+\tau
+_{it}) $, where $R_{t}$ is the rate consumers earn within period $t$ and $%
+\tau _{it} $ measures the within-period spread, induced by financing
+constraints, between the rate paid to consumers who save and the rate paid
+by firms in sector $i$. Since consumers do not discount utility within the
+period, $R_{t}=1.$
+
+In this economy, the representative producer of the composite good $z_{t}$
+chooses $k_{t}$ and $l_{t}$ to solve this problem: 
+\[
+\max \ v_{t}z_{t}-w_{t}l_{t}-r_{t}k_{t} 
+\]
+subject to (\ref{z}), where $w_{t}$ is the wage rate and $r_{t}$ is the
+rental rate on capital.
+
+Consumers solve this problem: 
+\begin{equation}
+\max \ \sum_{t=0}^{\infty }\beta ^{t}U(c_{t},l_{t})  \label{consumer}
+\end{equation}%
+subject to 
+\[
+c_{t}+k_{t+1}=r_{t}k_{t}+w_{t}l_{t}+(1-\delta )k_{t}+T_{t}, 
+\]%
+where $l_{t}=l_{1t}+l_{2t}$ is the economy's total labor supply and $%
+T_{t}=R_{t}\sum_{i}\tau _{it}m_{it}$ lump-sum transfers. Here we assume that
+the financing frictions act like distorting taxes, and the proceeds are
+rebated to consumers. If, instead, we assumed that these frictions
+represent, say, lost gross output, then we would adjust the economy's
+resource constraint (\ref{gross output}) appropriately.
+
+\bigskip
+
+\noindent $\square $ \emph{The Associated Prototype Economy With Efficiency
+Wedges}
+
+Now consider a version of the benchmark prototype economy that will have the
+same aggregate allocations as the input-financing frictions economy just
+detailed. This prototype economy is identical to our benchmark prototype
+except that the new prototype economy has an investment wedge that resembles
+a tax on capital income rather than a tax on investment. Here the government
+consumption wedge is set equal to zero.
+
+Now the consumer's budget constraint is 
+\begin{equation}
+c_{t}+k_{t+1}=(1-\tau _{kt})r_{t}k_{t}+(1-\tau _{lt})w_{t}l_{t}+(1-\delta
+)k_{t}+T_{t},  \label{budget A}
+\end{equation}
+and the efficiency wedge is 
+\begin{equation}
+A_{t}=\kappa (a_{1t}^{1-\phi }a_{2t}^{\phi })^{\frac{\theta }{1-\theta }%
+}[1-\theta (a_{1t}+a_{2t})],  \label{Ainput}
+\end{equation}
+where $a_{1t}=\phi /(1+\tau _{1t})$, $a_{2t}=(1-\phi )/(1+\tau _{2t}),$ $%
+\kappa =[\phi ^{\phi }(1-\phi )^{1-\phi }\theta ^{\theta }]^{\frac{1}{%
+1-\theta }},$ and $\tau _{1t}$ and $\tau _{2t}$ are the interest rate
+spreads in the detailed economy.
+
+Comparing the first-order conditions in the detailed economy with
+input-financing frictions to those of the associated prototype economy with
+efficiency wedges leads immediately to this proposition: \bigskip
+
+\textsc{Proposition }1:\textit{\ }\emph{Consider the prototype economy with
+resource constraint} (\ref{resource}) \emph{and consumer budget constraint} (%
+\ref{budget A}) \emph{with exogenous processes for the efficiency wedge }$%
+A_{t}$\emph{\ given in }(\ref{Ainput}), \emph{the labor wedge given by } 
+\begin{equation}
+\frac{1}{1-\tau _{lt}}=\frac{1}{1-\theta }\left[ 1-\theta \left( \frac{\phi 
+}{1+\tau _{1t}^{\ast }}+\frac{1-\phi }{1+\tau _{2t}^{\ast }}\right) \right] ,
+\label{tax}
+\end{equation}
+\emph{and the investment wedge given by} $\tau _{kt}=\tau _{lt}$\emph{,} 
+\emph{where} $\tau _{1t}^{\ast }$ \emph{and} $\tau _{2t}^{\ast }$ \emph{are
+the interest rate spreads from the detailed economy with input-financing
+frictions. Then the equilibrium allocations for aggregate variables in the
+detailed economy are equilibrium allocations in this prototype economy.}%
+\bigskip
+
+Consider the following special case of Proposition 1 in which only the
+efficiency wedge fluctuates. Specifically, suppose that in the detailed
+economy the interest rate spreads $\tau _{1t}$ and $\tau _{2t}$ fluctuate
+over time, but in such a way that the weighted average of these spreads, 
+\begin{equation}
+a_{1t}+a_{2t}=\frac{\phi }{1+\tau _{1t}}+\frac{1-\phi }{1+\tau _{2t}},
+\label{average wedge}
+\end{equation}
+is constant while $a_{1t}^{1-\phi }a_{2t}^{\phi }$ fluctuates. Then from (%
+\ref{tax}) we see that the labor and investment wedges are constant, and
+from (\ref{Ainput}) we see that the efficiency wedge fluctuates. In this
+case, on average, financing frictions are unchanged, but relative
+distortions fluctuate. An outside observer who attempted to fit the data
+generated by the detailed economy with input-financing frictions to the
+prototype economy would identify the fluctuations in relative distortions
+with fluctuations in technology and would see no fluctuations in either the
+labor wedge $1-\tau _{lt}$ or the investment wedge $\tau _{kt}$. In
+particular, periods in which the relative distortions increase would be
+misinterpreted as periods of technological regress.
+
+\bigskip
+
+\noindent b. \emph{Labor Wedges}
+
+Now we show that a monetary economy with sticky wages is equivalent to a
+(real) prototype economy with labor wedges. In the detailed economy, the
+shocks are to monetary policy, while in the prototype economy, the shocks
+are to the labor wedge.
+
+\bigskip
+
+\noindent $\square $ \emph{A Detailed Economy With Sticky Wages}
+
+Consider a monetary economy populated by a large number of identical,
+infinitely lived consumers. The economy consists of a competitive final
+goods producer and a continuum of monopolistically competitive unions that
+set their nominal wages in advance of the realization of shocks to the
+economy. Each union represents all consumers who supply a specific type of
+labor.
+
+In each period $t,$ the commodities in this economy are a
+consumption-capital good, money, and a continuum of differentiated types of
+labor, indexed by $j$ $\in \lbrack 0,1]$. The technology for producing final
+goods from capital and a labor aggregate at history, or state, $s^{t}$ has
+constant returns to scale and is given by $y(s^{t})=F${\large (}$%
+k(s^{t-1}),l(s^{t})${\large )}$,$ where $y(s^{t})$ is output of the final
+good, $k(s^{t-1})$ is capital, and 
+\begin{equation}
+l(s^{t})=\left[ \int l(j,s^{t})^{v}\,dj\right] ^{\frac{1}{v}}  \label{labor}
+\end{equation}
+is an aggregate of the differentiated types of labor $l(j,s^{t})$.
+
+The final goods producer in this economy behaves competitively. This
+producer has some initial capital stock $k(s^{-1})$ and accumulates capital
+according to $k(s^{t})=(1-\delta )k(s^{t-1})+x(s^{t})$, where $x(s^{t})$ is
+investment. The present discounted value of profits for this producer is 
+\begin{equation}
+\ \sum_{t=0}^{\infty }\sum_{s^{t}}Q(s^{t})\left[
+P(s^{t})y(s^{t})-P(s^{t})x(s^{t})-W(s^{t-1})l(s^{t})\right] ,
+\label{profits}
+\end{equation}
+where $Q(s^{t})$ is the price of a dollar at $s^{t}$ in an abstract unit of
+account, $P(s^{t})$ is the dollar price of final goods at $s^{t}$, and $%
+W(s^{t-1})$ is the aggregate nominal wage at $s^{t}$ which depends on only $%
+s^{t-1}$ because of wage stickiness.
+
+The producer's problem can be stated in two parts. First, the producer
+chooses sequences for capital $k(s^{t-1}),$ investment $x(s^{t}),$ and
+aggregate labor $l(s^{t})$ in order to maximize (\ref{profits}) given the
+production function and the capital accumulation law. The first-order
+conditions can be summarized by 
+\begin{equation}
+P(s^{t})F_{l}(s^{t})=W(s^{t-1})\text{ and}  \label{foc 1}
+\end{equation}
+\begin{equation}
+Q(s^{t})P(s^{t})=\sum_{s_{t+1}}Q(s^{t+1})P(s^{t+1})[F_{k}(s^{t+1})+1-\delta
+].  \label{foc 2}
+\end{equation}
+Second, for any given amount of aggregate labor $l(s^{t}),$ the producer's
+demand for each type of differentiated labor is given by the solution to
+
+\begin{equation}
+\min_{\{l(j,s^{t})\},j\in \lbrack 0,1]}\int \,W(j,s^{t-1})l(j,s^{t})\,dj
+\label{wages}
+\end{equation}
+subject to (\ref{labor}); here $W(j,s^{t-1})$ is the nominal wage for
+differentiated labor of type $j$. Nominal wages are set by unions before the
+realization of the event in period $t$; thus, wages depend on, at most, $%
+s^{t-1}.$ The demand for labor of type $j$ by the final goods producer is 
+\begin{equation}
+l^{d}(j,s^{t})=\left[ \frac{W(s^{t-1})}{W(j,s^{t-1})}\right] ^{\frac{1}{1-v}%
+}l(s^{t}),  \label{labor demand}
+\end{equation}
+where $W(s^{t-1})\equiv \left[ \int \,W(j,s^{t-1})^{\frac{v}{v-1}}\,dj\right]
+^{\frac{v-1}{v}}$ is the aggregate nominal wage. The minimized value in (\ref%
+{wages}) is, thus, $W(s^{t-1})l(s^{t})$.
+
+In this economy, consumers can be thought of as being organized into a
+continuum of unions indexed by $j$. Each union consists of all the consumers
+in the economy with labor of type $j$. Each union realizes that it faces a
+downward-sloping demand for its type of labor, given by (\ref{labor demand}%
+). In each period, the new wages are set before the realization of the
+economy's current shocks.
+
+The preferences of a representative consumer in the $j$th union is 
+\begin{equation}
+\sum_{t=0}^{\infty }\sum_{s^{t}}\,\beta ^{t}\pi _{t}(s^{t})\,\text{{\large [}%
+}U\text{{\large (}}c(j,s^{t}),l(j,s^{t})\text{{\large )}}+V\text{{\large (}}%
+M(j,s^{t})/P(s^{t})\text{{\large )]}},  \label{preferences}
+\end{equation}%
+where $c(j,s^{t}),l(j,s^{t}),M(j,s^{t})$ are the consumption, labor supply,
+and money holdings of this consumer, and $P(s^{t})$ is the economy's overall
+price level. Note that the utility function is separable in real balances.
+This economy has complete markets for state-contingent nominal claims. The
+asset structure is represented by a set of complete, contingent, one-period
+nominal bonds. Let $B(j,s^{t+1})$ denote the consumers' holdings of such a
+bond purchased in period $t$ at history $s^{t}$, with payoffs contingent on
+some particular event $s_{t+1}$ in $t+1,$ where $s^{t+1}=(s^{t},s_{t+1})$.
+One unit of this bond pays one dollar in period $t+1$ if the particular
+event $s_{t+1}$ occurs and $0$ otherwise. Let $Q(s^{t+1}|s^{t})$ denote the
+dollar price of this bond in period $t$ at history $s^{t}$, where $%
+Q(s^{t+1}|s^{t})=Q(s^{t+1})/Q(s^{t}).$
+
+The problem of the $j$th union is to maximize (\ref{preferences}) subject to
+the budget constraint 
+\begin{eqnarray*}
+&&P(s^{t})c(j,s^{t})+M(j,s^{t})+\sum_{s_{t+1}}Q(s^{t+1}|s^{t})B(j,s^{t+1}) \\
+&&\qquad \qquad \qquad \leq
+W(j,s^{t-1})l(j,s^{t})+M(j,s^{t-1})+B(j,s^{t})+P(s^{t})T(s^{t})+D(s^{t}),
+\end{eqnarray*}
+the constraint $l(j,s^{t})=l^{d}(j,s^{t}),$ and the borrowing constraint $%
+B(s^{t+1})\geq -P(s^{t})\overline{b}$, where $l^{d}(j,s^{t})$ is given by (%
+\ref{labor demand})$.$ Here $T(s^{t})$ is transfers and the positive
+constant $\overline{b}$ constrains the amount of real borrowing by the
+union. Also, $D(s^{t})=$ $%
+P(s^{t})y(s^{t})-P(s^{t})x(s^{t})-W(s^{t-1})l(s^{t})$ are the dividends paid
+by the firms$.$ The initial conditions $M(j,s^{-1})$ and $B(j,s^{0})$ are
+given and assumed to be the same for all $j.$ Notice that in this problem,
+the union chooses the wage and agrees to supply whatever labor is demanded
+at that wage.
+
+The first-order conditions for this problem can be summarized by 
+\begin{equation}
+\frac{V_{m}(j,s^{t})}{P(s^{t})}-\frac{U_{c}(j,s^{t})}{P(s^{t})}+\beta
+\sum_{s_{t+1}}\pi (s^{t+1}|s^{t})\frac{U_{c}(j,s^{t+1})}{P(s^{t+1})}=0,
+\label{money foc}
+\end{equation}%
+\begin{equation}
+Q(s^{t}|s^{t-1})=\beta \pi _{t}(s^{t}|s^{t-1})\frac{U_{c}(j,s^{t})}{%
+U_{c}(j,s^{t-1})}\frac{P(s^{t-1})}{P(s^{t})}\text{, and }  \label{Q}
+\end{equation}%
+\begin{equation}
+W(j,s^{t-1})=-\frac{%
+\sum_{s^{t}}Q(s^{t})P(s^{t})U_{l}(j,s^{t})/U_{c}(j,s^{t})l^{d}(j,s^{t})}{%
+v\sum_{s^{t}}Q(s^{t})l^{d}(j,s^{t})}.  \label{wage setting 1}
+\end{equation}%
+Here $\pi _{t}(s^{t+1}|s^{t})=$ $\pi _{t}(s^{t+1})/\pi _{t}(s^{t})$ is the
+conditional probability of $s^{t+1}$ given $s^{t}$. Notice that in a steady
+state, ($\ref{wage setting 1})$ reduces to $W/P=(1/v)(-U_{l}/U_{c}),$ so
+that real wages are set as a markup over the marginal rate of substitution
+between labor and consumption. Given the symmetry among the unions, all of
+them choose the same consumption, labor, money balances, bond holdings, and
+wages, which are denoted simply by $c(s^{t}),$ $l(s^{t}),$ $M(s^{t}),$ $%
+B(s^{t+1})$, and $W(s^{t}).$
+
+Consider next the specification of the money supply process and the
+market-clearing conditions for this sticky-wage economy. The nominal money
+supply process is given by $M(s^{t})=\mu (s^{t})M(s^{t-1})$, where $\mu
+(s^{t})$ is a stochastic process. New money balances are distributed to
+consumers in a lump-sum fashion by having nominal transfers satisfy $%
+P(s^{t})T(s^{t})=M(s^{t})-M(s^{t-1})$. The resource constraint for this
+economy is $c(s^{t})+k(s^{t})=y(s^{t})+(1-\delta )k(s^{t-1}).$ Bond
+market--clearing requires that $B(s^{t+1})=0.$
+
+\bigskip
+
+\noindent $\square $ \emph{The Associated Prototype Economy With Labor Wedges%
+}
+
+Consider now a real prototype economy with labor wedges and the production
+function for final goods given above in the detailed economy with sticky
+wages$.$ The representative firm maximizes (\ref{profits}) subject to the
+capital accumulation law given above. The first-order conditions can be
+summarized by (\ref{foc 1}) and (\ref{foc 2}). The representative consumer
+maximizes 
+\[
+\sum_{t=0}^{\infty }\sum_{s^{t}}\,\beta ^{t}\pi _{t}(s^{t})\,U\text{{\large (%
+}}c(s^{t}),l(s^{t})\text{{\large )}} 
+\]%
+subject to the budget constraint 
+\[
+c(s^{t})+\sum_{s_{t+1}}q(s^{t+1}|s^{t})b(s^{t+1})\leq {\large [}1-\tau
+_{l}(s^{t}){\large ]}w(s^{t})l(s^{t})+b(s^{t})+v(s^{t})+d(s^{t}) 
+\]%
+with $w(s^{t})$ replacing $W(s^{t-1})/P(s^{t})$ and $q(s^{t+1}/s^{t})$
+replacing $Q(s^{t+1})P(^{st+1})/Q(s^{t})P(s^{t})$ and a bound on real bond
+holdings, where the lowercase letters $q,b,w,v,$ and $d$ denote the real
+values of bond prices, debt, wages, lump-sum transfers, and dividends. Here
+the first-order condition for bonds is identical to that in (\ref{Q}) once
+symmetry has been imposed with $q(s^{t}/s^{t-1})$ replacing $%
+Q(s^{t}/s^{t-1})P(s^{t})/P(s^{t-1})$. The first-order condition for labor is
+given by 
+\[
+-\frac{U_{l}(s^{t})}{U_{c}(s^{t})}={\large [}1-\tau _{l}(s^{t}){\large ]}%
+w(s^{t}). 
+\]
+
+Consider an equilibrium of the sticky wage economy for some given stochastic
+process $M^{\ast }(s^{t})$ on money supply. Denote all of the allocations
+and prices in this equilibrium with asterisks. Then this proposition can be
+easily established:
+
+\bigskip
+
+\textsc{Proposition} 2: \emph{Consider the prototype economy just described
+with labor wedges given by } 
+\begin{equation}
+1-\tau _{l}(s^{t})=-\frac{U_{l}^{\ast }(s^{t})}{U_{c}^{\ast }(s^{t})}\frac{1%
+}{F_{l}^{\ast }(s^{t})},  \label{labor wedge}
+\end{equation}
+\emph{where} $U_{l}^{\ast }(s^{t}),U_{c}^{\ast }(s^{t})$, \emph{and} $%
+F_{l}^{\ast }(s^{t})$ \emph{are evaluated at the equilibrium of the sticky
+wage economy and where real transfers are equal to the real value of
+transfers in the sticky wage economy adjusted for the interest cost of
+holding money. Then the equilibrium allocations and prices in the sticky
+wage economy are the same as those in the prototype economy.}
+
+\bigskip
+
+The proof of this proposition is immediate from comparing the first-order
+conditions, the budget constraints, and the resource constraints for the
+prototype economy with labor wedges to those of the detailed economy with
+sticky wages. The key idea is that distortions in the sticky-wage economy
+between the marginal product of labor implicit in (\ref{wage setting 1}) and
+the marginal rate of substitution between leisure and consumption are
+perfectly captured by the labor wedges (\ref{labor wedge}) in the prototype
+economy.
+
+\bigskip \newpage
+
+\begin{center}
+2. \textsc{The Accounting Procedure}
+\end{center}
+
+Having established our equivalence result, we now describe our accounting
+procedure at a conceptual level and discuss a Markovian implementation of it.
+
+Our procedure is to conduct experiments that isolate the marginal effect of
+each wedge as well as the marginal effects of combinations of these wedges
+on aggregate variables. In the experiment in which we isolate the marginal
+effect of the efficiency wedge, for example, we hold the other wedges fixed
+at some constant values in all periods. In conducting this experiment, we
+ensure that the probability distribution of the efficiency wedge coincides
+with that in the prototype economy. In effect, we ensure that agents'
+expectations of how the efficiency wedge will evolve are the same as in the
+prototype economy. For each experiment, we compare the properties of the
+resulting equilibria to those of the prototype economy. These comparisons,
+together with our equivalence results, allow us to identify promising
+classes of detailed economies.
+
+\bigskip
+
+\begin{center}
+2.1 \emph{The Accounting Procedure at a Conceptual Level}
+\end{center}
+
+Suppose for now that the stochastic process $\pi _{t}(s^{t})$ and the
+realizations of the state $s^{t}$ in some particular episode are known.
+Recall that the prototype economy has one underlying (vector-valued) random
+variable, the state $s^{t},$ which has a probability of $\pi _{t}(s^{t}).$
+All of the other stochastic variables, including the four wedges---the
+efficiency wedge $A_{t}(s^{t}),$ the labor wedge $1-\tau _{lt}(s^{t}),$ the
+investment wedge $1/[1+\tau _{xt}(s^{t})]$, and the government consumption
+wedge $g_{t}(s^{t})$---are simply functions of this random variable. Hence,
+when the state $s^{t}$ is known, so are the wedges.
+
+To evaluate the effects of just the efficiency wedge, for example, we
+consider an economy, referred to as an \textit{efficiency wedge alone
+economy,} with the same underlying state $s^{t}$ and probability $\pi
+_{t}(s^{t})$ and the same function $A_{t}(s^{t})$ for the efficiency wedge
+as in the prototype economy, but in which the other three wedges are set to
+constants, in that $\tau _{lt}(s^{t})=\bar{\tau}_{l},\tau _{xt}(s^{t})=\bar{%
+\tau}_{x},$ and $g_{t}(s^{t})=\bar{g}.$ Note that this construction ensures
+that the probability distribution of the efficiency wedge in this economy is
+identical to that in the prototype economy.
+
+For the efficiency wedge alone economy, we then compute the equilibrium
+outcomes associated with the realizations of the state $s^{t}$ in a
+particular episode and compare these outcomes to those of the economy with
+all four wedges. We find this comparison to be of particular interest
+because in our applications, the realizations $s^{t}$ are such that the
+economy with all four wedges exactly reproduces the data on output, labor,
+investment, and consumption.
+
+In a similar manner, we define the \textit{labor wedge alone economy}, the 
+\textit{investment wedge alone economy}, and the \textit{government
+consumption wedge alone economy, }as well as economies with a combination of
+wedges such as the \textit{efficiency and labor wedge economy}.
+
+\bigskip
+
+\begin{center}
+2.2 \emph{A Markovian Implementation}
+\end{center}
+
+So far we have described our procedure assuming that we know the stochastic
+process $\pi _{t}(s^{t})$ and that we can observe the state $s^{t}.$ In
+practice, of course, we need to either specify the stochastic process a
+priori or use data to estimate it, and we need to uncover the state $s^{t}$
+from the data. Here we describe a set of assumptions that makes these
+efforts easy. Then we describe in detail the three steps involved in
+implementing our procedure.
+
+We assume that the state $s^{t}$ follows a Markov process of the form $\pi
+(s_{t}|s_{t-1})$ and that the wedges in period $t$ can be used to uniquely
+uncover the event $s_{t}$, in the sense that the mapping from the event $%
+s_{t}$ to the wedges $(A_{t},\tau _{lt},\tau _{xt},g_{t})$ is one-to-one and
+onto. Given this assumption, without loss of generality, let the underlying
+event $s_{t}=(s_{At},s_{lt},s_{xt},s_{gt}),$ and let $A_{t}(s^{t})=s_{At},%
+\tau _{lt}(s^{t})=s_{lt},\tau _{xt}(s^{t})=s_{xt},$ and $%
+g_{t}(s^{t})=s_{gt}. $ Note that we have effectively assumed that agents use
+only past wedges to forecast future wedges and that the wedges in period $t$
+are sufficient statistics for the event in period $t.$
+
+The first step in our procedure is to use data on $y_{t},l_{t},x_{t},$ and $%
+g_{t}$ from an actual economy to estimate the parameters of the Markov
+process $\pi (s_{t}|s_{t-1}).\ $We can do so using a variety of methods,
+including the maximum likelihood procedure described below.
+
+The second step in our procedure is to uncover the event $s_{t}$ by
+measuring the realized wedges. We measure the government consumption wedge
+directly from the data as the sum of government spending and net exports. To
+obtain the values of the other three wedges, we use the data and the model's
+decision rules. With $y_{t}^{d},l_{t}^{d},x_{t}^{d},g_{t}^{d}$, and $%
+k_{0}^{d}$ denoting the data and $y(s_{t},k_{t}),\ l(s_{t},k_{t}),$ and$\
+x(s_{t},k_{t})$ denoting the decision rules of the model, the realized wedge
+series $s_{t}^{d}$ solves 
+\begin{equation}
+y_{t}^{d}=y(s_{t}^{d},k_{t}),~l_{t}^{d}=l(s_{t}^{d},k_{t}),\text{ and }%
+x_{t}^{d}=x(s_{t}^{d},k_{t}),  \label{decision}
+\end{equation}%
+with $k_{t+1}=(1-\delta )k_{t}+x_{t}^{d},$ $k_{0}=k_{0}^{d}$, and $%
+g_{t}=g_{t}^{d}.$ Note that we construct a series for the capital stock
+using the capital accumulation law (\ref{1}), data on investment $x_{t}$,
+and an initial choice of capital stock $k_{0}$. In effect, we solve for the
+three unknown elements of the vector $s_{t}$ using the three equations (\ref%
+{AA})--(\ref{taux}) and thereby uncover the state. We use the associated
+values for the wedges in our experiments.
+
+Note that the four wedges account for all of the movement in output, labor,
+investment, and government consumption, in that if we feed the four wedges
+into the three decision rules in (\ref{decision}) and use $%
+g_{t}(s_{t}^{d})=s_{gt}\ $along with the law of motion for capital, we
+simply recover the original data.
+
+Note also that, in measuring the realized wedges, the estimated stochastic
+process plays a role in measuring only the investment wedge. To see that the
+stochastic process does not play a role in measuring the efficiency and
+labor wedges, note that these wedges can equivalently be directly calculated
+from (\ref{AA}) and (\ref{taun}) without computing the equilibrium of the
+model. In contrast, calculating the investment wedge requires computing the
+equilibrium of the model because the right side of (\ref{taux}) has
+expectations over future values of consumption, the capital stock, the
+wedges, and so on. The equilibrium of the model depends on these
+expectations and, therefore, on the stochastic process driving the wedges.
+
+The third step in our procedure is to conduct experiments to isolate the
+marginal effects of the wedges. To do that, we allow a subset of the wedges
+to fluctuate as they do in the data while the others are set to constants.
+To evaluate the effects of the efficiency wedge, we compute the decision
+rules for the efficiency wedge alone economy, denoted $%
+y^{e}(s_{t},k_{t}),l^{e}(s_{t},k_{t}),$ and $x^{e}(s_{t},k_{t}),$ in which  $%
+A_{t}(s^{t})=s_{At},\tau _{lt}(s^{t})=\bar{\tau}_{l},\tau _{xt}(s^{t})=\bar{%
+\tau}_{x},$ and $g_{t}(s^{t})=\bar{g}.$ Starting from $k_{0}^{d}$, we then
+use $s_{t}^{d}$, the decision rules, and the capital accumulation law to
+compute the realized sequence of output, labor, and investment, $%
+y_{t}^{e},l_{t}^{e},$ and $x_{t}^{e}$, which we call the \textit{efficiency
+wedge components} of output, labor, and investment. We compare these
+components to output, labor, and investment in the data. Other components
+are computed and compared similarly.
+
+Notice that in this experiment we computed the decision rules for an economy
+in which only one wedge fluctuates and the others are set to be constants in
+all events. The fluctuations in the one wedge are driven by fluctuations in
+a 4 dimensional state $s_{t}.$
+
+Notice also that our experiments are designed to separate out the direct
+effect and the forecasting effect of fluctuations in wedges. As a wedge
+fluctuates, it directly affects either budget constraints or resource
+constraints. This fluctuation also affects the forecasts of that wedge as
+well as of other wedges in the future. Our experiments are designed so that
+when we hold a particular wedge constant, we eliminate the direct effect of
+that wedge, but we retain its forecasting effect on the other wedges. By
+doing so, we ensure that expectations of the fluctuating wedges are
+identical to those in the prototype economy.
+
+Here we focus on one simple way to specify the expectations of agents:
+assume they simply use past values of the wedges to forecast future values.
+An extension of our Markovian procedure is to use past endogenous variables,
+such as output, investment, consumption, and perhaps even asset prices such
+as stock market values, in addition to past wedges to forecast future
+wedges. Another approach is to simply specify these expectations directly,
+as we did in our earlier work (Chari, Kehoe, and McGrattan (2002)) and then
+conduct a variety of experiments to determine how the results change as the
+specification is changed.
+
+\begin{center}
+3. \textsc{Applying the Accounting Application}
+\end{center}
+
+Now we demonstrate how to apply our accounting procedure to two U.S.
+business cycle episodes: the Great Depression and the postwar recession of
+1982. We then extend our analysis to the entire postwar period. (In the
+technical appendix, we describe in detail our data sources, parameter
+choices, computational methods, and estimation procedures.)
+
+\bigskip
+
+\begin{center}
+3.1. \emph{Details of the Application }
+\end{center}
+
+To apply our accounting procedure, we use functional forms and parameter
+values familiar from the business cycle literature. We assume that the
+production function has the form $F(k,l)=k^{\alpha }l^{1-\alpha }$ and the
+utility function the form $U(c,l)=\log c+\psi \log (1-l).$ We choose the
+capital share $\alpha =.35$ and the time allocation parameter $\psi =2.24.$
+We choose the depreciation rate $\delta $, the discount factor $\beta $, and
+growth rates $\gamma $ and $\gamma _{n}$\ so that, on an annualized basis,
+depreciation is 4.64\%, the rate of time preference 3\%, the population
+growth rate 1.5\%, and the growth of technology 1.6\%.
+
+To estimate the stochastic process for the state, we first specify a vector
+autoregressive AR(1) process for the event $%
+s_{t}=(s_{At},s_{lt},s_{xt},s_{gt})$ of the form 
+\begin{equation}
+s_{t+1}=P_{0}+Ps_{t}+\varepsilon _{t+1},  \label{s process}
+\end{equation}%
+where the shock $\varepsilon _{t}$ is i.i.d. over time and is distributed
+normally with mean zero and covariance matrix $V.$ To ensure that our
+estimate of $V$ is positive semidefinite, we estimate the lower triangular
+matrix $Q$, where $V=QQ^{\prime }.$ The matrix $Q$ has no structural
+interpretation. (In section 5, we elaborate on the contrast between our
+decomposition and more traditional decompositions which impose structural
+interpretations on $Q$.)
+
+We then use a standard maximum likelihood procedure to estimate the
+parameters $P_{0},P$, and $V$ of the vector AR(1) process for the wedges. In
+doing so, we use the log-linear decision rules of the prototype economy and
+data on output, labor, investment, and the sum of government consumption and
+net exports.
+
+For our Great Depression experiments, we proceed as follows. We discretize
+the process ($\ref{s process})$ and simulate the economy using nonlinear
+decision rules from a finite-element method. We use nonlinear decision rules
+in these experiments because the shocks are so large that, for a given
+stochastic process, the linear decision rules are a poor approximation to
+the nonlinear decision rules. Of course, we would rather have used the
+nonlinear decision rules in estimating the parameters of the vector AR(1)
+process. We do not do so because this exercise is computationally demanding.
+Instead we experiment by varying the parameters of the vector AR(1) process
+and find that our results are very similar across these experiments.
+
+For our postwar experiments, we use the log-linear decision rules and the
+continuous state process ($\ref{s process})$.
+
+In order to implement our accounting procedure, we must first adjust the
+data to make them consistent with the theory. In particular, we adjust the
+U.S. data on output and its components to remove sales taxes and to add the
+service flow for consumer durables. For the pre--World War II period, we
+remove military compensation as well. We estimate separate sets of
+parameters for the stochastic process for wedges (\ref{s process}) for each
+of our two historical episodes. The other parameters are the same in the two
+episodes. (See our technical appendix for our rationale for this decision.)
+The stochastic process parameters for the Great Depression analysis are
+estimated using annual data for 1901--40; those for analysis after World War
+II, using quarterly data for 1959:1--2004:3. In the Great Depression
+analysis, we impose the additional restriction that the covariance between
+the shocks to the government consumption wedge and those to the other wedges
+is zero. This restriction avoids having the large movements in government
+consumption associated with World War I dominate the estimation of the
+stochastic process.
+
+Table I displays the resulting estimated values for the parameters of the
+coefficient matrices, $P$ and $Q$, and the associated confidence bands for
+our two historical data periods. The stochastic process (\ref{s process})
+with these values will be used by agents in our economy to form their
+expectations about future wedges.
+
+\bigskip
+
+\begin{center}
+3.2. \emph{Findings}
+\end{center}
+
+Now we describe the results of applying our procedure to two historical U.S.
+business cycle episodes. In the Great Depression, the efficiency and labor
+wedges play a central role for all variables considered. In the 1982
+recession, the efficiency wedge plays a central role for output and
+investment while the labor wedge plays a central role for labor. The
+government consumption wedge plays no role in either period. Most
+strikingly, neither does the investment wedge.
+
+In reporting our findings, we remove a trend of 1.6\% from output,
+investment, and the government consumption wedge. Both output and labor are
+normalized to equal 100 in the base periods: 1929 for the Great Depression
+and 1979:1 for the 1982 recession. In both of these historical episodes,
+investment (detrended) is divided by the base period level of output. Since
+the government consumption component accounts for virtually none of the
+fluctuations in output, labor, and investment, we discuss the government
+consumption wedge and its components only in our technical appendix. Here we
+focus primarily on the fluctuations due to the efficiency, labor, and
+investment wedges.
+
+\bigskip
+
+\noindent a.\emph{\ }\textit{The Great Depression}
+
+Our findings for the period 1929--39, which includes the Great Depression,
+are displayed in Figures 1--4. In sum, we find that the efficiency and labor
+wedges account for essentially all of the movements of output, labor, and
+investment in the Depression period and that the investment wedge actually
+drives output the wrong way.
+
+In Figure 1, we display actual U.S. output along with the three measured
+wedges for that period: the efficiency wedge $A,$ the labor wedge $(1-\tau
+_{l}),$ and the investment wedge $1/(1+\tau _{x})$. We see that the
+underlying distortions revealed by the three wedges have different patterns.
+The distortions that manifest themselves as efficiency and labor wedges
+become substantially worse between 1929 and 1933. By 1939, the efficiency
+wedge has returned to the 1929 trend level, but the labor wedge has not.
+Over the period, the investment wedge fluctuates, but investment decisions
+are generally less distorted, in the sense that $\tau _{x}$ is smaller
+between 1932 and 1939 than it is in 1929. Note that this investment wedge
+pattern does not square with models of business cycles in which financial
+frictions increase in downturns and decrease in recoveries.
+
+In Figure 2, we plot the 1929--39 data for U.S. output, labor, and
+investment along with the model's predictions for those variables when the
+model includes just one wedge. In terms of the data, note that labor
+declines $27\%$ from 1929 to 1933 and stays relatively low for the rest of
+the decade. Investment also declines sharply from 1929 to 1933 but partially
+recovers by the end of the decade. Interestingly, in an algebraic sense,
+about half of output's $36\%$ fall from 1929 to 1933 is due to the decline
+in investment.
+
+In terms of the model, we start by assessing the separate contributions of
+the three wedges.
+
+Consider first the contribution of the efficiency wedge. In Figure 2, we see
+that with this wedge alone, the model predicts that output declines less
+than it actually does in the data and that it recovers more rapidly. For
+example, by 1933, predicted output falls about $30\%$ while U.S. output
+falls about $36\%$. Thus, the efficiency wedge accounts for over $80\%$ of
+the decline of output in the data. By 1939, predicted output is only about $%
+6\%$ below trend rather than the observed $22\%.$ As can also be seen in
+Figure 2, the reason for this predicted rapid recovery is that the
+efficiency wedge accounts for only a small part of the observed movements in
+labor in the data. By 1933 the fall in predicted investment is similar but
+somewhat greater than that in the data. It recovers faster, however.
+
+Consider next the contributions of the labor wedge. In Figure 2, we see that
+with this wedge alone, the model predicts output due to the labor wedge to
+fall by 1933 a little less than half as much as output falls in the data: $%
+16\%$ vs. $36\%.$ By 1939, however, the labor wedge model's predicted output
+completely captures the slow recovery: it predicts output falling $21\%$,
+approximately as much as output does that year in the data. This model
+captures the slow output recovery because predicted labor due to the labor
+wedge also captures the sluggishness in labor after 1933 remarkably well.
+The associated prediction for investment is a decline, but not the actual
+sharp decline from 1929 to 1933.
+
+Summarizing Figure 2, we can say that the efficiency wedge accounts for over
+three-quarters of output's downturn during the Great Depression but misses
+its slow recovery, while the labor wedge accounts for about one-half of this
+downturn and essentially all of the slow recovery.
+
+Now consider the investment wedge. In Figure 3, we again plot the data for
+output, labor, and investment, but this time along with the contributions to
+those variables that the model predicts are due to the investment wedge
+alone. This figure demonstrates that the investment wedge's contributions
+completely miss the observed movements in all three variables. The
+investment wedge actually leads output to rise by about $9\%$ by 1933.
+
+Together, then, Figures 2 and 3 suggest that the efficiency and labor wedges
+account for essentially all of the movements of output, labor, and
+investment in the Depression period and that the investment wedge accounts
+for almost none. This suggestion is confirmed by Figure 4. There we plot the
+combined contribution from the efficiency, labor, and (insignificant)
+government consumption wedges (labeled \emph{Model With No Investment Wedge}%
+). As can be seen from the figure, essentially all of the fluctuations in
+output, labor, and investment can be accounted for by movements in the
+efficiency and labor wedges. For comparison, we also plot the combined
+contribution due to the labor, investment, and government consumption wedges
+(labeled \emph{Model With No Efficiency Wedge}). This combination does not
+do well. In fact, comparing Figures 2 and 4, we see that the model with this
+combination is further from the data than the model with the labor wedge
+component alone.
+
+One issue of possible concern with our findings about the role of the
+investment wedge is that measuring it is subtler than measuring the other
+wedges. Recall that the measurement of this wedge depends on the details of
+the stochastic process governing the wedges, whereas the size of the other
+wedges can be inferred from static equilibrium conditions. To address this
+concern, we conduct an additional experiment intended to give the model with
+no efficiency wedge the best chance of accounting for the data.
+
+In this experiment, we choose the investment wedge to be as large as it
+needs to be for investment in the model to be as close as possible to
+investment in the data, and we set the other wedges to be constants.
+Predictions of this model, which we call the \emph{Model With Maximum
+Investment Wedge}, turn out to poorly match the behavior of consumption in
+the data. For example, from 1929 to 1933, consumption in the model rises
+more than $8\%$ relative to trend while consumption in the data declines
+about $28\%.$ (For details, see the technical appendix.) We label this poor
+performance the \textit{consumption anomaly} of the investment wedge model.
+
+Altogether, these findings lead us to conclude that distortions which
+manifest themselves primarily as investment wedges played essentially no
+useful role in the U.S. Great Depression.\bigskip
+
+\noindent b.\emph{\ The 1982 Recession}
+
+Now we apply our accounting procedure to a more typical U.S. business cycle:
+the recession of 1982. Here we get basically the same results as with the
+earlier period: the efficiency and labor wedges play primary roles in the
+business cycle fluctuations, and the investment wedge plays essentially none.
+
+We start here as we did in the Great Depression analysis, by displaying
+actual U.S. output over the entire business cycle period---here,
+1979--85---along with the three measured wedges for that period. In Figure
+5, we see that output falls nearly $10\%$ relative to trend between 1979 and
+1982 and by 1985 is back up to about $1\%$ below trend. We also see that the
+efficiency wedge falls between 1979 and 1982 and by 1985 is still a little
+more than $3\%$ below trend. The labor wedge also worsens from 1979 to 1982,
+but it improves substantially by 1985. The investment wedge, meanwhile,
+fluctuates until 1983 and improves thereafter.
+
+An analysis of the effects of the wedges separately for the 1979--85 period
+is in Figures 6 and 7. In Figure 6, we see that the model with the
+efficiency wedge alone produces a decline in output from 1979 to 1982 of $%
+6\% $, which is about $60\%$ of the actual decline in that period. Here
+output recovers a bit more slowly than in the data, but seems to otherwise
+generally parallel the data's movements. The model with the labor wedge
+alone produces a decline in output from 1979 to 1982 of only about $3\%.$ In
+Figure 7, we see that the model with just the investment wedge produces
+essentially no fluctuations in output.
+
+Now we examine how well a combination of wedges reproduces the data for the
+1982 recession period just as we did for the Depression period. In Figure 8,
+we plot the movements in output, labor, and investment during 1979--85 due
+to two combinations of wedges. One is the combined effects of the
+efficiency, labor, and (insignificant) government consumption components
+(labeled \emph{Model With No Investment Wedge}). In terms of output, this
+combination mimics the decline in output until 1982 extremely well and
+produces a slightly shallower recovery than in the data. The other is the
+combination of the labor, investment, and government components (labeled 
+\emph{Model With No Efficiency Wedge}), which produces a modest decline in
+output relative to the data. In Figures 6, 7, and 8, we see clearly that in
+the model with no efficiency wedge the labor wedge accounts for essentially
+all of the decline and the investment wedge, essentially none. \bigskip
+
+\begin{center}
+3.3. \emph{Extending the Analysis to the Entire Postwar Period}
+\end{center}
+
+So far we have analyzed the wedges and their contributions for specific
+episodes. The findings for both episodes suggest that frictions in detailed
+models which manifest themselves as investment wedges in the benchmark
+prototype economy play, at best, a tertiary role in accounting for business
+cycle fluctuations. Do our findings apply beyond those particular episodes?
+We attempt to extend our analysis to the entire postwar period by developing
+some summary statistics for the period from 1959:1 through 2004:3 using
+HP-filtered data. We first consider the standard deviations of the wedges
+relative to output as well as correlations of the wedges with each other and
+with output at various leads and lags. We then consider the standard
+deviations and the cross correlations of output due to each wedge. These
+statistics summarize salient features of the wedges and their role in output
+fluctuations for the entire postwar sample. We think of the wedge statistics
+as analogs of our plots of the wedges and the output statistics as analogs
+of our plots of output due to just one wedge.\footnote{%
+In Chari, Kehoe, and McGrattan (2004), we apply a spectral method to
+determine the contributions of the wedges based on the population properties
+of the stochastic process generated by the model. We do this for both
+periods and find that the investment wedge plays only a modest role in both.}
+The results suggest that our earlier findings do hold up, at least in a
+relative sense: the investment wedge seems to play a larger role over the
+entire postwar period than in the 1982 recession, but its effects are still
+quite modest compared to those of the other wedges.
+
+In Tables II and III, we display standard deviations and cross correlations
+calculated using HP-filtered data for the postwar period. Panel A of Table
+II shows that the efficiency, labor, and investment wedges are positively
+correlated with output both contemporaneously and for several leads and
+lags. In contrast, the government consumption wedge is somewhat negatively
+correlated with output, both contemporaneously and for several leads and
+lags. (Note that the government consumption wedge is the sum of government
+consumption and net exports and that net exports are negatively correlated
+with output.) Panel B of Table II shows that the cross correlations of the
+efficiency, labor, and investment wedges are generally positive.
+
+Table III summarizes various statistics of the movements of output over this
+period due to each wedge. Consider panel A, and focus first on the output
+fluctuations due to the efficiency wedge. Table III shows that output
+movements due to this wedge have a standard deviation which is $73\%$ of
+that of output in the data. These movements are highly positively correlated
+with output in the data, both contemporaneously and for several leads and
+lags. These statistics are consistent with our episodic analysis of the $%
+1982 $ recession, which showed that the efficiency wedge can account for
+about 60\% of the actual decline in output during that period and comoves
+highly with it.
+
+Consider next the role of the other wedges in the entire postwar period.
+Return to Table III. In panel A, again, we see that output due to the labor
+wedge alone fluctuates almost $60\%$ as much as does output in the data and
+is positively correlated with it. Output due to the investment wedge alone
+fluctuates less than a third as much as output in the data and is somewhat
+positively correlated with it. Finally, output due to the government
+consumption wedge alone fluctuates about $40\%$ as much as output in the
+data and is somewhat negatively correlated with it. In panel B of Table III,
+we see that output movements due to the efficiency and labor wedges as well
+as the efficiency and investment wedges are positively correlated and that
+the cross correlations of output movements due to the other wedges are
+mostly essentially zero or negative.
+
+All of our analyses using business cycle accounting thus seem to lead to the
+same conclusion: to study business cycles, the most promising detailed
+models to explore are those in which frictions manifest themselves primarily
+as efficiency or labor wedges, not as investment wedges.
+
+\bigskip
+
+\begin{center}
+4. \textsc{Interpreting Wedges With }\\[0pt]
+\textsc{Alternative Technology or Preference Specifications}
+\end{center}
+
+In detailed economies with technology and preferences similar to those in
+our benchmark prototype economy, the equivalence propositions proved thus
+far provide a mapping between frictions in those detailed economies and
+wedges in the prototype economy. Here we construct a similar mapping when
+technology or preferences differ in the two types of economies. We then ask
+if this alternative mapping changes our substantive conclusion that
+financial frictions which manifest themselves primarily as investment wedges
+are unlikely to play a primary role in accounting for business cycles. We
+find that it does not.
+
+When detailed economies have technology or preferences different from the
+benchmark economy's, wedges in the benchmark economy can be viewed as
+arising from two sources: frictions in the detailed economy and differences
+in the specification of technology or preferences. While researchers could
+simply use results from our benchmark prototype economy to draw inferences
+about promising classes of models, drawing such inferences is easier with an
+alternative approach. Basically, we decompose the wedges into their two
+sources. To do that, construct an alternative prototype economy with
+technology and preferences that do coincide with those in the detailed
+economy, and repeat the business cycle accounting procedure with those two
+economies. The part of the wedges in the benchmark prototype economy due to
+frictions, then, will be the wedges in the alternative prototype economy,
+while the remainder will be due to specification differences.
+
+Here we use this approach to explore alternative prototype economies with
+technology and preference specifications chosen because of their popularity
+in the literature. These alternative specifications include variable instead
+of fixed capital utilization, different labor supply elasticities, and
+varying levels of costs to adjusting investment.
+
+Two of these changes offer no help to investment wedges. Adding variable
+capital utilization to the analysis shifts the relative contributions of the
+efficiency and labor wedges to output's fluctuations---decreasing the
+efficiency wedge's contribution and increasing the labor wedge's---but this
+alternative specification leaves the investment wedge's contribution
+definitely in third place. Adding different labor elasticities to the
+analysis offers no help either.
+
+The third specification change seems to give investment wedges a slightly
+larger role, but still not a primary one. With investment adjustment costs
+added to the analysis, the investment wedge in the benchmark prototype
+economy depends on both the investment wedge and the marginal cost of
+investment in the alternative prototype economy. We find that even if the
+investment wedge is constant in the benchmark economy, it will worsen during
+recessions and improve during booms in the alternative economy. With our
+measured wedges, this finding suggests that with large enough adjustment
+costs, investment wedges in detailed economies could play a significant role
+in business cycle fluctuations.
+
+To study this possibility, we investigate the effects of two parameter
+values for adjustment costs: one at the level used by Bernanke, Gertler, and
+Gilchrist (1999), the \emph{BGG level}, and one we consider \emph{extreme},
+at four times that level. For the Great Depression period, we find that for
+both adjustment cost levels, investment wedges play only a minor role. For
+the 1982 recession period, we find that these wedges play a very small role
+with BGG level costs and a somewhat larger but still modest role with the
+much higher costs. These findings suggest that researchers who think
+adjustment costs are extremely high may want to include in their models
+financial frictions that manifest themselves as investment wedges. Such
+models are not likely to do well, however, unless they also include other
+frictions that play the primary role in business cycle fluctuations.
+
+\bigskip
+
+\begin{center}
+4.1. \emph{Details of Alternative Specifications}
+\end{center}
+
+\noindent a. \emph{Variable Capital Utilization}
+
+We begin with an extreme view about the amount of variability in capital
+utilization.
+
+Our specification of the technology which allows for variable capital
+utilization follows the work of Kydland and Prescott (1988) and Hornstein
+and Prescott (1993). We assume that the production function is now 
+\begin{equation}
+y=A(kh)^{\alpha }(nh)^{1-\alpha },  \label{variable y}
+\end{equation}%
+where $n$ is the number of workers employed and $h$ is the length (or \emph{%
+hours}) of the workweek. The labor input is, then, $l=nh.$
+
+In the data, we measure only the labor input $l$ and the capital stock $k$.
+We do not directly measure $h$ or $n.$ The benchmark specification for the
+production function can be interpreted as assuming that all of the observed
+variation in measured labor input $l$ is in the number of workers and that
+the workweek $h$ is constant$.$ Under this interpretation, our benchmark
+specification with \emph{fixed capital utilization} correctly measures the
+efficiency wedge (up to the constant $h).$
+
+Now we investigate the opposite extreme: assume that the number of workers $%
+n $ is constant and that all the variation in labor is from the workweek $h.$
+Under this\textit{\ variable capital utilization} specification, the
+services of capital $kh$ are proportional to the product of the stock $k$
+and the labor input $l,$ so that variations in the labor input induce
+variations in the flow of capital services. Thus, the capital utilization
+rate is proportional to the labor input $l,$ and the efficiency wedge is
+proportional to $y/k^{\alpha }.$
+
+Consider an alternative prototype economy, denoted \emph{economy 2},
+identical to a deterministic version of our benchmark prototype economy,
+denoted \emph{economy 1}, except that the production function is now given
+by $y=Ak^{\alpha }l.$ Let the sequence of wedges and the equilibrium
+outcomes in the two economies be $(A_{it},\tau _{lit},\tau _{xit})$ and $%
+(y_{it},c_{it},l_{it},x_{it})$ for $i=1,2.$ We then have this proposition:
+
+\bigskip
+
+\textsc{Proposition }3:\textit{\ }\emph{If the sequence of wedges for an
+alternative prototype economy }2\emph{\ are related to the wedges in the
+prototype economy }1\emph{\ by }$A_{2t}=A_{1t}l_{1t}^{-\alpha }$, $1-\tau
+_{l2t}=$ $(1-\alpha )(1-\tau _{l1t}),$ \emph{and} $\tau _{x2t}=\tau _{x1t},$ 
+\emph{then the equilibrium outcomes for the two economies coincide. }
+\bigskip
+
+\textsc{Proof:} We prove this proposition by showing that the equilibrium
+conditions of economy $2$ are satisfied at the equilibrium outcomes of
+economy $1.$ Since $y_{1t}=A_{1t}k_{1t}^{\alpha }l_{1t}^{1-\alpha },$ using
+the definition of $A_{2t},$ we have that $y_{1t}=A_{2t}k_{1t}^{\alpha
+}l_{1t}.$ The first-order condition for labor in economy $1$ is 
+\[
+-\frac{U_{lt}(c_{1t},l_{1t})}{U_{ct}(c_{1t},l_{1t})}=(1-\tau _{l1t})\frac{%
+(1-\alpha )y_{1t}}{l_{1t}}. 
+\]%
+Using the definition of $\tau _{l2t},$ we have that 
+\[
+-\frac{U_{lt}(c_{1t},l_{1t})}{U_{ct}(c_{1t},l_{1t})}=(1-\tau _{l2t})\frac{%
+y_{1t}}{l_{1t}}. 
+\]%
+The rest of the equations governing the equilibrium are unaffected. 
+%TCIMACRO{\TeXButton{TeX field}{\hspace{1.75in}} }%
+%BeginExpansion
+\hspace{1.75in}
+%EndExpansion
+$\ \ Q.E.D.$
+
+\bigskip
+
+Note that even if the efficiency wedge in the alternative prototype economy
+does not fluctuate, the associated efficiency wedge in the prototype economy
+will. Proposition 3 also implies that if $\tau _{x1t}$ is a constant, so
+that the contribution of the investment wedge to fluctuations in economy $1$
+is zero, then $\tau _{x2t}$ is also a constant; hence, the contribution of
+the investment wedge to fluctuations in economy $2$ is also zero. Extending
+this proposition to a stochastic environment is immediate.
+
+Now suppose that we are interested in detailed economies with variable
+capital utilization. We use the alternative prototype economy to ask whether
+this change affects our substantive conclusions. In answering this question,
+we reestimate the parameters of the stochastic process for the underlying
+state. (For details, see the technical appendix.)\ 
+
+Variable capital utilization can induce significant changes in the measured
+efficiency wedge. To see these changes, in Figure 9, we plot the measured
+efficiency wedges for these two specifications of capital utilization during
+the Great Depression period (with it \emph{fixed} in the benchmark economy
+and \emph{variable} now). Clearly, when capital utilization is variable
+rather than fixed, the efficiency wedge falls less and recovers more by
+1939. (For the other wedges, see the technical appendix).
+
+In Figure 10, we plot the data and the predicted output due to the
+efficiency and labor wedges for the 1930s when the model includes variable
+capital utilization. Comparing Figures 10 and 2, we see that with the
+remeasured efficiency wedge, the labor wedge plays a much larger role in
+accounting for the output downturn and slow recovery and\ the efficiency
+wedge plays a much smaller role.
+
+In Figure 11, we plot the three data series again, this time with the
+predictions of the variable capital utilization model with just the
+investment wedge. Comparing this to Figure 3, we see that with variable
+capital utilization, the investment wedge drives output the wrong way to an
+even greater extent than in the benchmark economy.
+
+In Figure 12, we compare the contributions of the sum of the efficiency and
+labor wedges for the two specifications of capital utilization (fixed and
+variable) during the Great Depression period. The figure shows that these
+contributions are quite similar. While remeasuring the efficiency wedge
+changes the relative contributions of the two wedges, it clearly has little
+effect on their combined contribution.
+
+Overall, then, taking account of variable capital utilization strengthens
+our finding that in the Great Depression period, the efficiency and labor
+wedges play a primary role and investment wedges do not.
+
+\bigskip
+
+\noindent b. \emph{Different Labor Supply Elasticities}
+
+Now we consider the effects on our results of changing the elasticity of
+labor supply. We assume in our benchmark model that preferences are
+logarithmic in both consumption and leisure. Consider now an alternative
+prototype economy with a different elasticity of labor supply. We show that
+a result analogous to that in Proposition 3 holds: allowing for different
+labor supply elasticities changes the size of the measured labor wedge but
+not that of the measured investment wedge. Therefore, if the contribution of
+the investment wedge is zero in the benchmark prototype economy, it is also
+zero in an economy with a different labor supply elasticity.
+
+To see that, consider an alternative prototype economy which is identical to
+a deterministic version of our benchmark model except that now the utility
+function is given by $U(c)+V_{2}(1-l)$. Denote the utility function in our
+benchmark prototype economy (economy 1) by $U(c)+V_{1}(1-l).$ Clearly, by
+varying the function $V_{2},$ we can generate a wide range of alternative
+labor supply elasticities.
+
+Let the sequence of wedges and the equilibrium outcomes in the two economies
+be $(A_{it},\tau _{lit},\tau _{xit})$ and $(y_{it},c_{it},l_{it},x_{it})$
+for $i=1,2.$ We then have this proposition:
+
+\bigskip
+
+\textsc{Proposition }4: \emph{If the sequence of wedges for the alternative
+prototype economy, economy }2,\emph{\ is given by } 
+\[
+1-\tau _{l2t}=(1-\tau _{l1t})\frac{V_{2}^{\prime }(1-l_{1t})}{V_{1}^{\prime
+}(1-l_{1t})}, 
+\]%
+\emph{and if} $A_{2t}=A_{1t}$ \emph{and} $\tau _{x2t}=\tau _{x1t},$ \emph{%
+then the equilibrium outcomes for the two economies coincide. }\bigskip
+
+\textsc{Proof:} We prove this proposition by showing that the equilibrium
+conditions of economy $2$ are satisfied at the equilibrium outcomes of
+economy $1.$ The first-order condition for labor input in economy $1$ is 
+\[
+-\frac{V_{1}^{\prime }(1-l_{1t})}{U^{\prime }(c_{1t})}=(1-\tau _{l1t})\frac{%
+(1-\alpha )y_{1t}}{l_{1t}}. 
+\]%
+Using the definition of $\tau _{l2t},$ we have that 
+\[
+-\frac{V_{2}^{\prime }(1-l_{1t})}{U^{\prime }(c_{1t})}=(1-\tau _{l2t})\frac{%
+(1-\alpha )y_{1t}}{l_{1t}}, 
+\]%
+so that the first-order condition for labor in economy 2 is satisfied. The
+rest of the equations governing the equilibrium are unaffected. 
+%TCIMACRO{\TeXButton{TeX field}{\hspace{4.5in}} }%
+%BeginExpansion
+\hspace{4.5in}
+%EndExpansion
+$Q.E.D.$
+
+\bigskip
+
+Note that here even if the labor wedge does not fluctuate in our benchmark
+prototype economy, it typically will in the alternative prototype economy.
+Note also that the investment wedges are the same in both economies. Thus,
+if the investment wedge is constant in one economy, it is constant in the
+other; and the contribution of the investment wedge to fluctuations is zero
+in both economies. Extending this proposition to a stochastic environment is
+immediate.
+
+\bigskip
+
+\noindent c. \emph{Investment Adjustment Costs}
+
+Now we consider a third alternative prototype economy, this one with
+investment adjustment costs. These costs can be interpreted as standing in
+for one of two features of detailed economies. One is that the detailed
+economies have adjustment costs in converting output into installed capital.
+Another interpretation is that the detailed model does not have adjustment
+costs, but that financial frictions manifest themselves as adjustment costs
+in the alternative prototype economy (as in Bernanke and Gertler (1989) and
+Carlstrom and Fuerst (1997)).
+
+In this alternative prototype economy, the only difference from the
+benchmark prototype economy is that the capital accumulation law is no
+longer (\ref{1}), but rather is%
+\begin{equation}
+(1+\gamma _{n})k_{t+1}=(1-\delta )k_{t}+x_{t}-\phi \left( \frac{x_{t}}{k_{t}}%
+\right) k_{t},  \label{capital adjust}
+\end{equation}%
+where $\phi $ represents the per unit cost of adjusting the capital stock.
+In the macroeconomic literature, a commonly used functional form for the
+adjustment costs $\phi $ is 
+\begin{equation}
+\phi \left( \frac{x}{k}\right) =\frac{a}{2}\left( \frac{x}{k}-b\right) ^{2},
+\label{adjustment}
+\end{equation}%
+where $b=\delta +\gamma +\gamma _{n}$ is the steady-state value of the
+investment-capital ratio.
+
+To set up the analog of Propositions 3 and 4, let the wedges in the
+benchmark prototype economy, economy 1, and the alternative prototype
+economy, economy 2, be $(A_{it},\tau _{lit},\tau _{xit})$ and $%
+(y_{it},c_{it},l_{it},x_{it})$ for $i=1,2.$ For simplicity, let $\tau _{x2t}$
+and $g_{2t}$ be identically zero. The proof of the following proposition is
+immediate.
+
+\bigskip
+
+\textsc{Proposition }5: \emph{If the sequence of wedges for the alternative
+prototype economy, economy }2,\emph{\ is given by }$A_{2t}=A_{1t},\tau
+_{l2t}=\tau _{l1t},$ $\tau _{x1t}$ implicitly defined by\emph{\ } 
+\begin{equation}
+\frac{A_{1t+1}F_{kt+1}+(1-\delta )(1+\tau _{x1t+1})}{1+\tau _{x1t}}=\frac{%
+A_{2t+1}F_{kt+1}+(1-\delta +\phi _{t}-x_{2t+1}\phi _{t+1}^{\prime
+}/k_{2t+1})(1-\phi _{t+1}^{\prime })^{-1}}{(1-\phi _{t}^{\prime })^{-1}},
+\label{phi}
+\end{equation}%
+\emph{and }$g_{1t}=\phi _{t}k_{2t},$ \emph{then the equilibrium outcomes for
+the two economies coincide}$.$ \bigskip
+
+In understanding the investment wedge $\tau _{x1t}$, note that if adjustment
+costs are given by (\ref{adjustment}), then the term $\phi _{t}-x_{t+1}\phi
+_{t+1}^{\prime }/k_{t+1}$ in (\ref{phi}) equals $a[(x/k)^{2}-b^{2}]/2$,
+which is an order of magnitude smaller than $\phi _{t}^{\prime }=a[x/k-b].$
+Setting this term to zero gives the approximation 
+\begin{equation}
+1+\tau _{x1t}=\frac{1}{1-\phi _{t}^{\prime }}.  \label{approx}
+\end{equation}%
+>From (\ref{approx}) and the convexity of $\phi $, we see that $\tau _{x1}$
+is increasing in $x/k$ and is zero when $x/k$ is at its steady-state value.
+Hence, in recessions, when $x/k$ is relatively low, $\tau _{x1}$ is
+negative; and in booms, when $x/k$ is relatively high, $\tau _{x1}$ is
+positive. In this sense, even when the alternative prototype economy has no
+investment wedges, $\tau _{x1}$ will be countercyclical in the benchmark
+prototype economy, so investment distortions will be smaller in recessions.
+
+Note, more generally, that when investment wedges in the alternative
+prototype economy are nonzero, the analog of (\ref{approx}) is 
+\begin{equation}
+1+\tau _{x1t}=\frac{1+\tau _{x2t}}{1-\phi _{t}^{\prime }}.  \label{approx2}
+\end{equation}
+
+We can also use the equivalence map in (\ref{approx2}) in the reverse
+direction. Imagine that the data are generated from a detailed economy with
+no adjustment costs and no frictions. The benchmark prototype economy will
+have $\tau _{x1t}=0.$ Suppose a researcher considers an alternative
+prototype economy with adjustment costs. This researcher will find that $%
+1+\tau _{x2t}=1-\phi _{t}^{\prime }$, so that the investment wedge will be
+procyclical even though the detailed economy has no frictions.
+
+More generally, a researcher who incorrectly specifies too high a level of
+adjustment costs in the alternative prototype economy will infer that
+investment wedges play a much larger role than they actually do. To get some
+intuition for this result, consider two alternative prototype economies $A$
+and $B$, both of which have investment wedges and adjustment costs. The
+analog of our approximation (\ref{approx2}) is $(1+\tau _{xAt})/(1-\phi
+_{At}^{\prime })=(1+\tau _{xBt})/(1-\phi _{Bt}^{\prime })$, where $\phi
+_{it} $ denotes adjustment costs in economy $i=A,B.$ Straightforward algebra
+establishes that specifying too high a level of adjustment costs makes
+investment wedges seem worse in recessions than they actually are.
+
+Now we consider a prototype economy with adjustment costs and ask whether
+our substantive conclusion that the investment wedge plays at most a
+tertiary role in either the Great Depression or postwar business cycles is
+affected. We follow Bernanke, Gertler, and Gilchrist (1999) in how we choose
+the value for the parameter $a.$ Bernanke, Gertler, and Gilchrist (BGG)
+choose this parameter so that the elasticity, $\eta ,$ of the price of
+capital with respect to the investment-capital ratio is $.25.$ In this
+setup, the price of capital $q=1/(1-\phi ^{\prime }),$ so that, evaluated at
+the steady state, $\eta =a(\delta +\gamma +\gamma _{n}).$ Given our other
+parameters, $a=3.22.$ In Figures 13 and 14, this parameterization is labeled
+as the model with \emph{BGG Costs. }Bernanke, Gertler, and Gilchrist also
+argue that a reasonable range for the elasticity $\eta $ is between $0$ and $%
+.5$, that values much outside this range imply implausibly high adjustment
+costs. We consider an extreme case in which $\eta =1$, so that $a=12.88$,
+roughly four times the BGG level. In the figures, this parameterization is
+labeled as the model with \emph{Extreme Costs. }For each setting of the
+parameter $a$, we reestimate the stochastic process for the state. (For the
+parameter values of the stochastic process, see the technical appendix.)
+
+Comparing the investment wedges in Figure 1 and panel A of Figure 13, we see
+that introducing investment adjustment costs leads the investment wedge to
+worsen rather than improve in the early part of the Great Depression. In
+panel A of Figure 14 we see that this worsening produces a decline in output
+from 1929 to 1933. With the BGG adjustment costs, however, the decline is
+tiny $(2\%$ from 1929 to 1933). Even with the extreme adjustment costs, the
+decline is only $6.5\%$ and, hence, accounts for only about one-sixth of the
+overall decline in output.\footnote{%
+In general, in our Great Depression experiments, linear methods perform
+poorly compared to our nonlinear method. With extreme adjustment costs, for
+example, linear methods produce large errors, on the order of $100\%$.}
+Moreover, with these extreme adjustment costs, the consumption anomaly
+associated with investment wedges is acute. For example, from 1929 to 1932,
+relative to trend, consumption in the data falls about $18\%$, while in the
+model it actually rises by more than $5\%.$
+
+We are skeptical that detailed models with extreme adjustment costs are
+worth exploring. With extreme costs, given the observed levels of investment
+and the capital stock in the data, (\ref{adjustment}) implies that the
+resources lost due to adjustment costs as a fraction of output are nearly $%
+7\%$ in 1933. We share Bernanke, Gertler, and Gilchrist's (1999) concerns
+that costs of this magnitude are implausibly large. From 1929 to 1933,
+investment falls sharply, but the adjustment costs implied by (\ref%
+{adjustment}) rise sharply. Why would firms incur adjustment costs simply by
+investing at positive rates below their steady-state value? The idea that
+managers incurred huge adjustment costs simply because they were watching
+their machines depreciate seems farfetched. Furthermore, the idea that from
+1929 to 1933 investment fell sharply but adjustment costs rose sharply is
+inconsistent with interpreting these costs as arising from monitoring costs
+in an economy with financial frictions. Indeed, in such an economy, as
+investment activity falls, so do monitoring costs.
+
+We do similar experiments for the 1982 recession period, with similar
+results. In panel B of Figure 13, we see that with BGG costs the investment
+wedge fluctuates little through the end of 1982 and improves thereafter.
+With extreme costs the investment wedges worsens until 1983 and improves
+thereafter. Panel B of Figure 14 shows that in the model with costs at the
+BGG level, the investment wedge plays essentially no role in output
+fluctuations. With costs at four times the BGG level, the panel shows that
+the investment wedge plays a bit larger but still modest role. Recall that,
+relative to trend, output in the data falls almost 10\% from its peak to its
+trough. With extreme adjustment costs, output due to the investment wedge
+falls about 2.2\%, so that the investment wedge appears to account for
+roughly one-fifth of the fall in output.
+
+In our judgment, the investment wedge actually accounts for much less than
+one-fifth of the 1982 recession fall in output because we think extreme
+adjustment costs are implausible. Even aside from the Great Depression
+issues, we find models with extreme adjustment costs difficult to reconcile
+with data on plant level investment decisions. An extensive literature has
+documented that investment at the plant level has large spikes. Doms and
+Dunne (1994), for example, examine plant level data for 33,000 plants over
+17 years. They show that much of the growth in the capital stock of a plant
+is concentrated in a short period of time. In the year of highest
+investment, the capital stock grows 45\%, while in the years immediately
+before and after that, it grows less than 10\%. Such behavior is clearly
+inconsistent with extreme adjustment costs.
+
+Furthermore, the use of adjustment costs in macroeconomic analysis is
+controversial. Kydland and Prescott (1982), for example, have argued that
+models with adjustment costs like those in equation (\ref{adjustment}) are
+inconsistent with the data. Such models imply a static relationship between
+the investment-capital ratio and the relative price of investment goods to
+output (of the form $q=1/[1-\phi ^{\prime }(x/k)]$). This means that the
+elasticity of the investment-capital ratio with respect to the relative
+price is the same in the short run and the long run. Kydland and Prescott
+argue that this is not consistent with the data, where short-run
+elasticities are much smaller than long-run elasticities.
+
+Finally, the finding that investment wedges play a modest role when
+adjustment costs are extreme is easy to reconcile with the view that
+financial frictions which manifest themselves primarily as investment wedges
+play a small role over the business cycle. This reconciliation uses the
+insight discussed above that a modeler who incorrectly specifies too high a
+level of adjustment costs will incorrectly find too large a role for
+investment wedges.
+
+\bigskip
+
+\begin{center}
+5. \textsc{Contrasting Our Decomposition With Traditional Decompositions}
+\end{center}
+
+Our decomposition of business cycle fluctuations is intended to isolate the
+partial effects of each of the wedges on equilibrium outcomes, and in this
+sense, it is different from traditional decompositions. Those decompositions
+attempt to isolate the effects of (so-called) primitive shocks on
+equilibrium outcomes; ours does not. Isolating the effects of primitive
+shocks requires specifying a detailed model. Since our procedure precedes
+the specification of a detailed model, it obviously cannot be used to
+isolate the effects of primitive shocks. In order to clarify the distinction
+between our decomposition and a traditional one, here we describe a
+traditional decomposition and explain why we prefer ours.
+
+The traditional decomposition attempts to isolate the effects of primitive
+shocks by \textquotedblleft naming the innovations.\textquotedblright\
+Recall that in our stochastic process for the four wedges, (\ref{s process}%
+), the innovations $\varepsilon _{t+1}$ are allowed to be contemporaneously
+correlated with the covariance matrix $V.$ Under the traditional
+decomposition, the primitive shocks, say, $\eta _{t+1}$, are assumed to be
+mean zero, to be contemporaneously uncorrelated with $E\eta _{t+1}\eta
+_{t+1}^{\prime }=I$, and to lead to the same stochastic process for the
+wedges. Identifying these primitive shocks requires specifying a matrix $R$
+so that $R\eta _{t+1}=\varepsilon _{t+1}$ and $RR^{\prime }=V.$ Names are
+then made up for these shocks, including \emph{money} shocks, \emph{demand}
+shocks, \emph{technology} shocks, and so on.
+
+In the traditional method, then, given any sequence of realized wedges $%
+s_{t} $ and the specification of the matrix $R$, the associated realized
+values of $\eta _{t}=(\eta _{1t},\eta _{2t},\eta _{3t},\eta _{4t})^{\prime }$
+are computed. The movements in, say, output, are then decomposed into the
+movements due to each one of these primitive shocks as follows. Let $%
+s_{t}(\eta _{1})=$ {\large (}$\log A_{t}(\eta _{1}),\tau _{lt}(\eta _{1})$, $%
+\tau _{xt}(\eta _{1}),\log g_{t}(\eta _{1})${\large )} denote the realized
+values of the four wedges when the primitive shock sequence $\eta _{t}=(\eta
+_{1t},0,0,0)$ is fed into 
+\[
+s_{t+1}=P_{0}+Ps_{t}+R\eta _{t+1}. 
+\]%
+(Note that when the covariance matrix $V$ is not diagonal, movements in a
+primitive shock $\eta _{1t}$ will lead to movements in more than one wedge.)
+The predicted value of, say, output due to $\eta _{1}$ is then computed from
+the decision rules of the model according to $y_{t}(\eta _{1})=y${\large (}$%
+k_{t}(\eta _{1}),s_{t}(\eta _{1})${\large )}, where $k_{t}(\eta _{1})$ is
+computed recursively using the decision rule for investment, the initial
+capital stock, and the capital accumulation law. The values $s_{t}(\eta
+_{2}) $, $y_{t}(\eta _{2})$, and the rest are computed in a similar way.
+
+Notice that in this traditional decomposition method, the realized value of
+each wedge is simply the sum of the parts due to $\eta _{1},\eta _{2},$ and
+so on, in that 
+\[
+\log A_{t}=\sum_{i}\log A_{t}(\eta _{i}),~\tau _{lt}=\sum_{i}\tau _{lt}(\eta
+_{i}),~\tau _{xt}=\sum_{i}\tau _{xt}(\eta _{i}),~\log g_{t}=\sum_{i}\log
+g_{t}(\eta _{i}). 
+\]%
+In this sense, the traditional decomposition attempts to decompose each of
+the four wedges into four component parts, each of which is due to a
+primitive shock.
+
+Our decomposition is purposefully less ambitious. It includes only the
+effect of the movements of each total wedge, not any of its subparts. The
+advantage of our decomposition is that it is invariant to $R$, so that we do
+not need to make identifying assumptions implicit in the specification of
+the matrix $R,$ nor do we need to make up names for the shocks. The
+invariance makes our method valuable. The problem with the traditional
+approach is that finding identifying assumptions that apply to a broad class
+of detailed models is very difficult. Hence, this approach is not useful in
+pointing researchers toward classes of promising models. In a sense, the
+traditional approach puts the cart before the horse: the decomposition
+requires specifying the matrix $R$, but doing that requires a detailed
+model. Our decomposition is useful precisely because it does not need to
+make up identifying assumptions to specify the matrix $R.$ Our equivalence
+results have identifying assumptions built into them, so that results from
+the benchmark prototype economy can be used to uncover promising classes of
+detailed models.
+
+\bigskip
+
+\begin{center}
+6. \textsc{Reviewing the Related Literature}
+\end{center}
+
+Our work here is related to the existing literature in terms of methodology
+and the interpretation of the wedges.
+
+\bigskip \newpage
+
+\begin{center}
+6.1. \emph{Methodology}
+\end{center}
+
+Our basic method is to use restrictions from economic theory to back out
+wedges from the data, formulate stochastic processes for these wedges, and
+then put the wedges back into a quantitative general equilibrium model for
+an accounting exercise. This basic idea is at the heart of an enormous
+amount of work in the real business cycle theory literature. Prescott
+(1986), for example, asks what fraction of the variance of output can
+plausibly be attributed to productivity shocks, which we have referred to as
+the \emph{efficiency wedge}. Subsequent studies have expanded this general
+equilibrium accounting exercise to include a wide variety of other shocks.
+(See, for example, the studies in Cooley's 1995 volume.)
+
+An important difference between our method and others is that we back out
+the labor wedge and the investment wedge from the combined consumer and firm
+first-order conditions, while most of the recent business cycle literature
+uses direct measures of labor and investment shocks. Perhaps the most
+closely related precursor of our method is McGrattan's (1991); she uses the
+equilibrium of her model to infer the implicit wedges. Ingram, Kocherlakota,
+and Savin (1997) advocate a similar approach.
+
+\bigskip
+
+\begin{center}
+6.2. \emph{Wedge Interpretations}
+\end{center}
+
+The idea that taxes of various kinds distort the relation between various
+marginal conditions is the cornerstone of public finance. Taxes are not the
+only well-known distortions; monopoly power by unions or firms is also
+commonly thought to produce a labor wedge. And the idea that a labor wedge
+is produced by sticky wages or sticky prices is the cornerstone of the new
+Keynesian approach to business cycles; see, for example, the survey by
+Rotemberg and Woodford (1999). One contribution of our work here is to show
+the precise mapping between the wedges and general equilibrium models with
+frictions.
+
+Many studies have plotted one or more of the four wedges. The efficiency
+wedge has been extensively studied. (See, for example, Kehoe and Prescott
+(2002).) The labor wedge has also been studied. For example, Parkin (1988),
+Hall (1997), and Gal\'{\i}, Gertler, and L\'{o}pez-Salido (forthcoming) all
+graph and interpret the labor wedge for the postwar data. Parkin discusses
+how monetary shocks might drive this wedge, and Hall discusses how search
+frictions might drive it. Gal\'{\i}, Gertler, and L\'{o}pez-Salido discuss a
+variety of interpretations of the labor wedge, as do Rotemberg and Woodford
+(1991, 1999). Mulligan (2002a, b) plots the labor wedge for the United
+States for much of the 20th century, including the Great Depression period.
+He interprets movements in this wedge as arising from changes in labor
+market institutions and regulation, including features we discuss here. Cole
+and Ohanian (2002) plot the labor wedge for the Great Depression and offer
+interpretations similar to ours. The investment wedge has been investigated
+by McGrattan (1991), Braun (1994), Carlstrom and Fuerst (1997), and Cooper
+and Ejarque (2000).
+
+\bigskip
+
+\begin{center}
+7. \textsc{Conclusions and Extensions}
+\end{center}
+
+This study is aimed at applied theorists who are interested in building
+detailed, quantitative models of economic fluctuations. Once such theorists
+have chosen the primitive sources of shocks to economic activity, they need
+to choose the mechanisms through which the shocks lead to business cycle
+fluctuations. We have shown that these mechanisms can be summarized by their
+effects on four wedges in the standard growth model. Our business cycle
+accounting method can be used to judge which mechanisms are promising and
+which are not, thus helping theorists narrow their options. We view our
+method as an alternative to the use of structural vector autoregressions
+(VARs), which has also been advocated as a way to identify promising
+mechanisms. (Elsewhere, in Chari, Kehoe, and McGrattan (2005), we argue that
+structural VARs have deficiencies that limit their usefulness.)
+
+Here we have demonstrated how our method works by applying it to two
+historical episodes, the Great Depression and the 1982 U.S. recession. We
+have found that efficiency and labor wedges, in combination, account for
+essentially all of the decline and recovery in these business cycles;
+investment wedges play, at best, a tertiary role. These results hold in
+summary statistics of the entire postwar period and in alternative
+specifications of the growth model. We have also found that when we maximize
+the contribution of the investment wedge, the models display a consumption
+anomaly: they tend to produce much smaller declines in consumption during
+downturns than occur in the data. These findings together imply that
+existing models of financial frictions in which the distortions primarily
+manifest themselves as investment wedges can account, at best, for only a
+small fraction of the fluctuations in the Great Depression or more typical
+U.S. downturns. This finding is our primary substantive contribution.
+
+We have seen that if adjustment costs are extreme, investment wedges can
+play a larger but still modest role over the business cycle. A combination
+of microeconomic and macroeconomic observations argue against extreme
+adjustment costs, and we view them as a theoretical curiosity of no applied
+interest.
+
+A useful extension of our work here would be to decompose our wedges into a
+portion that comes from explicit taxes imposed by governments and a portion
+that comes from frictions in detailed models. This decomposition would be
+particularly useful when explicit taxes vary significantly over the business
+cycle.
+
+Researchers have argued---quite beyond the prominent model of Bernanke and
+Gertler (1989)---that frictions in financial markets are important for
+business cycle fluctuations. (See Bernanke (1983) and the motivation in
+Bernanke and Gertler (1989).) We stress that our findings do not contradict
+this idea. Indeed, we have shown that a detailed economy with
+input-financing frictions is equivalent to a prototype economy with
+efficiency wedges. In this sense, while existing models of financial
+frictions are not promising, new models in which financial frictions show up
+as efficiency and labor wedges are.
+
+Our results suggest that future theoretical work should focus on developing
+models which lead to fluctuations in efficiency and labor wedges. Many
+existing models produce fluctuations in labor wedges. The challenging task
+is to develop detailed models in which primitive shocks lead to fluctuations
+in efficiency wedges as well.
+
+\bigskip
+
+\noindent \emph{University of Minnesota and Research Department, Federal
+Reserve Bank of Minneapolis, 90 Hennepin Avenue, Minneapolis, MN 55401,
+U.S.A.; chari@res.mpls.frb.fed.us}
+
+\begin{center}
+and
+\end{center}
+
+\emph{Research Department, Federal Reserve Bank of Minneapolis, 90 Hennepin
+Avenue, Minneapolis, MN 55401, U.S.A., and University of Minnesota;
+pkehoe@res.mpls.frb.fed.us}
+
+\begin{center}
+and
+\end{center}
+
+\emph{Research Department, Federal Reserve Bank of Minneapolis, 90 Hennepin
+Avenue, Minneapolis, MN 55401, U.S.A., and University of Minnesota;
+erm@mcgrattan.mpls.frb.fed.us}
+
+\bigskip \newpage
+
+%TCIMACRO{%
+%\TeXButton{TeX field}{\renewcommand{\baselinestretch}{1.0}\normalsize}}%
+%BeginExpansion
+\renewcommand{\baselinestretch}{1.0}\normalsize%
+%EndExpansion
+
+\begin{center}
+\textbf{APPENDIX: The Mapping for Two Other Wedges}
+\end{center}
+
+Here we demonstrate the mapping from two other detailed economies with
+frictions to two prototype economies with wedges. In the preceding text, we
+have described the mapping for efficiency and labor wedges. In this
+appendix, we describe it for investment and government consumption wedges.
+
+\bigskip
+
+\begin{center}
+\textbf{A. Investment Wedges Due to Financial Frictions}
+\end{center}
+
+We start with the mapping of financial frictions to investment wedges.
+
+In Chari, Kehoe, and McGrattan (2004), we show the equivalence between the
+Carlstrom and Fuerst (1997) model and a prototype economy. Here we focus on
+the financial frictions in the Bernanke, Gertler, and Gilchrist (1999) model
+and abstract from the monetary features of that model. Bernanke, Gertler,
+and Gilchrist begin by deriving the optimal financial contracts between
+risk-neutral entrepreneurs and financial intermediaries in an environment
+with no aggregate uncertainty. These contracts resemble debt contracts (with
+default). Bernanke, Gertler, and Gilchrist try to extend their derivation of
+optimal contracts to an economy with aggregate uncertainty. The contracts
+they consider are not optimal given the environment, because these contracts
+do not allow risk sharing between risk-averse consumers and risk-neutral
+entrepreneurs. Here we solve for optimal debt-like contracts that
+arbitrarily rule out such risk sharing, but even so, our first-order
+conditions differ from those of Bernanke, Gertler, and Gilchrist. (One
+reason for this difference is that our break-even constraint for the
+financial intermediary and our law of motion for entrepreneurial net worth
+differ from theirs. See equations (\ref{breakeven}) and (\ref{n})\ below.)
+
+\bigskip
+
+\noindent a. \emph{A Detailed Economy With Financial Frictions}
+
+The Bernanke-Gertler-Gilchrist model has a continuum of risk-neutral
+entrepreneurs of mass $L_{e}$, a continuum of consumers of mass 1, and a
+representative firm. Output $y(s^{t})$ is produced according to 
+\begin{equation}
+y(s^{t})=A(s^{t})k^{\alpha }\left[ l^{\Omega }L_{e}^{1-\Omega }\right]
+^{1-\alpha },  \label{bggprodn}
+\end{equation}%
+where $A(s^{t}),k,$ and $l$ are the technology shock, the capital stock, and
+the labor supplied by consumers. The stochastic process for the technology
+shock is given by $\log A(s^{t+1})=(1-\rho _{A})\log A+\rho _{A}\log
+A(s^{t})+\varepsilon _{A}(s^{t+1}).$ Each entrepreneur supplies one unit of
+labor inelastically. The representative firm's maximization problem is to
+choose $l,L_{e},k$ to maximize profits $A(s^{t})k^{\alpha }\left[ l^{\Omega
+}L_{e}^{1-\Omega }\right] ^{1-\alpha }-w(s^{t})l-w_{e}(s^{t})L_{e}-r(s^{t})k$%
+, where $w(s^{t}),$ $w_{e}(s^{t}),$ and $r(s^{t})$ denote the wage rate for
+consumers, the wage rate for entrepreneurs, and the rental rate on capital.
+
+New capital goods can be produced only by entrepreneurs. Each entrepreneur
+owns a technology that transforms output and old capital at the end of any
+period into capital goods at the beginning of the following period. In each
+period $t,$ each entrepreneur receives an idiosyncratic shock $\omega $
+drawn from a distribution $F(\omega )$ with expected value 1. This shock is
+i.i.d. across entrepreneurs and time. The realization of $\omega $ is
+private information to the entrepreneur. An entrepreneur who buys $%
+k(s^{t-1}) $ units of goods in period $t-1$ produces $\omega k(s^{t-1})$
+units of capital at the beginning of period $t.$ These capital goods are
+sold at price $R_{k}(s^{t})=r(s^{t})+(1-\delta )$, where $\delta $ is the
+rate of depreciation of the capital goods.
+
+Entrepreneurs finance the production of new capital goods partly with their
+own net worth, $n(s^{t-1}),$ and partly with loans from financial
+intermediaries. These intermediaries offer contracts with the following
+cutoff form: in all idiosyncratic states at $t$ in which $\omega \geq \bar{%
+\omega}(s^{t})$, the entrepreneur pays $\bar{\omega}%
+(s^{t})R_{k}(s^{t})k(s^{t-1})$ and keeps $[\omega -\bar{\omega}%
+(s^{t})]R_{k}(s^{t})k(s^{t-1}).$ In all other states, the entrepreneur
+receives nothing while the financial intermediary receives $\omega
+R_{k}(s^{t})k(s^{t-1})$ net of monitoring costs $\mu \omega
+R_{k}(s^{t})k(s^{t-1}).$ We assume that financial intermediaries make zero
+profits in equilibrium.
+
+Given an entrepreneur's net worth $n(s^{t-1}),$ the contracting problem for
+a representative entrepreneur is to choose the cutoff $\bar{\omega}(s^{t})$
+for each state and the amount of goods invested $k(s^{t-1})$ to maximize the
+expected utility of the entrepreneurs, 
+\[
+\sum \pi (s^{t}|s^{t-1})\text{{\large \{[}}(1-\Gamma \text{{\large (}}\bar{%
+\omega}(s^{t})\text{{\large )]}}R_{k}(s^{t})k(s^{t-1})~dF(\omega )\text{%
+{\large \}}}, 
+\]
+subject to a break-even constraint for the intermediary, 
+\begin{equation}
+\sum (s^{t}|s^{t-1})\text{{\large [}}\Gamma \text{{\large (}}\bar{\omega}%
+(s^{t})\text{{\large )}}-\mu G\text{{\large (}}\bar{\omega}(s^{t})\text{%
+{\large )]}}R_{k}(s^{t})k(s^{t-1})=k(s^{t-1})-n(s^{t-1}),  \label{breakeven}
+\end{equation}
+where $\Gamma (\bar{\omega})=\int_{0}^{\bar{\omega}}\omega f(\omega
+)~d\omega +\bar{\omega}\int_{\bar{\omega}}^{\infty }f(\omega )~d\omega $ and 
+$G(\bar{\omega})=\int_{0}^{\bar{\omega}}\omega f(\omega )~d\omega .$ Here $%
+q(s^{t}|s^{t-1})$ denotes the price of consumption goods in state $s^{t}$ in
+units of consumption goods in state $s^{t-1}.$
+
+This formulation implies an aggregation result: The capital demand of the
+entrepreneurs is linear in their net worth, so that total demand for goods
+from them depends only on their total net worth. The solution to the
+contracting problem is characterized by the first-order conditions with
+respect to $k(s^{t-1})$ and $\bar{\omega}(s^{t})$, which can summarized by 
+\begin{equation}
+\frac{\sum \pi (s^{t}|s^{t-1})\text{{\large [}}1-\Gamma \text{{\large (}}%
+\bar{\omega}(s^{t})\text{{\large )]}}R_{k}(s^{t})}{\sum \pi
+(s^{t}|s^{t-1})\Gamma ^{\prime }\text{{\large (}}\bar{\omega}(s^{t})\text{%
+{\large )}}R_{k}(s^{t})}=\frac{\sum q(s^{t}|s^{t-1})\text{{\large [}}\Gamma 
+\text{{\large (}}\bar{\omega}(s^{t})\text{{\large )}}-\mu G\text{{\large (}}%
+\bar{\omega}(s^{t})\text{{\large )]}}R_{k}(s^{t})-1}{\sum q(s^{t}|s^{t-1})%
+\text{{\large [}}\Gamma ^{\prime }\text{{\large (}}\bar{\omega}(s^{t})\text{%
+{\large )}}-\mu G^{\prime }\text{{\large (}}\bar{\omega}(s^{t})\text{{\large %
+)]}}R_{k}(s^{t})}  \label{OmegaBar}
+\end{equation}
+and the break-even constraint (\ref{breakeven}).
+
+In each period, a fraction $\gamma $ of existing entrepreneurs dies and is
+replaced by a fraction $\gamma $ of newborn entrepreneurs. At the beginning
+of each period, entrepreneurs learn whether they will die this period. We
+assume that $\gamma $ is sufficiently small and the technology for producing
+investment goods is sufficiently productive so that entrepreneurs consume
+their net worth only when they are about to die. All entrepreneurs who are
+going to die consume their entire net worth and do not supply labor in the
+current period. (The newborn replacements do instead.) Those entrepreneurs
+who do not die save their wage income plus their income from producing
+capital goods. The aggregate income of the entrepreneurs is, then, 
+\[
+\int \left[ \omega -\bar{\omega}(s^{t})\right] R_{k}(s^{t})k(s^{t-1})~dF(%
+\omega )+w_{e}(s^{t})L_{e}, 
+\]
+where $k(s^{t-1})$ is the aggregate capital stock. The law of motion for
+aggregate net worth is given by
+
+\begin{equation}
+n(s^{t})=\gamma \int \left[ \omega -\bar{\omega}(s^{t})\right]
+R_{k}(s^{t})k(s^{t-1})~dF(\omega )+w_{e}(s^{t})L_{e}.  \label{n}
+\end{equation}
+Total consumption by entrepreneurs in any period is 
+\begin{equation}
+c_{e}(s^{t})=(1-\gamma )\int \left[ \omega -\bar{\omega}(s^{t})\right]
+R_{k}(s^{t})k(s^{t-1})~dF(\omega ).  \label{ce}
+\end{equation}
+
+Consumers maximize utility given by 
+\begin{equation}
+\sum_{t=0}^{\infty }\sum_{s^{t}}\,\beta ^{t}\pi _{t}(s^{t})\,U\text{{\large (%
+}}c(s^{t}),l(s^{t})\text{{\large )}},  \label{utility}
+\end{equation}%
+where $c(s^{t})$ denotes consumption in state $s^{t}$ subject to 
+\begin{equation}
+c(s^{t})+\sum_{s_{t+1}}q(s^{t+1}|s^{t})b(s^{t+1})\leq
+w(s^{t})l(s^{t})+b(s^{t})+T(s^{t}),  \nonumber
+\end{equation}%
+for $t=0,1,\ldots ,$ and borrowing constraints, $b(s^{t+1})\geq $ $\bar{b},$
+for some large negative number $\bar{b}.$ Here $T(s^{t})$ is lump-sum
+transfers. The initial condition $b(s^{0})$ is given. Each of the bonds $%
+b(s^{t+1})$ is a claim to one unit of consumption in state $s^{t+1}$ and
+costs $q(s^{t+1}|s^{t})$ dollars in state $s^{t}.$ The first-order
+conditions for the consumer can be written as 
+\begin{eqnarray}
+-\frac{U_{l}(s^{t})}{U_{c}(s^{t})} &=&w(s^{t})\text{ and}
+\label{Euler for money} \\
+q(s^{t+1}|s^{t}) &=&\beta \pi (s^{t+1}|s^{t})\frac{U_{c}(s^{t+1})}{%
+U_{c}(s^{t})}.  \label{interest rate}
+\end{eqnarray}
+
+The market-clearing condition for final goods is then 
+\[
+c(s^{t})+c_{e}(s^{t})+\mu G\text{{\large (}}\bar{\omega}(s^{t})\text{{\large %
+)}}R_{k}(s^{t})k(s^{t-1})+k(s^{t})-(1-\delta )k(s^{t-1})=y(s^{t}). 
+\]
+
+\bigskip
+
+\noindent b. \emph{The Associated Prototype Economy With Investment Wedges}
+
+Now consider a prototype economy which is the same as our benchmark
+prototype economy, except for the following changes. We assume that the
+production function is as in (\ref{bggprodn}), with $L_{e}$ interpreted as a
+fixed input rented from the government, and we assume that consumers are
+taxed on capital income but not on investment or labor income. With capital
+income taxes, the consumers' budget constraint is given by 
+\[
+c(s^{t})+k(s^{t})-(1-\delta )k(s^{t-1})=w(s^{t})l(s^{t})+[1-\tau
+_{k}(s^{t})]r(s^{t})k(s^{t-1})+\delta \tau _{k}(s^{t})k(s^{t-1})+T(s^{t}), 
+\]%
+where $\tau _{k}(s^{t})$ is the tax rate on capital income. Here $\tau
+_{k}(s^{t})$ plays the role of an investment wedge. The resource constraint
+for the prototype economy is as in the benchmark prototype economy. Let
+government consumption in the prototype economy be given by 
+\begin{equation}
+g(s^{t})=c_{e}^{\ast }(s^{t})+\mu G\text{{\large (}}\bar{\omega}^{\ast
+}(s^{t})\text{{\large )}}R_{k}^{\ast }(s^{t})k^{\ast }(s^{t-1}),
+\label{gbgg}
+\end{equation}%
+where asterisks denote the allocations in the detailed economy with
+investment frictions.
+
+We now show how the tax on capital income in our prototype economy can be
+constructed from the detailed economy. First, the break-even constraint in
+the detailed economy can be rewritten as 
+\[
+\sum q^{\ast }(s^{t}|s^{t-1})\left\{ \text{{\large [}}\Gamma \text{{\large (}%
+}\bar{\omega}^{\ast }(s^{t})\text{{\large )}}-\mu G\text{{\large (}}\bar{%
+\omega}^{\ast }(s^{t})\text{{\large )]}}R_{k}^{\ast }(s^{t})+\frac{n^{\ast
+}(s^{t-1})}{k^{\ast }(s^{t-1})}\frac{U_{c}^{\ast }(s^{t-1})}{\beta \pi
+(s^{t}|s^{t-1})U_{c}^{\ast }(s^{t})}\right\} =1, 
+\]
+where $q^{\ast }(s^{t}|s^{t-1})=\beta \pi (s^{t}|s^{t-1})U_{c}^{\ast
+}(s^{t})/U_{c}^{\ast }(s^{t-1}).$ The intertemporal Euler equation in the
+prototype economy is
+
+\[
+\sum q(s^{t}|s^{t-1})\text{{\large \{[}}(1-\tau _{k}(s^{t})\text{{\large ]}}%
+A(s^{t})F_{k}(s^{t})+(1-\delta )\text{{\large \}}}=1, 
+\]%
+where $q(s^{t}|s^{t-1})=\beta \pi
+(s^{t}|s^{t-1})U_{c}(s^{t})/U_{c}(s^{t-1}). $ Let the tax rate on capital
+income $\tau _{k}(s^{t})$ be such that 
+\begin{eqnarray}
+&&[1-\tau _{k}(s^{t})][A(s^{t})F_{k}^{\ast }(s^{t})-\delta ]+1
+\label{bggeuler} \\
+&=&\text{{\large [}}\Gamma \text{{\large (}}\bar{\omega}^{\ast }(s^{t})\text{%
+{\large )}}-\mu G\text{{\large (}}\bar{\omega}^{\ast }(s^{t})\text{{\large )]%
+}}R_{k}^{\ast }(s^{t})+\frac{n^{\ast }(s^{t-1})}{k^{\ast }(s^{t-1})}\frac{%
+U_{c}^{\ast }(s^{t-1})}{\beta \pi (s^{t}|s^{t-1})U_{c}^{\ast }(s^{t})}. 
+\nonumber
+\end{eqnarray}%
+Comparing first-order conditions for the two economies, we then have this
+proposition:
+
+\bigskip
+
+\textsc{Proposition }6:\emph{\ Consider the prototype economy just
+described, with government consumption given by }(\ref{gbgg})\emph{\ and
+capital income taxes }$\emph{by}$\emph{\ }(\ref{bggeuler})\emph{. The
+aggregate equilibrium allocations for this prototype economy coincide with
+those of the detailed economy with financial frictions}$.$
+
+\bigskip
+
+\begin{center}
+\textbf{B. Government Consumption Wedges Due to International Borrowing and
+Lending}
+\end{center}
+
+Now we develop a detailed economy with international borrowing and lending
+and show that net exports in that economy are equivalent to a government
+consumption wedge in an associated prototype economy.
+
+\bigskip
+
+\noindent a. \emph{A Detailed Economy With International Borrowing and
+Lending}
+
+Consider a model of a world economy with $N$ countries and a single
+homogenous good in each period. We use the same notation for uncertainty as
+before.
+
+The representative consumer in country $i$ has preferences 
+\begin{equation}
+\sum \beta ^{t}\pi _{t}(s^{t})U\text{{\large (}}c_{i}(s^{t}),l_{i}(s^{t})%
+\text{{\large )}},  \label{preferences 2}
+\end{equation}%
+where $c_{i}(s^{t})$ and $l_{i}(s^{t})$ denote consumption and labor. The
+consumer's budget constraint is 
+\begin{equation}
+c_{i}(s^{t})+b_{i}(s^{t})+k_{i}(s^{t})\leq F\text{{\large (}}%
+k_{i}(s^{t-1}),l_{i}(s^{t})\text{{\large )}}+(1-\delta
+)k_{i}(s^{t-1})+\sum_{s^{t+1}}q(s^{t+1}/s^{t})b_{i}(s^{t+1}),  \label{16}
+\end{equation}%
+where $b^{i}(s^{t+1})$ denotes the amount of state-contingent borrowing by
+the consumer in country $i$ in period $t$, $q(s^{t+1}/s^{t})$ denotes the
+corresponding state-contingent price, and $k_{i}(s^{t})$ denotes the capital
+stock.
+
+An \textit{equilibrium for this detailed economy} is a set of allocations 
+{\large (}$c_{i}(s^{t}),k_{i}(s^{t}),l_{i}(s^{t}),$\linebreak $%
+b_{i}(s^{t+1}) ${\large )} and prices $q(s^{t}/s^{t-1})${\large \ }such that
+these allocations both solve the consumer's problem in each country $i$ and
+satisfy the world resource constraint: 
+\begin{equation}
+\sum_{i=1}^{N}[c_{i}(s^{t})+k_{i}(s^{t})]\leq \sum_{i=1}^{N}\text{{\large [}}%
+F\text{{\large (}}k_{i}(s^{t-1}),l_{i}(s^{t})\text{{\large )}}+(1-\delta
+)k_{i}(s^{t-1})\text{{\large ].}}  \label{world resource}
+\end{equation}%
+Note that in this economy, the net exports of country $i$ are given by 
+\[
+F\text{{\large (}}k_{i}(s^{t-1}),l_{i}(s^{t})\text{{\large )}}%
+-[k_{i}(s^{t})-(1-\delta )k_{i}(s^{t-1})]-c_{i}(s^{t}). 
+\]
+
+\bigskip
+
+\noindent b. \emph{The Associated Prototype Economy With Government
+Consumption Wedges}
+
+Now consider a prototype economy of a single closed economy $i$ with an
+exogenous stochastic variable, government consumption\textit{\ }$%
+g_{i}(s^{t}),$ which we call the \textit{government consumption wedge}. In
+this economy, consumers maximize (\ref{preferences 2}) subject to their
+budget constraint 
+\begin{equation}
+c_{i}(s^{t})+k_{i}(s^{t})=w_{i}(s^{t})l_{i}(s^{t})+\left[ r_{i}(s^{t})+1-%
+\delta \right] k_{i}(s^{t-1})+T_{i}(s^{t}),  \label{prototype budget}
+\end{equation}%
+where $w_{i}(s^{t}),$ $r_{i}(s^{t}),$ and $T_{i}(s^{t})$ are the wage rate,
+the capital rental rate, and lump-sum transfers. In each state $s^{t},$
+firms choose $k$ and $l$ to maximize $F(k,l)-r_{i}(s^{t})k-w_{i}(s^{t})l$.
+The government's budget constraint is 
+\begin{equation}
+g_{i}(s^{t})+T_{i}(s^{t})=0.  \label{government budget}
+\end{equation}%
+The resource constraint for this economy is 
+\begin{equation}
+c_{i}(s^{t})+g_{i}(s^{t})+k_{i}(s^{t})=F\text{{\large (}}%
+k_{i}(s^{t-1}),l_{i}(s^{t})\text{{\large )}}+(1-\delta )k_{i}(s^{t-1}).
+\label{resource 2}
+\end{equation}%
+An \textit{equilibrium of the prototype economy} is, then, a set of
+allocations {\large (}$c_{i}(s^{t}),k_{i}(s^{t}),l_{i}(s^{t}),g_{i}(s^{t}),%
+\linebreak T_{i}(s^{t})${\large )} and prices {\large (}$%
+w_{i}(s^{t}),r_{i}(s^{t})${\large )} such that these allocations are optimal
+for consumers and firms and the resource constraint is satisfied.
+
+The following proposition shows that the government consumption wedge in
+this prototype economy consists of net exports in the original economy.
+
+\bigskip
+
+\textsc{Proposition }7:\textit{\ }\emph{Consider the equilibrium allocations}
+{\large (}$c_{i}^{\ast }(s^{t}),k_{i}^{\ast }(s^{t}),l_{i}^{\ast
+}(s^{t}),b_{i}^{\ast }(s^{t+1})${\large )} \emph{for country }$i$\emph{\ in
+the detailed economy. Let the government consumption wedge be} 
+\begin{equation}
+g_{i}(s^{t})=F\text{{\large (}}k_{i}^{\ast }(s^{t-1}),l_{i}^{\ast }(s^{t})%
+\text{{\large )}}-\left[ k_{i}^{\ast }(s^{t})-(1-\delta )k_{i}^{\ast
+}(s^{t-1})\right] -c_{i}^{\ast }(s^{t}),  \label{g}
+\end{equation}%
+\emph{let the wage and capital rental rates be }$w_{i}(s^{t})=F_{li}^{\ast
+}(s^{t})$ \emph{and} $r_{i}(s^{t})=F_{ki}^{\ast }(s^{t}),$ \emph{and let} $%
+T_{i}(s^{t})$ \emph{be defined by }(\ref{government budget}). \emph{Then the
+allocations} {\large (}$c_{i}^{\ast }(s^{t}),k_{i}^{\ast
+}(s^{t}),l_{i}^{\ast }(s^{t}),g_{i}^{\ast }(s^{t}),T_{i}(s^{t})${\large )} 
+\emph{and the prices }{\large (}$w_{i}(s^{t}),r_{i}(s^{t})${\large )}\emph{\
+are an equilibrium for the prototype economy.} \bigskip
+
+The proof follows by noting that the first-order conditions are the same in
+the two economies and that, given the government consumption wedge (\ref{g}%
+), the consumer's budget constraint (\ref{16}) in the detailed economy is
+equivalent to the resource constraint (\ref{resource 2}) in the prototype
+economy.
+
+Note that for simplicity we have abstracted from government consumption in
+the detailed economy. If that economy had government consumption as well,
+then the government consumption wedge in the prototype economy would be the
+sum of net exports and government consumption in the detailed
+economy.\newpage
+
+%TCIMACRO{%
+%\TeXButton{TeX field}{\renewcommand{\baselinestretch}{1.5}\normalsize}}%
+%BeginExpansion
+\renewcommand{\baselinestretch}{1.5}\normalsize%
+%EndExpansion
+
+\begin{center}
+\textbf{\large REFERENCES}
+\end{center}
+
+\textsc{Bernanke, B.} (1983): \textquotedblleft Nonmonetary Effects of the
+Financial Crisis in the Propagation of the Great
+Depression,\textquotedblright\ \emph{American Economic Review,} 73, 257--276.
+
+\textsc{Bernanke, B., and M. Gertler} (1989): \textquotedblleft Agency
+Costs, Net Worth, and Business Fluctuations,\textquotedblright\ \textit{%
+American Economic Review}, 79, 14--31.
+
+\textsc{Bernanke, B., M. Gertler, and S. Gilchrist} (1999):
+\textquotedblleft The Financial Accelerator in a Quantitative Business Cycle
+Framework,\textquotedblright\ in \textit{Handbook of Macroeconomics,} Volume
+1C, ed. by J. Taylor and M. Woodford. Amsterdam: North-Holland.
+
+\textsc{Bordo, M., C. Erceg, and C. Evans} (2000): \textquotedblleft Money,
+Sticky Wages, and the Great Depression,\textquotedblright\ \textit{American
+Economic Review,} 90, 1447--1463.
+
+\textsc{Braun, R.} (1994): \textquotedblleft How Large Is the Optimal
+Inflation Tax?\textquotedblright\ \textit{Journal of Monetary} \textit{%
+Economics,} 34, 201--214.
+
+\textsc{Carlstrom, C., and T. Fuerst} (1997): \textquotedblleft Agency
+Costs, Net Worth, and Business Fluctuations: A Computable General
+Equilibrium Analysis,\textquotedblright\ \textit{American Economic\ Review,}
+87, 893--910.
+
+\textsc{Chari, V., P. Kehoe, and E. McGrattan} (2002): \textquotedblleft
+Accounting for the Great Depression,\textquotedblright\ \textit{American
+Economic Review}, 92, 22--27.
+
+%TCIMACRO{\TeXButton{rule}{\rule[-0.02in]{0.81in}{0.2pt}} }%
+%BeginExpansion
+\rule[-0.02in]{0.81in}{0.2pt}
+%EndExpansion
+(2004): \textquotedblleft Business Cycle Accounting,\textquotedblright\
+Working Paper 10351, National Bureau of Economic Research.
+
+%TCIMACRO{\TeXButton{rule}{\rule[-0.02in]{0.81in}{0.2pt}} }%
+%BeginExpansion
+\rule[-0.02in]{0.81in}{0.2pt}
+%EndExpansion
+(2005): \textquotedblleft A Critique of Structural VARs Using Business Cycle
+Theory,\textquotedblright\ Research Department Staff Report 364, Federal
+Reserve Bank of Minneapolis.
+
+%TCIMACRO{\TeXButton{rule}{\rule[-0.02in]{0.81in}{0.2pt}} }%
+%BeginExpansion
+\rule[-0.02in]{0.81in}{0.2pt}
+%EndExpansion
+(2006): \textquotedblleft Appendices: Business Cycle
+Accounting,\textquotedblright\ Research Department Staff Report 362, Federal
+Reserve Bank of Minneapolis.
+
+\textsc{Christiano, L., C. Gust, and J. Roldos} (2004): \textquotedblleft
+Monetary Policy in a Financial Crisis,\textquotedblright\ \emph{Journal of
+Economic Theory,} 119, 64--103.
+
+\textsc{Chu, T.} (2001): \textquotedblleft Exit Barriers and Economic
+Stagnation: The Macro-impact of Government Subsidies to
+Industries,\textquotedblright\ Manuscript, East-West Center.
+
+\textsc{Cole, H., and L. Ohanian} (1999): \textquotedblleft The Great
+Depression in the United States from a Neoclassical
+Perspective,\textquotedblright\ \textit{Federal Reserve Bank of Minneapolis
+Quarterly Review}, 23(Winter), 2--24.
+
+%TCIMACRO{\TeXButton{rule}{\rule[-0.02in]{0.81in}{0.2pt}} }%
+%BeginExpansion
+\rule[-0.02in]{0.81in}{0.2pt}
+%EndExpansion
+(2002): \textquotedblleft The U.S. and U.K. Great Depressions through the
+Lens of Neoclassical Growth Theory,\textquotedblright\ \textit{American
+Economic Review,} 92, 28--32.
+
+%TCIMACRO{\TeXButton{rule}{\rule[-0.02in]{0.81in}{0.2pt}} }%
+%BeginExpansion
+\rule[-0.02in]{0.81in}{0.2pt}
+%EndExpansion
+(2004): \textquotedblleft New Deal Policies and the Persistence of the Great
+Depression: A General Equilibrium Analysis,\textquotedblright\ \textit{%
+Journal of Political Economy}, 112, 779--816.
+
+\textsc{Cooley, T.,}\ ed. (1995): \textit{Frontiers of Business Cycle
+Research}. Princeton: Princeton University Press.
+
+\textsc{Cooper, R., and J. Ejarque} (2000): \textquotedblleft Financial
+Intermediation and Aggregate Fluctuations: A Quantitative
+Analysis,\textquotedblright\ \ \textit{Macroeconomic Dynamics}, 4(4),
+423--447.
+
+\textsc{Doms, M., and T. Dunne }(1994): \textquotedblleft Capital Adjustment
+Patterns in Manufacturing Plants\textquotedblright\ CES 94-11, U.S. Bureau
+of the Census.
+
+\textsc{Gali, J., M. Gertler, and D. Lopez-Salido}\ (forthcoming):
+\textquotedblleft Markups, Gaps, and the Welfare Costs of Business
+Fluctuations,\textquotedblright\ \emph{Review of Economics and Statistics}.
+
+\textsc{Hall, R.} (1997): \textquotedblleft Macroeconomic Fluctuations and
+the Allocation of Time,\textquotedblright\ \textit{Journal} \textit{of Labor
+Economics,} 15(Part 2), S223--S250.
+
+\textsc{Hornstein, A., and E. Prescott} (1993): \textquotedblleft The Firm
+and the Plant in General Equilibrium Theory,\textquotedblright\ in \textit{%
+General Equilibrium, Growth, and Trade, Vol. 2: The Legacy of Lionel McKenzie%
+}, ed. by R. Becker et al. San Diego: Academic Press.
+
+\textsc{Ingram, B., N. Kocherlakota, and N. Savin}\ (1997):
+\textquotedblleft Using Theory for Measurement: An Analysis of the Cyclical
+Behavior of Home Production,\textquotedblright\ \textit{Journal of Monetary
+Economics}, 40, 435--456.
+
+\textsc{Kehoe, T., and E. Prescott} (2002): \textquotedblleft Great
+Depressions of the 20th Century,\textquotedblright\ \textit{Review of
+Economic Dynamics}, 5, 1--18.
+
+\textsc{Kiyotaki, N., and J. Moore} (1997): \textquotedblleft Credit
+Cycles,\textquotedblright\ \textit{Journal of Political Economy}, 105,
+211--248.
+
+\textsc{Kydland, F., and E. Prescott} (1982): "Time to Build and Aggregate
+Fluctuations,\textquotedblright\ \textit{Econometrica}, 50, 1345--1370.
+
+%TCIMACRO{\TeXButton{rule}{\rule[-0.02in]{0.81in}{0.2pt}} }%
+%BeginExpansion
+\rule[-0.02in]{0.81in}{0.2pt}
+%EndExpansion
+(1988): \textquotedblleft The Workweek of Capital and Its Cyclical
+Implications,\textquotedblright\ \textit{Journal of Monetary Economics}, 21,
+343--360.
+
+\textsc{Lagos, R.} (2006): \textquotedblleft A Model of
+TFP,\textquotedblright\ \emph{Review of Economic Studies}, 73, 983--1007.
+
+\textsc{McGrattan, E.} (1991): \textquotedblleft The Macroeconomic Effects
+of Distortionary Taxation,\textquotedblright\ Institute for Empirical
+Macroeconomics Discussion Paper 37, Federal Reserve Bank of Minneapolis.
+
+\textsc{Mulligan, C.}\ (2002a): \textquotedblleft A Century of Labor-Leisure
+Distortions,\textquotedblright\ Working Paper 8774, National Bureau of
+Economic Research.
+
+%TCIMACRO{\TeXButton{rule}{\rule[-0.02in]{0.81in}{0.2pt}}}%
+%BeginExpansion
+\rule[-0.02in]{0.81in}{0.2pt}%
+%EndExpansion
+\textbf{\ }(2002b): \textquotedblleft A Dual Method of Empirically
+Evaluating Dynamic Competitive Equilibrium Models with Market Distortions,
+Applied to the Great Depression and World War II,\textquotedblright\ Working
+Paper 8775, National Bureau of Economic Research.
+
+\textsc{Parkin, M.} (1988): \textquotedblleft A Method for Determining
+Whether Parameters in Aggregative Models Are Structural,\textquotedblright\ 
+\textit{Carnegie-Rochester Conference Series on Public Policy}, 29, 215--252.
+
+\textsc{Prescott, E.} (1986): \textquotedblleft Theory Ahead of Business
+Cycle Measurement,\textquotedblright\ \textit{Federal} \textit{Reserve Bank
+of Minneapolis Quarterly Review}, 10(Fall), 9--22.
+
+%TCIMACRO{\TeXButton{rule}{\rule[-0.02in]{0.81in}{0.2pt}} }%
+%BeginExpansion
+\rule[-0.02in]{0.81in}{0.2pt}
+%EndExpansion
+(1999): \textquotedblleft Some Observations on the Great
+Depression,\textquotedblright\ \textit{Federal Reserve} \textit{Bank of
+Minneapolis Quarterly Review}, 23(Winter), 25--31.
+
+\textsc{Restuccia, D., and R. Rogerson} (2003): \textquotedblleft Policy
+Distortions and Aggregate Productivity with Heterogeneous
+Plants,\textquotedblright\ Manuscript, Arizona State University.
+
+\textsc{Rotemberg, J., and M. Woodford} (1991): \textquotedblleft Markups
+and the Business Cycle,\textquotedblright\ in \textit{NBER Macroeconomics
+Annual 1991,} ed. by O. Blanchard and S. Fischer. Cambridge, Mass.: MIT\
+Press.
+
+%TCIMACRO{\TeXButton{rule}{\rule[-0.02in]{0.81in}{0.2pt}} }%
+%BeginExpansion
+\rule[-0.02in]{0.81in}{0.2pt}
+%EndExpansion
+(1999): \textquotedblleft The Cyclical Behavior of Prices and
+Costs,\textquotedblright\ in \textit{Handbook of Macroeconomics,} ed. by J.
+Taylor and M. Woodford.\textit{\ }Amsterdam: North-Holland.
+
+\textsc{Schmitz, J.}\ (2005): \textquotedblleft What Determines Labor
+Productivity? Lessons From the Dramatic Recovery of the U.S. and Canadian
+Iron-Ore Industries Following Their Early 1980s Crisis,\textquotedblright\ 
+\emph{Journal of Political Economy,} 113, 582--625.
+
+\newpage \begingroup\setlength{\parindent}{0pt}\setlength{\parskip}{0ex}%
+\renewcommand{\enotesize}{\normalsize}\theendnotes\endgroup
+
+\end{document}

@@ -1,0 +1,261 @@
+\magnification = 1200
+\baselineskip  = 15pt
+\voffset =.75truein
+\parskip = 10pt
+\def\no{\noindent}
+
+\no{\bf Notes on Converting a VAR to a Markov Chain}\par
+\vskip -10pt
+\no{\bf Ellen McGrattan}
+
+\bigskip
+\bigskip
+\noindent{Method 1}
+
+\noindent
+Assume that we estimate the following VAR:
+$$z_t = A_0+A_1z_{t-1}+A_2 z_{t-2}+\ldots A_q z_{t-q} + B \epsilon_t$$
+where $z_t$ is $n\times 1$, B is lower triangular $n\times n$ matrix,
+and $\epsilon_t$ is distributed $N(0,I)$.
+Rewrite this as follows
+$$\eqalign{
+B^{-1} (z_t-\bar z) & = (B^{-1}A_1B) B^{-1}(z_{t-1}-\bar z)
++ (B^{-1} A_2B)B^{-1} (z_{t-2}-\bar z)\cr
+ &\qquad
+    +\ldots + (B^{-1}A_qB)B^{-1} (z_{t-q}-\bar z) + \epsilon_t\cr
+}
+$$
+where $\bar z=A_0+(A_1+\ldots +A_q)\bar z$.
+Define $x_t=B^{-1}(z_t-\bar z)$ and the system becomes:
+$$ 
+   \left[
+      \matrix{ x_t \cr x_{t-1}\cr x_{t-2} \cr \vdots \cr x_{t-q+1}}
+   \right]
+    = 
+   \left[
+    \matrix{ A_1^* & A_2^* & \ldots & A_{q-1}^* & A_q^*\cr
+           I    &  0    & \ldots & 0 &  0    \cr
+           0    &  I    & \ldots & 0 & 0    \cr
+           \vdots    &  \vdots    & \ldots & \vdots &  \vdots    \cr
+           0    &  0    & \ldots & I &  0    \cr}
+   \right]
+   \left[
+       \matrix{ x_{t-1} \cr x_{t-2}\cr x_{t-3} \cr \vdots \cr x_{t-q}}
+   \right]
+  +\left[
+      \matrix{ \epsilon_t\cr 0 \cr 0 \cr \vdots \cr 0} 
+   \right].
+$$
+where $A_i^*=B^{-1} A_i B$.
+Write this system concisely as
+$$ y_t = A y_{t-1} + \varepsilon_t.
+$$
+Since $z$ has dimension $n\times 1$, $y$ has
+dimension $q n \times 1$. 
+
+We will assume normal errors with variance 1 so that 
+$$
+  Pr[\varepsilon_{it} \leq u] = {1\over \sqrt{2\pi}}
+                 \int_{-\infty}^u \exp( -{1\over 2} \zeta^2 )d\zeta
+$$
+
+The elements $i$, $n+i$, $2n+i$, $\ldots$ $(q-1)n+i$
+of vector $y_t$ all correspond to the same variable, variable $i$.
+We will assume that this variable can take on $N_i$ values -- which
+are midpoints of intervals on the real line.     
+The values are given by:
+$$
+    \bar y_i^1< \bar y_i^2 < \cdots < \bar y_i^{N_i}.
+$$
+It will be easier to have the grid on the $i$th variable
+as an input to the program.    The $j$th interval
+will be $[\bar y_i^j-\omega_i^j,\bar y_i^j+\omega_i^j]$ with 
+$\bar y_i^j+\omega_i^j=\bar y_i^{j+1}-\omega_i^{j+1}$.
+An evenly spaced grid for variable $i$---with intervals that are $\omega_i$
+long---has $\omega_i^j=\omega_i/2$ for all $j$.
+
+To ensure that we cover the domain, we need to 
+set $\bar y_i^1$ and $\bar y_i^{N_i}$, $i=1,\ldots n$,
+equal to minus and plus a small integer $m$ times the 
+unconditional standard deviation of $y_{it}$ given by
+the square root
+of the $i$th diagonal element of $\Sigma_y$, where
+$$
+\Sigma_y = A\Sigma_y A' + \Sigma_\varepsilon
+$$
+where $\Sigma_\varepsilon$ is a diagonal matrix with 1's in 
+the first $n$ diagonal elements and $0$'s in the remaining
+diagonal elements.
+Denote the $i$th diagonal element as $\sigma(y_i)$, $i=1,\ldots, n$.  
+Then, for example,
+$\bar y_1^1 = -m\sigma(y_1)$, 
+$\bar y_1^{N_1} = m\sigma(y_1)$,
+and $\bar y_1^{l+1}=y^l_1+2m\sigma(y_1)/(N_1-1)$.
+
+The assignment of elements of $y_t$ to discrete values
+will depend on the exact location of the error
+$\varepsilon_t$ on some grid.   The error for element $i$, $i=1,\ldots, n$,
+of $y_t$ is
+$\varepsilon_{it} = y_{i,t}-A(i,:) y_{t-1}.$
+Let's start with the case of an even grid.
+The probability (conditioned on the state at $t-1$)
+that $y_{i,t}$ is in an interval around
+$\bar y_i^l$, $l=1,\ldots, N_i$, is equal to the probability that 
+$$
+    \varepsilon_{i,t} \in
+   [\bar y^l_i-w_i/2-A(i,:)\tilde y_{t-1}, 
+    \bar y^l_i+w_i/2-A(i,:)\tilde y_{t-1}]
+$$
+Let $A(i,:)\tilde y_{t-1}=\mu_i(j)$.
+Let $h_i(j,l)$ equal the probability that $y_{i,t}$ is 
+in the neighborhood of $\tilde y^l_i$ given the state in 
+$t-1$ was $j$.
+Then
+$$\eqalign{
+  h_i(j,l) & = 
+     {1\over \sqrt{2\pi}}\left[
+                 \int_{-\infty}^{\bar y^l_i+w_i/2-\mu_i(j)} 
+               \exp( -{1\over 2} \zeta^2 )d\zeta
+       -         \int_{-\infty}^{\bar y^l_i-w_i/2-\mu_i(j)} 
+               \exp( -{1\over 2} \zeta^2 )d\zeta\right]\cr
+  \noalign{\bigskip}
+  h_i(j,1) & =      {1\over \sqrt{2\pi}}
+                 \int_{-\infty}^{\bar y^1_i+w_i/2-\mu_i(j)}
+               \exp( -{1\over 2} \zeta^2 )d\zeta \cr
+  \noalign{\bigskip}
+  h_i(j,N_i) & = 
+           1 - {1\over \sqrt{2\pi}}
+               \int_{-\infty}^{\bar y^{N_i}_i-w_i/2-\mu_i(j)} 
+               \exp( -{1\over 2} \zeta^2 )d\zeta.\cr
+}
+$$
+
+Denote by $N^*$ the total number of possible states in the Markov
+Chain.  Denote by $N$ the total number of combinations
+possible for $x_t$.  Then, $N=N_1\times N_2\ldots\times N_n$
+and $N^*= N^q$.
+If $q>1$, there will be transition probabilities
+that are zero because of conditions like $y_{n+1,t}=y_{1,t-1}$
+that must hold.
+Take the $n=2$, $q=2$ case
+$$ 
+   \left[
+      \matrix{ x_t \cr x_{t-1}\cr}
+   \right]
+    = 
+   \left[
+    \matrix{ A_1^* & A_2^*\cr
+           I    &  0 \cr}
+   \right]
+   \left[
+       \matrix{ x_{t-1} \cr x_{t-2}\cr}
+   \right]
+  +\left[
+      \matrix{ \varepsilon_t\cr 0 }
+   \right].
+$$
+Suppose that $x_{1,t}$ can take on 3 possible values:  $1,2,3$
+and $x_{2,t}$ can take on 2 possible values: $7,8$.
+$N=6$ and $N^*=36$.
+Suppose we are in state $y=[1,7, 3,8]'$.
+Then $y$ next period can be one of the following six outcomes:
+$[1,7, 1,7]'$,
+$[2,7, 1,7]'$,
+$[3,7, 1,7]'$,
+$[1,8, 1,7]'$,
+$[2,8, 1,7]'$,
+$[3,8, 1,7]'$ because of lags.
+Thirty other states cannot be reached.
+
+Order the states so that the $N$ combinations of
+$x_t$ are first, the $N$ combinations of $x_{t-1}$ next, and so on.  
+Let $j=[k_1,k_2,\ldots, k_q]$ be the vector of indices for
+state $j$, where $j$ is $nq\times 1$ and each $k_i$ is $n\times 1$.
+Consider the example above with $n=2$, $q=2$.
+Each vector $k_i$ can be one of the following: [1,7],
+[2,7], [3,7], [1,8], [2,8], or [3,8].
+Suppose that at time $t-1$ we are in state $j=[k_1, k_2]'$ with
+$k_1=[1,7]$ and $k_2=[3,8]$.  Then the only nonzero probability
+states $j'$ in $t+1$ are 
+$j'=[\kappa,k_1]'$ with any $\kappa$ in $\{$ [1,7],
+[2,7], [3,7], [1,8], [2,8], [3,8] $\}$.
+
+We want to compute all nonzero
+transitions from state $j=[k_1,k_2,\ldots, k_q]$ at $t-1$ 
+to state $l=[\kappa,k_1,\ldots,k_{q-1}]$ at $t$.
+$$\eqalign{
+ & Pr[{\rm state\ } l{\rm \  in\ } t+1| {\rm state\ } j{\rm \ in\ } t]\cr
+    &\qquad = 
+      Pr[{\rm first\ } n\  {\rm indices\ of\ } l\ {\rm are\ } 
+             \kappa\ {\rm in\ } t+1 | {\rm state\ } j{\rm \ in\ } t] \cr
+    &\qquad = 
+     \Pi_{i=1}^n h_i(j,\kappa(i))\cr
+}
+$$
+
+What happens in the case that the grid is not even?
+
+
+We now have the apparatus to compute $\bar y$'s and a
+transition matrix for the $y_t$'s.  What we want however is
+the values of our original vector $z$.  Recall that 
+$y_t(1:n)=x_t$ and $x_t=B^{-1}(z_t-\bar z)$.
+Thus, $z_t=B y_t(1:n)+\bar z$ and we will use
+discrete values 
+$\tilde z_t=B\tilde y_t(1:n)+\bar z$.  
+(For a check on the code, use $n=1$, $q=1$ and compare
+answer to tauchen.m which computes the scalar case.)
+
+
+\noindent{Method 2}
+
+\noindent
+Take the same VAR as above, namely:
+$$z_t = A_0+A_1z_{t-1}+A_2 z_{t-2}+\ldots A_q z_{t-q} + B \epsilon_t$$
+where $z_t$ is $n\times 1$, B is lower triangular $n\times n$ matrix,
+and $\epsilon_t$ is distributed $N(0,I)$.
+
+Again, we want to compute all nonzero transitions
+from state $j=[k_1,k_2,\ldots,k_q]$ at $t-1$
+to state $l=[\kappa,k_1,\ldots,k_{q-1}]$ at $t$.
+Let $\Omega_\kappa$ be the $n$-dimensional domain
+corresponding to state $\kappa$.  Then,
+$$
+  Pr[z_{t+1} \in \Omega_\kappa | {\rm state\ } j\ {\rm in\ } t]
+     =
+    {1\over (2\pi)^{n/2} \sqrt{|\Sigma|}}
+     \int_{\Omega_\kappa} 
+             \exp\left(-{1\over 2}(z-\mu) \Sigma^{-1} (z-\mu)\right) dz
+$$
+where $\mu=A_0+A_1 \tilde z_{k_1}+\ldots A_q \tilde z_{k_q}$
+and $\Sigma=BB'$.
+
+
+
+\bye
+
+\no{\sl Case 1: $n=1$, $q=1$.} In this case both $z_t$
+and $y_t$ are 1-dimensional.  This is the scalar case with
+$$
+   Pr[l\ {\rm in \ } t+1 | j\ {\rm in \ } t ] = h_1(j,l)
+$$
+
+\no{\sl Case 2: $n=1$, $q=2$.}
+
+
+\no{\sl Case 3: $n=2$, $q=1$.}
+In this case, both $z_t$ and $y_t$ are 2 dimensional.
+The number of states in the markov chain is $N^*=N_1\times N_2$.
+If $N_1=3$ and $N_2=3$, then the total number of states is
+$N^*=9$.
+
+\no{\sl Case 4: $n=2$, $q=2$}
+In this case, $z_t$ is $2\times 1$ and $y_t$ is $4\times 1$.
+The number of states in the markov chain is $N^*=(N_1\times N_2)^2$.
+If $N_1=3$ and $N_2=3$, then the total number of states is
+$N^*=81$.
+
+   
+
+\bye
+

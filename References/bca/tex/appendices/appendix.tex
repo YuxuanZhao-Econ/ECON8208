@@ -1,0 +1,2715 @@
+\magnification = 1200
+\input epsf
+\baselineskip = 20pt
+\voffset = .75truein
+\hsize = 6.5truein
+\vsize = 8.5truein
+\def\bul{$\bullet$}
+\def\cir{$\circ$}
+\def\no{\noindent}
+\def\newpage{\vfill\eject}
+\font\smcaps=cmcsc10
+\overfullrule=0pt
+\ContentsSwitchtrue
+
+\footline={\hfil}
+
+{
+
+\parskip=0pt
+\baselineskip=13pt
+
+\no Federal Reserve Bank of Minneapolis\par
+\no Research Department Staff Report 362
+\medskip
+\smallskip
+\no Revised December 2006\par
+\vskip 1.0truein
+
+\no{\twelvepoint\bf APPENDICES:
+Business Cycle Accounting${}^\dagger$}
+
+\bigskip
+\smallskip
+\no{\smcaps V.V.~Chari}\nobreak\par
+\no{University of Minnesota}\nobreak\par
+\no{and Federal Reserve Bank of Minneapolis}
+
+\bigskip
+\smallskip
+\no{\smcaps Patrick J.~Kehoe}\nobreak\par
+\no{Federal Reserve Bank of Minneapolis}\nobreak\par
+\no{and University of Minnesota}
+
+\bigskip
+\smallskip
+\no{\smcaps Ellen R.~McGrattan}\nobreak\par
+\no{Federal Reserve Bank of Minneapolis}\nobreak\par
+\no{and University of Minnesota}
+
+\vskip 3.5truein
+
+{
+\baselineskip=13pt
+
+\no ${}^\dagger$
+The views expressed herein are those of the authors and not necessarily
+those of the Federal Reserve Bank of Minneapolis or the Federal Reserve
+System.
+
+}
+}
+
+\newpage
+\footline={\hss\tenrm\folio\hss}
+\pageno=-1
+{
+
+\baselineskip = 15pt
+
+\nosechead{Table of Contents}
+\tag{Pg.tabcontents}{\folio}
+\TOCmargin=0cm
+\contents
+
+}
+
+
+\newpage
+\footline={\hss\tenrm\folio\hss}
+\pageno=1
+
+\Appendix{A}{Computation and Estimation}
+
+\noindent
+In this Appendix, we describe the prototype model 
+used in ``Business Cycle Accounting''  
+and the details of the computation of equilibria
+and estimation of parameters.
+We also discuss the sensitivity analysis 
+we did for the benchmark
+prototype model allowing for variable capital utilization,
+investment adjustment costs, and an alternative 
+specification for the investment wedge.
+Finally, we include figures, tables, and proofs
+not shown in the main text. 
+
+\bigskip
+\section{The Benchmark Model}
+
+\noindent Below we will use the following notation for
+our model variables:
+\item{} $N$: population ($N_t=(1+g_n)^t$)
+\item{} $c$: per-capita consumption 
+\item{} $x$: per-capita investment 
+\item{} $k$: per-capita net capital stock
+\item{} $l$: per-capita labor input
+\item{} $t\!r$: per-capita government transfers
+\item{} $C$: total consumption  ($C_{t}=N_t c_t$) 
+\item{} $X$: total investment 
+\item{} $K$: total stock of capital
+\item{} $L$:  total labor input in production
+\item{} $Z$:  labor-augmenting technical change ($Z_t=z_t(1+g_z)^t$)
+\item{} $r$: rental rate on capital
+\item{} $w$: wage rate 
+\item{} $\tau_v$: tax rate on $v$ 
+\item{} $\hat v$: detrended per-capita variable $V$ 
+(i.e., $\hat v_t=V_t/[N_t(1+g_z)^t]$)
+
+\bigskip
+Consider an economy with households,
+firms, and the government.
+The representative household chooses consumption,
+investment, and labor to solve the following maximization
+problem:
+$$\EQNalign{
+ & \max_{\{c_t,x_t,l_t\}} E\,\sum_{t=0}^\infty \beta^t 
+          \, U(c_t,1-l_t)  N_t                    \EQN utility\cr
+{\rm subj.\ to}\ \ 
+ &  (1+\tau_{ct})c_t+ (1+\tau_{xt}) x_t 
+       = (1-\tau_{kt})r_t k_t + (1-\tau_{lt}) w_t l_t
+                   +\tau_{kt}\delta k_t + t\!r_t  \EQN budget\cr
+ & N_{t+1} k_{t+1} = [(1-\delta)k_t + x_t] N_t    \EQN capacc\cr
+ & c_t,x_{t} \geq 0 \quad {\rm in\  all\  states}, \EQN nonneg\cr
+}$$
+taking processes for the rental rate, wage rate, the tax rates,
+and transfers as given.
+The representative firm solves a simple static problem at $t$:
+$$
+\max_{\{K_t,L_t\}}\  
+   F(K_t,Z_t L_t) - r_t K_t - w_t L_t.
+$$
+The government sets rates of taxes and transfers in such
+a way that their budget constraint at $t$, namely,
+$$
+  G_t + N_tt\!r_t = \tau_{kt}(r_t-\delta) N_tk_t + \tau_{lt}w_tl_t N_t
+             +\tau_{ct}N_tc_t+\tau_{xt}N_tx_t,
+$$
+is satisfied.
+In equilibrium, the following conditions must hold:
+$$\eqalign{
+& N_t(c_t+x_t) +G_t 
+               = F(K_t,Z_tL_t)\cr
+& N_t k_t = K_t \cr
+& N_t l_t = L_t. \cr
+}
+$$
+
+We now derive first-order conditions in this economy.
+The Lagrangian for the household optimization problem is given
+by
+$$\eqalign{
+{\cal L} &= E\sum_t \tilde \beta^t \, 
+     \biggl\{
+         U(\hat c_t,1-l_t)+ {\zeta\over 3} \min(\hat x_t,0)^3 \cr
+     \noalign{\medskip}
+   & \quad
+ + \mu_t \Big\{(1-\tau_{kt})r_t \hat k_t + (1-\tau_{lt}) 
+    \hat w_t l_t + \tau_{kt}\delta \hat k_t + \hat t\!r_t
+    -  (1+\tau_{ct})\hat c_t-(1+\tau_{xt})\hat x_t\Big\}\cr
+     \noalign{\medskip}
+   & \quad
+ + \lambda_t\Big\{ (1-\delta)\hat k_t + \hat x_t 
+                       - (1+g_z)(1+g_n)\hat k_{t+1}\Big\}\biggr\},\cr
+}
+$$
+where $\tilde \beta=\beta (1+g_n) h(1+g_z)$ and $h(\cdot)$
+depends on our choice of utility. If $U(c,1-l)=c^{1-\sigma}v(l)$,
+then $h(1+g_z)=(1+g_z)^{1-\sigma}$.
+Notice that the Lagrangian has no term for the nonnegativity
+constraint on investment.
+Instead, we have included a penalty function indexed
+by $\zeta$.
+As $\zeta$ approaches infinity, the solution to the problem
+with a penalty function and no constraint on investment
+is the same as the solution to the original problem with $\zeta=0$
+and $x_t\geq 0$ imposed.
+
+The first-order conditions for the problem are
+$$\EQNalign{  
+ & {U_2(\hat c_t,1-l_t)\over U_1(\hat c_t,1-l_t)}
+   =  { 1-\tau_{lt}\over 1+\tau_{ct}} \hat w_t \cr
+     \noalign{\medskip}
+ & {1+\tau_{xt}\over 1+\tau_{ct}}
+    U_1(\hat c_t,1-l_t)-\zeta\min(\hat x_t,0)^2 \cr
+     \noalign{\medskip}
+ &\qquad\qquad\qquad
+   = \hat \beta
+     E_t\biggl[{U_1(\hat c_{t+1},1-l_{t+1})\over
+                  1+\tau_{ct+1} }\cr
+     \noalign{\medskip}
+ &\qquad\qquad\qquad\qquad\qquad
+             \bigl\{ (1-\tau_{kt+1})r_{t+1}+\delta \tau_{kt+1}
+                                    +(1-\delta)(1+\tau_{xt+1})\bigr\}\cr
+     \noalign{\medskip}
+ &\qquad\qquad\qquad\qquad\qquad\qquad\qquad
+              -(1-\delta)\zeta \min(\hat x_{t+1},0)^2
+               \biggr], \EQN dynamic \cr
+}
+$$
+where $\hat \beta=\beta h(1+g_z)/(1+g_z)$. If $U(c,l)=c^{1-\sigma}v(l)$,
+then $\hat \beta = \beta(1+g_z)^{-\sigma}$.
+
+In addition, we have first-order conditions for the firm's 
+static problem.  These are
+$$\eqalign{
+r_t  &= F_1(\hat k_t,z_t l_t)\cr
+\hat w_t  &= F_2(\hat k_t,z_t l_t)z_t.\cr
+}
+$$
+Finally,  we have a resource constraint given by
+$$\hat c_t + \hat g_t +\hat x_t
+               = F(\hat k_t,z_tl_t)$$
+once we detrend variables.
+
+
+\bigskip
+\section{Algorithms for Computing Equilibria}
+
+Below we show how to compute the equilibrium
+using a nonlinear method and a log-linear method.
+We need to use the nonlinear methods to compute
+equilibrium paths during the 1930s because the 
+declines in aggregate variables are so large.
+We use the log-linear method when we 
+derive estimates of the process for the wedges
+and for computing equilibria in the postwar period.
+The log-linear method is convenient with our maximum likelihood
+estimation (MLE) procedure because a nonlinear method
+with a very large state space is computationally demanding
+when computing likelihood estimates.\note{%
+We experimented with very different expectations and 
+found that they had only a very small impact on our results 
+and, therefore, did not affect our conclusions.}  
+With estimates of our stochastic process
+we determine expectations.  These expectations are
+inputs to our nonlinear model and used when we 
+do our accounting exercise.
+
+From here on, we make the following functional form
+assumptions and auxiliary choices:
+\item{} $F(k,l) = k^\theta l^{1-\theta}$
+\item{} $U(c,1-l) = (c (1-l)^\psi)^{1-\sigma}/(1-\sigma)$
+\item{} $s_{t+1} = P_0 + P s_t + Q \epsilon_{s,t+1},\ \  
+               \epsilon_s\sim N(0,I)$
+         (which is represented either as a Markov chain using the method
+         of Tauchen 1986 or as a continuous process).
+\item{} $\log(z_t)= \log z(s_t)$
+\item{} $\log \hat g_t= \log \hat g(s_t)$
+\item{} $\tau_{lt}= \tau_l(s_t)$
+\item{} $\tau_{xt}= \tau_x(s_t)$
+\item{} $\tau_{kt}= \tau_k(s_t)$
+\item{} $\tau_{ct}= \tau_c(s_t)$
+
+\bigskip
+\bigskip
+\subsection{Nonlinear Computation}
+
+For our nonlinear solution method, we assume that the
+vector autoregressive process for the state can be well approximated
+by a  Markov chain.  
+Let $s$ be the index for the state.  Then at time $t$, if the state
+is $s$,
+$\hat g_t= \hat g(s)$,
+$\tau_{lt} = \tau_l(s)$,
+$\tau_{xt} = \tau_x(s)$, and
+$z_t =  z(s)$.
+The transition matrix for $s$ is given by $\Pi$
+with $\pi(s,s')$ being the probability of going from
+state $s$ to state $s'$.
+
+The state of the economy in any period
+can be summarized by two scalars: $\hat k$ and $s$.
+Our Fortran code computes
+the decision rule $\hat c(\hat k,s)$.  All other
+decisions can be determined via static first-order conditions
+once we know $\hat c(\hat k,s)$.
+In particular,
+$l(\hat k,s)$ and $\hat x(\hat k,s)$ can 
+be determined once we know consumption.
+
+To compute $\hat c(\hat k,s)$, we apply the finite-element method
+using the dynamic first-order condition as the residual
+and Galerkin bases.
+More specifically, we
+assume that the consumption function is well approximated by
+$$ \hat c(\hat k,s) = \sum_{j=1}^{nnodes} \alpha_j^s \Psi_j(k),$$
+where the $\Psi_j$ is a function that takes on
+nonzero values in two cells (or ``elements'')
+of a grid over $\hat k$ around grid
+point (or ``node'') $j$.
+The algorithm is to find the coefficients $\alpha_j^s $,
+$j=1,\ldots nnodes$, $s=1,\ldots S$
+that satisfy the following equations:
+$$ \int R(\hat k,s;\alpha) \Psi_j(\hat k) \, d\hat k =0
+$$
+for all $s$ and $j$ where
+$$\eqalign{
+R( & \hat k,s;\alpha) =
+  {1+\tau_x(s)\over 1+\tau_c(s)} U_1(\hat c,1-l)\cr
+   &\qquad\qquad
+    -\zeta \min(\hat x,0)^2
+  +\hat \beta(1-\delta)
+        \zeta \sum_{s'}\pi_{s,s'} \min (\hat x',0)^2 \cr
+\noalign{\medskip}
+& \qquad\qquad
+  - \hat \beta \sum_{s'} \pi_{s,s'} \,
+  {U_1(\hat c',1-l')\over 1+\tau_c(s')}\cr
+& \qquad\qquad\qquad
+ \biggl\{(1-\tau_k(s'))F_1(\hat k',z(s')l')+\tau_k(s')\delta
+    +(1-\delta)(1+\tau_x(s))
+          \biggr\}. \cr
+}
+$$
+The investments $x$ and $x'$ satisfy resource constraints
+$$\eqalign{
+  \hat x &= F(\hat k,z(s)l)-\sum_j\alpha_j^s \Psi_j(\hat k)
+             -\hat g(s)\cr
+        \noalign{\medskip}
+  \hat x'&= F(\hat k',z(s')l')-\sum_j\alpha_j^s \Psi_j(\hat k')
+             -\hat g(s').\cr
+}
+$$
+The next period capital stock is given by
+$$\eqalign{
+\hat k' & = ((1-\delta) \hat k + \hat x)/[(1+g_n)(1+g_z)]. \cr
+}
+$$
+The labor inputs $l$ and $l'$ solve
+$$\eqalign{
+&
+{U_2(\hat c,1-l)
+  \over U_1(\hat c,1-l)} =
+ {1-\tau_l(s) \over
+         1+\tau_c(s)}
+         F_2(\hat k,z(s)l)z(s) \cr
+\noalign{\bigskip}
+&
+{U_2(\hat c',1-l') \over
+   U_1(\hat c',1-l') }=
+{1-\tau_l(s')\over 1+\tau_c(s')} F_2(\hat k',z(s')l')z(s').\cr
+}
+$$
+
+
+\bigskip
+\bigskip
+\subsection{Log-Linear Computation}
+
+We now describe the steps taken for the log-linear solution method
+(with an interior solution and $\zeta=0$).
+Because we are going to apply maximum likelihood estimation,
+we will derive the solution analytically.
+
+We start by writing the system of equations in terms of $k$ and $s$.
+This is done by replacing $r$, $w$, $\hat c$, and $\hat x$
+in the first-order conditions with functions of the states. Thus
+we start with
+$$\EQNalign{
+ &\hat c_t + \hat g_t +(1+g_z)(1+g_n)\hat k_{t+1}-(1-\delta)\hat k_t
+    = \hat y_t = \hat k_t^\theta(z_tl_t)^{1-\theta}
+\EQN {foc1}\cr
+ &{\psi \hat c_t\over 1-l_t}
+    = (1-\tau_{lt})(1-\theta) \hat k_t^\theta l_t^{-\theta} z_t^{1-\theta}
+\EQN {foc2}\cr
+ &(1+\tau_{xt}) \hat c_t^{-\sigma} (1-l_t)^{\psi (1-\sigma)}
+     \cr
+ &\qquad
+       = \hat \beta E_t
+            \hat c_{t+1}^{-\sigma} (1-l_{t+1})^{\psi (1-\sigma)}
+          [\theta \hat k_{t+1}^{\theta-1} (z_{t+1}l_{t+1})^{1-\theta}
+              +(1-\delta)(1+\tau_{xt+1})],
+\EQN {foc3}\cr
+}
+$$
+which can be reduced to the following:
+$$\eqalign{
+ &\psi [\hat k_t^\theta(z_tl_t)^{1-\theta}
+             -(1+g_n)(1+g_z)\hat k_{t+1}+(1-\delta)\hat k_t-\hat g_t]\cr
+ &\qquad\qquad
+    = (1-\tau_{lt})(1-\theta) \hat k_t^\theta l_t^{-\theta} 
+          z_t^{1-\theta}(1-l_t) \cr
+ &(1+\tau_{xt}) [\hat k_t^\theta(z_tl_t)^{1-\theta}
+             -(1+g_n)(1+g_z)\hat k_{t+1}+(1-\delta)\hat k_t-\hat g_t]^{-\sigma} 
+              (1-l_t)^{\psi (1-\sigma)}
+     \cr
+ &\qquad\qquad
+       = \hat \beta E_t[\hat k_{t+1}^\theta(z_{t+1}l_{t+1})^{1-\theta}
+             -(1+g_n)(1+g_z)\hat k_{t+2}\cr
+ &\qquad\qquad\qquad\qquad
+    +(1-\delta)\hat k_{t+1}-\hat g_{t+1}]^{-\sigma} 
+                (1-l_{t+1})^{\psi (1-\sigma)}\cr
+ &\qquad\qquad\qquad\qquad
+          [\theta \hat k_{t+1}^{\theta-1} (z_{t+1}l_{t+1})^{1-\theta}
+              +(1-\delta)(1+\tau_{xt+1})].\cr
+}
+$$
+
+Next, we compute the steady state of the system for constant
+values for $z$, the taxes, and government spending:
+$$\eqalign{
+  & \hat k/l = \left({(1+\tau_x)(1-\hat\beta(1-\delta)) \over
+                  \hat \beta \theta z^{1-\theta}}\right)^{1/(\theta-1)}\cr
+  & \hat c = \left[(\hat k/l)^{\theta-1}z^{1-\theta}
+              -(1+g_z)(1+g_n)+1-\delta\right] \hat k-\hat g =  
+                      \xi_1 \hat k -\hat g\cr
+  &\hat c = 
+     \left[(1-\tau_l)(1-\theta) (\hat k/l)^{\theta}z^{1-\theta}/\psi\right]
+             (1- 1/(\hat k/l) \ \hat k)
+         = \xi_2-\xi_3\hat k,\cr
+}
+$$
+where the last two equations imply
+$\hat k=(\xi_2+\hat g)/(\xi_1+\xi_3)$, $\hat c=\xi_1 \hat k -\hat g$, 
+$l=(1/(\hat k/l)) \hat k$.
+
+The log-linearization is done around these steady-state values.
+Detrended consumption is given approximately by
+$$\eqalign{
+  \hat c_t &\approx \hat c \log \hat c_t\cr
+           &\approx \hat k^{\theta} (zl)^{1-\theta}
+           [\theta \log \hat k_t + (1-\theta)(\log z_t+\log l_t)]\cr
+          &\quad
+          -(1+g_z)(1+g_n)\hat k \log \hat k_{t+1} 
+          +(1-\delta)\hat k \log \hat k_t-\hat g \log\hat g_t. \cr
+}
+$$
+The labor input is then derived from the static first-order condition
+\Ep{foc2}:
+$$\eqalign{
+    0 &\approx \psi\bigl\{\hat k^{\theta} (zl)^{1-\theta}
+           [\theta \log \hat k_t + (1-\theta)(\log z_t+\log l_t)]\cr
+          &\qquad\quad
+          -(1+g_z)(1+g_n)\hat k \log \hat k_{t+1} 
+          +(1-\delta)\hat k \log \hat k_t-\hat g\log \hat g_t\bigr\} \cr
+          &\qquad\qquad\quad 
+                 + (1-\theta)(1-\tau_l)\hat k^\theta 
+                          l^{-\theta} z^{1-\theta}(1-l)
+                    \bigl\{1/(1-\tau_l)\,\tau_{lt}\cr
+          &\qquad\qquad\qquad\quad 
+                               -\theta \log \hat k_t
+                                  +\theta\log l_t -(1-\theta) \log z_t
+                                  +l/(1-l) \log l_t \bigr\},\cr
+}
+$$
+which we write succinctly as
+$$
+      \log l_t = \phi_{lk}\log \hat k_t
+            +\phi_{lz}\log z_t
+            +\phi_{ll}\tau_{lt}
+            +\phi_{lg}\log \hat g_t
+            +\phi_{lk'}\log \hat k_{t+1}.
+\EQN logl
+$$
+Using this equation for $\log l$, we use the other
+static first-order conditions to write 
+$\log \hat y$,
+$\log \hat x$, and
+$\log \hat c$  as follows:
+$$\EQNalign{
+ \log \hat y_t & = \phi_{yk}\log \hat k_t
+            +\phi_{yz}\log z_t
+            +\phi_{yl}\tau_{lt}
+            +\phi_{yg}\log \hat g_t
+            +\phi_{yk'}\log \hat k_{t+1} \cr
+      &= (\theta+(1-\theta)\phi_{lk})\log \hat k_t
+                        +(1-\theta)(1+\phi_{lz}) \log z_t \cr
+      &\qquad\qquad\qquad\qquad
+                        +(1-\theta)[\phi_{ll}\tau_{lt}
+                                 +\phi_{lk'}\log \hat k_{t+1}]
+\EQN loghaty\cr
+ \log \hat x_t &= (1+g_z)(1+g_n) \hat k/\hat x \log \hat k_{t+1}
+                    -(1-\delta) \hat k/\hat x \log \hat k_t
+\EQN loghatx\cr
+ \log \hat c_t &= \phi_{ck}\log \hat k_t
+            +\phi_{cz}\log z_t
+            +\phi_{cl}\tau_{lt}
+            +\phi_{cg}\log \hat g_t
+            +\phi_{ck'}\log \hat k_{t+1} \cr
+      & = [\hat y\log y_t
+                      -\hat x\log x_t -\hat g\log \hat g_t]/\hat c,
+\EQN loghatc\cr
+}
+$$
+where the $\phi$'s are known functions of the parameters.
+
+Capital is derived from the dynamic first-order condition
+$$ \EQNalign{
+0&\approx
+  (1+\tau_x)\hat c^{-\sigma} (1-l)^{\psi(1-\sigma)} 
+        \left\{-\psi(1-\sigma) l/(1-l) \log l_t
+                  -\sigma \log \hat c_t \right\} \cr
+ & \qquad \qquad\qquad
+   +\hat c^{-\sigma} (1-l)^{\psi(1-\sigma)} \tau_{xt} \cr
+ & \qquad 
+   -\hat\beta 
+        E_t\bigl\{ \bigl[\theta \hat k^{\theta-1}(zl)^{1-\theta}
+           +(1-\delta)(1+\tau_x)\bigr]\cr
+ & \qquad \qquad\qquad
+       \cdot\bigl[\hat c^{-\sigma} (1-l)^{\psi(1-\sigma)}
+            \left\{-\psi(1-\sigma) l/(1-l) \log l_{t+1}
+                    -\sigma \log \hat c_{t+1} \right\}
+       \bigr]\cr
+ & \qquad \qquad\qquad
+        +\hat c^{-\sigma} (1-l)^{\psi(1-\sigma)}
+             \bigl[\theta \hat k^{\theta-1}(zl)^{1-\theta}(1-\theta)
+        \cr
+ & \qquad \qquad\qquad\qquad\qquad
+                  \cdot(\log l_{t+1} + \log z_{t+1}-\log \hat k_{t+1})
+                  +(1-\delta)\tau_{xt+1}\bigl]\bigr\},
+\EQN dynamic\cr
+}
+$$
+which simplifies to
+$$ \eqalign{
+0&\approx
+  (1+\tau_x)
+        \left\{ -\psi(1-\sigma) l/(1-l) \log l_t
+                -\sigma \log \hat c_t \right\} 
+   +\tau_{xt} \cr
+ & \qquad 
+       -E_t\bigl\{ (1+\tau_x)
+            \left\{-\psi(1-\sigma) l/(1-l) \log l_{t+1}
+                   -\sigma \log \hat c_{t+1}
+            \right\}\cr
+ & \qquad \quad
+     +\hat\beta\bigl[r(1-\theta)
+                  (\log l_{t+1} + \log z_{t+1}-\log \hat k_{t+1})
+                  +(1-\delta)\tau_{xt+1}\bigr]\bigr\},\cr
+}
+$$
+where $r=\theta \hat y/\hat k$.
+          
+We guess the following form of the solution for capital:
+$$ \log(\hat k_{t+1}) = \gamma_0 + \gamma_k \log \hat k_t
+                         + \gamma_z \log z_t
+                 + \gamma_l \tau_{lt}
+                 +\gamma_x \tau_{xt}
+                 +\gamma_g \log\hat g_t
+\EQN{formofsolution}
+$$
+and set $\gamma$'s so that the dynamic residual \Ep{dynamic} is 
+exactly 0. We 
+can do this by first ignoring shock terms and find $\gamma_k$ that
+satisfies a particular quadratic equation (that does not depend
+on any other $\gamma$ coefficient).  Then,
+we can find $\gamma_z$, $\gamma_l$, $\gamma_x$, and $\gamma_g$ by solving
+a linear system of equations with $\gamma_k$ assumed known.
+Finally, we use the steady-state equations to determine $\gamma_0$.
+
+We start by deriving $\gamma_k$.  To do this, 
+we need to write out the coefficients on $\hat k_{t+2}$, 
+$\hat k_{t+1}$, and $\hat k_t$ in the dynamic first-order condition
+\Ep{dynamic} making use
+of the $\phi$'s from the static first-order conditions 
+\Ep{logl}--\Ep{loghatc}.
+For now, we 
+can ignore the expectations operator.  We get the following:
+$$ \eqalign{
+0&\approx
+  -(1+\tau_x)
+        \bigl\{ -\psi(1-\sigma) l/(1-l)
+              [\phi_{lk}\log \hat k_t+\phi_{lk'} \log \hat k_{t+1}] 
+   \cr
+ & \qquad\qquad\qquad \qquad
+               -\sigma 
+              [\phi_{ck}\log \hat k_t+\phi_{ck'} \log \hat k_{t+1}] 
+         \bigr\} \cr
+ & \quad 
+       +E_t(1+\tau_x)
+            \bigl\{-\psi(1-\sigma) l/(1-l) 
+              [\phi_{lk}\log \hat k_{t+1}+\phi_{lk'} \log \hat k_{t+2}] \cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad
+               -\sigma 
+              [\phi_{ck}\log \hat k_{t+1}+\phi_{ck'} \log \hat k_{t+2}] 
+            \bigr\}\cr
+ & \qquad \qquad\quad
+     +\hat\beta E_t \bigl[r(1-\theta)
+                  ((\phi_{lk}-1)\log \hat k_{t+1}+\phi_{lk'}\hat k_{t+2})
+              \bigr],\cr
+}
+$$
+which simplifies to 
+$$\EQNalign{
+  0 = &[\hat\beta r(1-\theta)\phi_{lk'}
+                 -(1+\tau_x)\psi(1-\sigma)l/(1-l)\phi_{lk'}
+         -(1+\tau_x)\sigma\phi_{ck'}] \hat k_{t+2}\cr
+      +&[\hat\beta r(1-\theta)(\phi_{lk}-1)
+               -(1+\tau_x)\psi(1-\sigma)l/(1-l)\phi_{lk}
+               -(1+\tau_x)\sigma\phi_{ck}
+       \cr
+       &\qquad\qquad\qquad\qquad
+               +(1+\tau_x)\psi(1-\sigma)l/(1-l)\phi_{lk'}
+               +(1+\tau_x)\sigma\phi_{ck'}
+       ] \hat k_{t+1}\cr
+      -&[-(1+\tau_x)\psi(1-\sigma)l/(1-l)\phi_{lk}
+               -(1+\tau_x)\sigma\phi_{ck}
+       ] \hat k_t\cr
+      +&{\rm \ all\ other\ terms}
+\EQN dynamicpiece
+}
+$$
+or, more succinctly, rewrite \Ep{dynamicpiece} as
+$ (a+ bL + cL^2) \hat k_{t+2} =$ other terms,
+where $\gamma_k$ is the root of the quadratic 
+inside the unit circle.  Note that $\gamma_k$ does not depend
+on the other unknown $\gamma$'s.
+
+Given $\gamma_k$, we can solve a linear system
+for the other $\gamma$'s.  At this point,
+we do not ignore the expectations operator:
+$$ \eqalign{
+0&\approx
+  (1+\tau_x)
+        \bigl\{-\psi(1-\sigma) l/(1-l)
+              [(\phi_{lz}+\phi_{lk'}\gamma_z)\log z_t\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad
+               +(\phi_{ll}+\phi_{lk'}\gamma_l)\tau_{lt}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad
+               +\phi_{lk'}\gamma_x\tau_{xt} 
+               +(\phi_{lg}+\phi_{lk'}\gamma_g)\log\hat g_t\cr
+ & \qquad\qquad\qquad \qquad
+               -\sigma 
+              [(\phi_{cz}+\phi_{ck'}\gamma_z)\log z_t
+               +(\phi_{cl}+\phi_{ck'}\gamma_l) \tau_{lt}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad
+               +\phi_{ck'}\gamma_x \tau_{xt}
+               +(\phi_{cg}+\phi_{ck'}\gamma_l) \log\hat g_t
+               ]\bigr\} +\tau_{xt}\cr
+}
+$$
+$$\eqalign{
+ & \qquad 
+       -E_t(1+\tau_x)
+            \bigl\{-\psi(1-\sigma) l/(1-l) 
+              [(\phi_{lk}+\phi_{lk'}\gamma_k)(\gamma_z\log z_t
+                                              +\gamma_l\tau_{lt}
+                                              +\gamma_x\tau_{xt}
+                                              +\gamma_g\log\hat g_t)\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + (\phi_{lz}+\phi_{lk'}\gamma_z)\log z_{t+1}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + (\phi_{ll}+\phi_{lk'}\gamma_l)\tau_{lt+1}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + \phi_{lk'}\gamma_x\tau_{xt+1}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + (\phi_{lg}+\phi_{lk'}\gamma_g)\log\hat g_{t+1}]\cr
+}
+$$
+$$\eqalign{
+ & \qquad\qquad\qquad\qquad\qquad \qquad
+               -\sigma 
+              [(\phi_{ck}+\phi_{ck'}\gamma_k)(\gamma_z\log z_t
+                                              +\gamma_l\tau_{lt}
+                                              +\gamma_x\tau_{xt}
+                                              +\gamma_g\log\hat g_t)\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +(\phi_{cz}+\phi_{ck'}\gamma_z)\log z_{t+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +(\phi_{cl}+\phi_{ck'}\gamma_l)\tau_{lt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +\phi_{ck'}\gamma_x\tau_{xt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +(\phi_{cg}+\phi_{ck'}\gamma_g)\log\hat g_{t+1}]\bigr\}\cr
+}
+$$
+$$\eqalign{
+ & \qquad \qquad\quad
+     -\hat\beta r(1-\theta) E_t \bigl[(\phi_{lk}+\phi_{lk'}\gamma_k-1)
+                    (\gamma_z\log z_t + \gamma_l\tau_{lt}+\gamma_x\tau_{xt}
+                      +\gamma_g\log\hat g_t)\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +(\phi_{lz}+\phi_{lk'}\gamma_z+1)\log z_{t+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +(\phi_{ll}+\phi_{lk'}\gamma_l)\tau_{lt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +\phi_{lk'}\gamma_x\tau_{xt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +(\phi_{lg}+\phi_{lk'}\gamma_g)\log\hat g_{t+1}\bigr]\cr
+ & \qquad\qquad\qquad
+     -\hat \beta (1-\delta) E_t \tau_{xt+1},\cr
+}
+$$
+which reduces to
+$$\EQNalign{
+ 0 &= (\kappa_0+\kappa_1\cdot\gamma_s)' 
+           [\log z_t,\tau_{lt},\tau_{xt},\log\hat g_t]'
+     + (\zeta_0+\zeta_1\cdot\gamma_s)' 
+          E_t [\log z_{t+1},\tau_{lt+1},\tau_{xt+1},\log\hat g_{t+1}]'
+    \cr
+   &= (\kappa_0+\kappa_1\cdot\gamma_s)' 
+           [\log z_t,\tau_{lt},\tau_{xt},\log\hat g_t]'
+     + (\zeta_0+\zeta_1\cdot\gamma_s)' P
+           [\log z_t,\tau_{lt},\tau_{xt},\log\hat g_t]',\EQN lqsystem
+    \cr
+}
+$$
+where $x\cdot y$ denotes element-by-element multiplication
+of vectors $x$ and $y$;
+$\kappa_0$, $\kappa_1$, $\zeta_0$, and $\zeta_1$ are vectors of 
+length 4 with elements equal to functions
+of the parameters and $\gamma_k$; and 
+$\gamma_s=[\gamma_z,\gamma_l,\gamma_x,\gamma_g]'$.
+The $\gamma$'s that set this residual to zero satisfy a four-dimensional
+linear system,
+$$
+ (\kappa_0+\kappa_1\cdot\gamma_s)' 
+     + (\zeta_0+\zeta_1\cdot \gamma_s) ' a = 0.
+$$
+
+
+\bigskip
+\bigskip
+\subsubsection{Checking a Test Case}
+
+Assume $g_n=g_z=\psi=0$, $\sigma=\delta=1$, 
+$\hat g_t=\tau_{lt}=\tau_{xt}=0$, and
+$$\log z_{t+1}=\rho_0+ \rho \log z_t + \epsilon_{z,t+1}
+$$
+so that
+$$ P   =\left[\matrix{\rho_z & 0 & 0 & 0 & \rho_0\cr
+                           0 & 0 & 0 & 0 & 0\cr
+                           0 & 0 & 0 & 0 & 0\cr
+                           0 & 0 & 0 & 0 & 0\cr
+                           0 & 0 & 0 & 0 & 1\cr}\right],\quad
+   Q   =\left[\matrix{\sigma_z & 0 & 0 & 0 \cr
+                        0      & 0 & 0 & 0 \cr
+                        0      & 0 & 0 & 0 \cr
+                        0      & 0 & 0 & 0 \cr
+                        0      & 0 & 0 & 0 \cr}\right].
+$$
+The solution in this case: 
+$$ \log \hat k_{t+1} = \log(\beta\theta) + \theta \log \hat k_t
+                     +(1-\theta)\log z_t.
+$$
+
+Using the formulas above, we have the following steady state:
+$$ \eqalign{
+   \hat k &= (\beta\theta)^{1/(1-\theta)} z\cr
+   \hat c &= (1-\beta\theta)/(\beta\theta)\hat k\cr
+   \hat y &= z^{1-\theta}\hat k^\theta   \cr
+}
+$$
+and $\gamma_k$ from quadratic
+$$\eqalign{
+  0 = &-\phi_{ck'} \hat k_{t+2}
+      -[\hat\beta r(1-\theta)+\phi_{ck}-\phi_{ck'}] \hat k_{t+1}
+      +\phi_{ck}\hat k_t+{\rm all\ other\ terms}\cr
+    = &\beta\theta/(1-\beta\theta) \hat k_{t+2}
+      -[(1-\theta)+\theta/(1-\beta\theta) 
+           -\beta\theta/(1-\beta\theta)] \hat k_{t+1}
+      +[\theta/(1-\beta\theta)] \hat k_t\cr
+    = &\beta\theta\hat k_{t+2}
+      -[(1-\theta)(1-\beta\theta)+\theta-\beta\theta] \hat k_{t+1}
+      +\theta \hat k_t,\cr
+}
+$$
+which implies $\gamma_k=\theta$.
+The other coefficients satisfy
+$$ \eqalign{
+0&\approx
+        -(\phi_{cz}+\phi_{ck'}\gamma_z)\log z_t
+               -\phi_{ck'}\gamma_l\tau_{lt}
+               -\phi_{ck'}\gamma_x\tau_{xt} 
+               -\phi_{ck'}\gamma_g\log\hat g_t +\tau_{xt}\cr
+ & \qquad 
+       +(\phi_{ck}+\phi_{ck'}\theta)(\gamma_z\log z_t
+                                              +\gamma_l\tau_{lt}
+                                              +\gamma_x\tau_{xt}
+                                              +\gamma_g\log\hat g_t)\cr
+ & \qquad\qquad
+           +(\phi_{cz}+\phi_{ck'}\gamma_z) E_t\log z_{t+1}\cr
+ & \qquad \qquad\quad
+     +(1-\theta) \bigl[\gamma_z\log z_t+\gamma_l\tau_{lt}
+                                 +\gamma_x\tau_{xt}
+                                 +\gamma_g\log\hat g_t
+                            -E_t\log z_{t+1}\bigr]\cr
+}
+$$
+and, therefore, 
+$\gamma_z=1-\theta$, $\gamma_l=\gamma_g=0$, $\gamma_x=-1+\beta\theta$.
+
+
+\bigskip
+\bigskip
+\subsubsection{Computation for the General Log-Linear Case}
+
+Assume that the solution is
+$$ \log \hat k_{t+1}
+   = a \log \hat k_t + b
+        \left[\matrix{ \log z_t & \tau_{lt} & \tau_{xt} & \log\hat g_t}
+        \right]'+{\rm constant,}
+$$
+where $a$ is a scalar and $b$ is $1\times 4$.
+Assume that the residual from the dynamic first-order condition is
+$$\eqalign{
+& f(E_t \log \hat k_{t+2}, \log\hat k_{t+1}, \log \hat k_t,
+             \log z_{t+1}, \log z_t, \tau_{lt+1}, \tau_{lt}, 
+             \tau_{xt+1}, \tau_{xt}, \log\hat g_{t+1}, \log\hat g_t)\cr
+&\qquad   \approx
+  a_0 E_t \log \hat k_{t+2}+ a_1 \log\hat k_{t+1} +a_2 \log \hat k_t
+          + b_0 E_t s_{t+1} + b_1 s_t.\cr
+}
+$$     
+Then the general solution algorithm is to find 
+$a$ that solves the quadratic equation
+$$  a_0 a^2+a_1 a+a_2= 0$$
+and $b$ that solves the linear equations
+$$a_0 ab+a_0bP+a_1b+b_0P+b_1= 0_{1\times 4}.$$
+Note that this implies
+$$
+b   = -[(a_0a+a_1)I_{4\times 4} +a_0 P']^{-1} 
+             (b_0P+b_1I_{4\times 4})'.
+$$
+
+\bigskip
+\bigskip
+\subsection{Allowing for Adjustment Costs}
+
+To allow for adjustment costs, we solve
+the household maximization problem for the benchmark
+model, namely \Ep{utility}
+subject to \Ep{budget}, \Ep{nonneg}, and
+$$
+N_{t+1} k_{t+1}= [(1-\delta)k_t+x_t-\varphi(x_t/k_t)k_t]N_t
+\EQN capaccnew
+$$
+instead of \Ep{capacc}, where
+$$
+\varphi(x/k) = {a\over 2} \left({x\over k}-b\right)^2.
+$$
+As a sensitivity check we set $b$ equal to the investment-capital
+trend rate (i.e., $b=(1+g_z)(1+g_n)-1+\delta$) 
+and increase $a$ from 0.  To do this, we need to
+modify the dynamic first-order condition.
+We replace \Ep{dynamic} by
+$$\EQNalign{
+ & 
+   \biggl[
+     {1+\tau_{xt}\over 1+\tau_{ct}}
+      U_1(\hat c_t,1-l_t)-\zeta\min(\hat x_t,0)^2 
+   \biggr]\left({1\over 1-\varphi'(\hat x_t/\hat k_t)}\right)\cr
+     \noalign{\medskip}
+ &\qquad\qquad\qquad
+   = \hat \beta
+     E_t\Biggl\{{U_1(\hat c_{t+1},1-l_{t+1})\over
+                  1+\tau_{ct+1} }
+             \bigl\{ (1-\tau_{kt+1})r_{t+1}+\delta \tau_{kt+1}\bigr\} \cr
+\noalign{\medskip}
+ &\qquad\qquad\qquad\qquad\qquad
+    + \biggl[{1+\tau_{xt+1}\over 1+\tau_{ct+1}}
+                U_1(\hat c_{t+1},1-l_{t+1})-\zeta \min(\hat x_{t+1},0)^2
+         \biggr]\cr
+\noalign{\smallskip}
+ &\qquad\qquad\qquad\qquad\qquad\qquad
+            \cdot
+   \left({1\over 1-\varphi'(\hat x_{t+1}/\hat k_{t+1})}\right)\cr
+\noalign{\smallskip}
+ &\qquad\qquad\qquad\qquad\qquad\qquad
+           \cdot \biggl\{1-\delta
+           -\varphi\left({\hat x_{t+1}\over \hat k_{t+1}}\right)
+           +\varphi'\left({\hat x_{t+1}\over \hat k_{t+1}}\right)
+           {\hat x_{t+1}\over \hat k_{t+1}} \biggr\}
+\Biggr\}.
+\EQN dynamicnew\cr
+}
+$$
+
+In summary, allowing for adjustment costs involves
+two changes in the system of equations: replacing
+\Ep{capacc} and \Ep{dynamic} 
+with 
+\Ep{capaccnew} and \Ep{dynamicnew}. 
+
+For the benchmark model with adjustment costs,
+we can construct 
+$$
+  \tilde \tau_{xt} = {1+\tau_{xt}\over 1-\varphi'(\hat x_t/\hat k_t)} -1
+$$
+using series on $\tau_{xt}$, $\hat x_t$, and $\hat k_t$ from
+the benchmark model {\sl without} adjustment costs.
+The effective investment wedge corresponding to this
+rate ($1/(1+\tilde \tau_{xt})$), when fed into the benchmark model
+with adjustment costs, yields almost exactly the same results 
+for equilibrium output, hours, and investment.  (There is
+a slight difference because the effective depreciation rates
+are different for the two models.)
+
+To do log-linear computation (as in the baseline economy) 
+in the case with adjustment costs and $\tau_{ct}=\tau_{kt}=0$, 
+we start with
+$$\EQNalign{
+ &\hat c_t + \hat g_t +(1+g_z)(1+g_n)\hat k_{t+1}-(1-\delta)\hat k_t
+        +\varphi(\hat x_t/\hat k_t) \hat k_t
+    = \hat y_t = \hat k_t^\theta(z_tl_t)^{1-\theta}
+\EQN {foc1adj}\cr
+\noalign{\medskip}
+ &{\psi \hat c_t\over 1-l_t}
+    = (1-\tau_{lt})(1-\theta) \hat k_t^\theta l_t^{-\theta} z_t^{1-\theta}
+\EQN {foc2adj}\cr
+\noalign{\medskip}
+ &(1+\tau_{xt}) \hat c_t^{-\sigma} (1-l_t)^{\psi (1-\sigma)}
+         /\bigl(1-\varphi'(\hat x_t/\hat k_t)\bigr)
+     \cr
+ &\qquad
+       =  \hat \beta E_t
+  \hat c_{t+1}^{-\sigma} (1-l_{t+1})^{\psi (1-\sigma)}
+  \Bigl[
+      \theta \hat k_{t+1}^{\theta-1} (z_{t+1}l_{t+1})^{1-\theta}
+         +\bigl(1-\delta\cr
+ &\qquad\qquad\qquad\qquad
+            -\varphi(\hat x_{t+1}/\hat k_{t+1})
+            +\varphi'(\hat x_{t+1}/\hat k_{t+1})\hat x_{t+1}/\hat k_{t+1}\bigr)
+   \cr
+ &\qquad\qquad\qquad\qquad
+              (1+\tau_{xt+1})/
+            \left(1-\varphi'(\hat x_{t+1}/\hat k_{t+1})\right)
+   \Bigr].
+\EQN {foc3adj}\cr
+}
+$$
+Assuming $\varphi(\hat x/\hat k)=\varphi'(\hat x/\hat k)=0$,
+the log-linearization of these equations yields the same results
+as in the benchmark with the exception of the intertemporal condition:
+$$ \EQNalign{
+0&\approx
+  (1+\tau_x)
+        \bigl\{ -\psi(1-\sigma) l/(1-l) \log l_t
+                -\sigma \log \hat c_t 
+          +\eta (\log \hat x_t-\log\hat k_t) \bigr\} +\tau_{xt}\cr
+ & \qquad 
+       -E_t\Bigl\{ (1+\tau_x)
+            \left\{-\psi(1-\sigma) l/(1-l) \log l_{t+1}
+                   -\sigma \log \hat c_{t+1}
+            \right\}\cr
+ & \qquad \qquad\qquad
+     +\hat\beta\bigl[r(1-\theta)
+                  (\log l_{t+1} + \log z_{t+1}-\log \hat k_{t+1})\cr
+ & \qquad \qquad\qquad\qquad
+                  +(1+\tau_x)(1+g_z)(1+g_n)\eta
+                               (\log\hat x_{t+1} - \log\hat k_{t+1})\cr
+ & \qquad \qquad\qquad\qquad
+                 + (1-\delta) \tau_{xt+1}\bigr]\Bigr\},
+\EQN dynamicadj
+\cr
+}
+$$
+where  
+$r=\theta \hat y/\hat k$
+and $\eta=\varphi''(\hat x/\hat k)(\hat x/\hat k)=ab$.
+          
+As before, we guess a solution of the form \Ep{formofsolution}
+and set $\gamma$'s so that the dynamic residual \Ep{dynamicadj} is 
+exactly 0.
+We start by deriving $\gamma_k$.  To do this, 
+we need to write out the coefficients on $\hat k_{t+2}$, 
+$\hat k_{t+1}$, and $\hat k_t$ in the dynamic first-order condition
+\Ep{dynamicadj} making use
+of the $\phi$'s from the static first-order conditions. 
+For now, we 
+can ignore the expectations operator.  We get the following:
+$$\EQNalign{
+  0 = &\bigl[\hat\beta r(1-\theta)\phi_{lk'}
+                 -(1+\tau_x)
+                    \{\psi(1-\sigma)l/(1-l)\phi_{lk'}
+                      +\sigma\phi_{ck'}
+                      -\hat\beta (1+g_n)(1+g_z)
+                         \eta\phi_{xk'} \} \bigr] \hat k_{t+2}\cr
+      +&\bigl[\hat\beta r(1-\theta)(\phi_{lk}-1)
+               -(1+\tau_x)
+                     \{\psi(1-\sigma)l/(1-l)(\phi_{lk}-\phi_{lk'})
+                       + \sigma(\phi_{ck}-\phi_{ck'}) \cr
+       &\qquad\qquad\qquad\qquad
+                       -\hat\beta (1+g_n)(1+g_z) \eta (\phi_{xk}-1)
+                        +\eta\phi_{xk'} \}
+                  \bigr] \hat k_{t+1}\cr
+      +&\bigl[(1+\tau_x)
+               \{\psi(1-\sigma)l/(1-l)\phi_{lk}
+                +\sigma\phi_{ck} -
+                     \eta (\phi_{xk}-1)\} \bigr] \hat k_t\cr
+      +&{\rm \ all\ other\ terms}
+\EQN dynamicpieceadj
+}
+$$
+or, more succinctly, rewrite \Ep{dynamicpieceadj} as
+$ (a+ bL + cL^2) \hat k_{t+2} =$ other terms,
+where $\gamma_k$ is the root of the quadratic 
+inside the unit circle.  Note that $\gamma_k$ does not depend
+on the other unknown $\gamma$'s.
+
+Given $\gamma_k$, we can solve a linear system
+for the other $\gamma$'s.  At this point,
+we do not ignore the expectations operator:
+$$ \eqalign{
+0&\approx
+  (1+\tau_x)
+        \bigl\{-\psi(1-\sigma) l/(1-l)
+              [(\phi_{lz}+\phi_{lk'}\gamma_z)\log z_t
+               +(\phi_{ll}+\phi_{lk'}\gamma_l)\tau_{lt}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad
+               +\phi_{lk'}\gamma_x\tau_{xt} 
+               +(\phi_{lg}+\phi_{lk'}\gamma_g)\log\hat g_t]\cr
+ & \qquad\qquad\qquad \qquad
+               -\sigma 
+              [(\phi_{cz}+\phi_{ck'}\gamma_z)\log z_t
+               +(\phi_{cl}+\phi_{ck'}\gamma_l) \tau_{lt}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad
+               +\phi_{ck'}\gamma_x \tau_{xt}
+               +(\phi_{cg}+\phi_{ck'}\gamma_l) \log\hat g_t
+               ]\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad
+             +\eta \phi_{xk'}[\gamma_z \log z_t + \gamma_l \tau_{lt}
+                                + \gamma_x \tau_{xt} + \gamma_g\log\hat g_t]
+             \bigr\}+\tau_{xt}\cr
+}
+$$
+$$\eqalign{
+ & \qquad 
+       -E_t(1+\tau_x)
+            \bigl\{-\psi(1-\sigma) l/(1-l) 
+              [(\phi_{lk}+\phi_{lk'}\gamma_k)(\gamma_z\log z_t
+                                              +\gamma_l\tau_{lt}
+                                              +\gamma_x\tau_{xt}
+                                              +\gamma_g\log\hat g_t)\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + (\phi_{lz}+\phi_{lk'}\gamma_z)\log z_{t+1}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + (\phi_{ll}+\phi_{lk'}\gamma_l)\tau_{lt+1}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + \phi_{lk'}\gamma_x\tau_{xt+1}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + (\phi_{lg}+\phi_{lk'}\gamma_g)\log\hat g_{t+1}]\cr
+}
+$$
+$$\eqalign{
+ & \qquad\qquad\qquad\qquad\qquad \qquad
+               -\sigma 
+              [(\phi_{ck}+\phi_{ck'}\gamma_k)(\gamma_z\log z_t
+                                              +\gamma_l\tau_{lt}
+                                              +\gamma_x\tau_{xt}
+                                              +\gamma_g\log\hat g_t)\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +(\phi_{cz}+\phi_{ck'}\gamma_z)\log z_{t+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +(\phi_{cl}+\phi_{ck'}\gamma_l)\tau_{lt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +\phi_{ck'}\gamma_x\tau_{xt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +(\phi_{cg}+\phi_{ck'}\gamma_g)\log\hat g_{t+1}]\bigr\}\cr
+}
+$$
+$$\eqalign{
+ & \qquad \qquad\quad
+     -\hat\beta r(1-\theta) E_t \bigl[(\phi_{lk}+\phi_{lk'}\gamma_k-1)
+                    (\gamma_z\log z_t + \gamma_l\tau_{lt}
+                               +\gamma_x\tau_{xt}
+                               +\gamma_g\log\hat g_t)\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +(\phi_{lz}+\phi_{lk'}\gamma_z+1)\log z_{t+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +(\phi_{ll}+\phi_{lk'}\gamma_l)\tau_{lt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +\phi_{lk'}\gamma_x\tau_{xt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +(\phi_{lg}+\phi_{lk'}\gamma_g)\log\hat g_{t+1}\bigr]\cr
+}$$
+$$\eqalign{
+ & \qquad \qquad\quad
+   -\hat\beta (1+\tau_x)(1+g_n)(1+g_z)\eta 
+           E_t\bigl[(\phi_{xk}+\phi_{xk'}\gamma_k-1)
+                    (\gamma_z\log z_t + \gamma_l\tau_{lt}
+                               +\gamma_x\tau_{xt}
+                               +\gamma_g\log\hat g_t)\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +\phi_{xk'}(\gamma_z\log z_{t+1}
+                              + \gamma_l\tau_{lt+1}
+                               +\gamma_x\tau_{xt+1}
+                               +\gamma_g\log\hat g_{t+1})\cr
+ & \qquad\qquad\qquad
+     -\hat \beta (1-\delta) E_t \tau_{xt+1},\cr
+}
+$$
+which reduces to a system like \Ep{lqsystem}.
+
+\subsection{An Alternative Investment Wedge}
+
+In a comment on our paper, Christiano and Davis (2006)
+note that our findings may be sensitive to the particular
+choice of the intertemporal wedge.  In theory the choice
+of the intertemporal wedge should not
+matter in the sense that it just implies a (slightly)
+different map between the detailed economy and the
+prototype economy.  However, in practice, stochastic
+processes for the wedges are estimated, and therefore
+we want to make sure that our substantive
+findings are not affected by the choice.
+Here we describe Christiano and Davis' (2006) 
+alternative investment wedge,
+and later we demonstrate that our findings are 
+not sensitive to this alternative.\note{We also explain later 
+why the methodology used by Christiano and 
+Davis (2006)---which is not the methodology used in 
+the final version of our paper---can lead to
+a different conclusion.}
+
+Christiano and Davis (2006) assume that the intertemporal
+wedge is $\tau_k$ and that the dynamic first-order condition
+(with adjustment costs) is given by
+$$\EQNalign{
+ & U_1(\hat c_t,1-l_t)/(1-\varphi'(\hat x_t/\hat k_t))\cr
+\noalign{\medskip}
+ &\qquad = \hat \beta
+     E_t\Biggl\{U_1(\hat c_{t+1},1-l_{t+1})
+(1-\tau_{kt+1}) \Bigl[r_{t+1}
+   +
+   {1\over 1-\varphi'(\hat x_{t+1}/\hat k_{t+1})}\cr
+\noalign{\medskip}
+ &\qquad \qquad\qquad\qquad\qquad \qquad\qquad\qquad
+           \cdot 
+          \biggl\{1-\delta
+           -\varphi\left({\hat x_{t+1}\over \hat k_{t+1}}\right)
+           +\varphi'\left({\hat x_{t+1}\over \hat k_{t+1}}\right)
+           {\hat x_{t+1}\over \hat k_{t+1}} \biggr\} \Bigr]\Biggr\}.\cr
+}
+$$
+Here, $\tau_k$ resembles a tax on the gross return to capital.
+In Appendix C, we compare our predictions based on
+the $\tau_k$ wedge with those based on the $\tau_x$ wedge.\note{%
+We report results only for the postwar period 
+applying a log-linear approximation method, so we have dropped
+the penalty functions needed for our nonlinear solution method.}
+
+\bigskip
+\section{MLE Estimation}
+
+We now describe the general method we use to 
+estimate the processes governing
+the four exogenous variables in $s_t$ with the data
+described above.  
+
+\bigskip
+\subsection{State-Space Form}
+$$\eqalign{
+     X_{t+1} & = A  X_t + B \epsilon_{t+1} \cr
+     Y_t     & = C  X_t + \omega_t\cr
+     \omega_t & = D \omega_{t-1} + \eta_t,\cr
+}
+$$
+\item{ }
+where $X_t=[\log \hat k_t, \log z_t, \tau_{lt}, \tau_{xt}, \log\hat g_t, 1]'$,
+$Y_t=[\log\hat y_t,\log \hat x_t,\log l_t, \log\hat g_t]$, and
+$$\eqalign{
+   A &= \left[\matrix{ \gamma_k  & 
+                        \matrix{\gamma_z & \gamma_l & \gamma_x & \gamma_g} 
+                           & \gamma_0 \cr
+                 0_{4\times 1}  & P       &  P_0 \cr
+                 0              & 0_{1\times 4} & 1}\right]\cr
+\noalign{\bigskip}
+   B &= \left[\matrix{  0_{1\times 4} \cr
+                       Q \cr
+                       0 }\right]\cr
+\noalign{\bigskip}
+   C &= \left[\matrix{
+     \phi_{yk} & \phi_{yz} & \phi_{yl} & 0 & \phi_{yg} & \phi_{y0}\cr
+     \phi_{xk} & 0 & 0 & 0 & 0 & \phi_{x0}\cr
+     \phi_{lk} & \phi_{lz} & \phi_{ll} & 0 & \phi_{lg} & \phi_{l0}\cr
+     0 & 0 & 0 & 0 & 1 & 0\cr
+    }\right]
+   +\left[\matrix{\phi_{yk'}\cr \phi_{xk'}\cr \phi_{lk'}\cr 0\cr}\right]
+   \left[\matrix{\gamma_k & \gamma_z & \gamma_l & \gamma_x & \gamma_g & 0\cr}
+    \right]
+}
+$$
+\item{}
+and elements of $D$ are the parameters governing serial correlation of
+the measurement error.  Assume that $E \eta_t\eta_t'=R$, 
+$E \epsilon_{t}\eta_s'=0$ for all periods $t$ and $s$.
+Define $\bar Y_t\equiv Y_{t+1}-DY_t$. Then we can rewrite the 
+system as
+$$\eqalign{
+     X_{t+1} & = A  X_t + B \epsilon_{t+1} \cr
+     \bar Y_t  & = \bar C  X_t + CB\epsilon_{t+1}+\eta_{t+1}.\cr
+}
+$$
+
+\subsection{Log-Likelihood Function}
+$$L(\Theta) = \sum_{t=0}^{T-1} \left\{ \log |\Omega_t| + 
+              {\rm trace}(\Omega_t^{-1}u_tu_t')
+             -\log|\partial f(Z_t,\Theta)/\partial Z_t|\right\},
+\EQN likelihood
+$$
+where the parameters to be estimated are stacked in vector
+$\Theta$, the innovation vector is $u_t$, and its covariance
+is $\Omega_t$.  The last term in \Ep{likelihood} is nonzero
+if the elements of 
+$Y$ are not the raw series but depend on the raw
+series $Z$ plus the parameter vector.  For example, if 
+we estimate $g_z$ and use per-capita values as our raw data,
+then $Z$ is per-capita data and $Y$ is detrended per-capita data.   
+
+The innovation vector $u_t$ and its covariance $\Omega_t$
+are defined as follows:
+$$\eqalign{
+   u_t &= \bar Y_t - \hat E[\bar Y_t| 
+              \bar Y_{t-1},\bar Y_{t-2},\ldots, \bar Y_0,\hat X_0]\cr
+       &= Y_{t+1} - \hat E[Y_{t+1}| Y_t,Y_{t-1},\ldots, Y_0,\hat X_0]\cr
+       &= Y_{t+1} - D Y_t - \bar C \hat X_t \cr
+\noalign{\bigskip}
+  \Omega_t & = Eu_tu_t'= \bar C \Sigma_t\bar C'+R+CBB'C',\cr
+}
+$$
+which in turn depends on the predicted state $\hat X_t$:
+$$
+  \hat X_t = \hat E[X_t| Y_t,Y_t,\ldots, Y_0,\hat X_0].
+$$
+The predicted state evolves according to 
+$$
+  \hat X_{t+1} = A \hat X_t + K_t u_t, 
+$$
+where $K_t$ is the Kalman gain,
+$$\eqalign{
+  K_t &= (BB'C'+A\Sigma_t\bar C')\Omega_t^{-1}\cr
+  \Sigma_{t+1} & = A\Sigma_t A'+BB'-(BB'C'+A\Sigma_t\bar C')\Omega_t^{-1}
+           (\bar C\Sigma_t A'+CBB')\cr
+}
+$$
+with state covariance $\Sigma_t$.
+
+For the results in the paper, we fixed parameters
+of preferences, production, and growth and estimated the
+processes for the wedges.  The parameters that
+were fixed were $\psi=2.24$, $\sigma=1$, $\beta=0.9722$, 
+$\theta=0.35$,
+$\delta=0.0464$, $g_n=1.5$\%, and $g_z=1.6$\%.
+We also set the measurement errors equal to zero ($D=R=0_{4\times 4}$)
+in all periods and all numerical experiments.\note{This choice makes no
+difference for our results.}
+The parameters that were estimated were elements
+of $P_0$, $P$, and $Q$.   
+
+The parameter choices were based on time series during the 
+pre-World War II period.  There have been some modest 
+changes in growth rates, depreciation rates, and capital shares
+in the post-World War II period.  Since we separately estimate
+the means of the wedges in the pre- and postwar periods, our
+main results are not affected.  One advantage of keeping the
+utility and technology parameters fixed is that we can back out
+wedges for the entire century.  (These are shown later in Figures
+A1 and A2.)
+
+\bigskip
+\section{Decomposing Macro Aggregates}
+
+Here, we describe the details of our implementing
+our accounting procedure for the Great Depression
+and postwar periods.   They differ slightly because
+the equilibria are computed differently in the two
+periods: we use a nonlinear computational routine
+for the Great Depression and a log-linear computational
+routine for the postwar period.
+
+\subsection{Great Depression Period}
+
+Because shocks are large during the Great Depression 
+period, we need to compute equilibria nonlinearly.
+We use a large (i.e., 459 state) Markov chain to approximate
+the process for the shocks to avoid
+having to compute a five-dimensional continuous-state
+model.  
+
+Specifically, using estimates for the matrices underlying the 
+stochastic process on wedges, namely $P_0$, $P$,
+and $Q$, we construct a Markov transition matrix
+using a methodology that is similar to---but not the
+same as---Tauchen (1986).
+The difference is that Tauchen rewrites the problem
+to have a diagonal covariance matrix on the disturbances
+and we assume a dense covariance matrix.  We do this
+because it allows us more flexibility in choosing the
+grid over our state variables.
+
+Given a Markov chain, we want to find the realization
+of the wedges, one consistent with the estimated
+process, that implies exact agreement between model
+simulations and observations.
+For $\log z_t$, we use the specified production function
+above and observations on output, labor input, and the
+capital stock (accumulated via perpetual inventory with
+the observed investment series).
+For $\tau_{lt}$, we use the static first-order
+condition \Ep{foc2} along with series for
+capital, labor, consumption, and $z_t$.
+For $\log g_t$, we have a direct measure.
+
+We cannot infer a realization for $\tau_{xt}$ directly
+from static first-order conditions.   Instead, we
+find the realization of $\tau_{xt}$ that gives an
+exact match of the model simulation and U.S.~observations
+over a specified period (e.g., the Great Depression
+or the 1982 recession).
+We start by making a guess for the series $\tau_{xt}$ 
+for the period in which we are interested.  For example, when
+we examine the period of the Great Depression, we 
+make a guess about the realization of $\tau_{xt}$
+from 1929 through 1939.    A good starting point for
+this guess can be derived from the log-linear decision
+rule on investment, which is a function of the capital
+stock and the other wedges.    This amounts to solving
+one equation in one unknown ($\tau_x$).
+
+With a guess for the realization of $\tau_{xt}$ 
+and realizations for all of the other wedges, we simulate
+the model as follows.   We take our Markov chain for
+the wedges (found using the variation on Tauchen's method)
+and append it by $N$ states, where $N$ 
+is the number of years in the period we want to study.
+Suppose that the 
+original chain had $M$ states.  The appended chain has $M+N$.
+In the case
+of the Great Depression, for example, we have $N=11$,
+which is the length of the period 1929--1939.
+The first of the appended states corresponds to the
+first year; the first year is 1929 in the case of the Great Depression.
+We have values for $z_{1929}$, $\tau_{l1929}$, $\hat g_{1929}$. 
+We have a guess for $\tau_{x1929}$.  
+For each of the $N$ additional states, we use our version
+of Tauchen's method to compute the transition problems from 
+this state to the $M$ original states.
+Because we want a sequence for $\tau_{xt}$ during the Great
+Depression that generates an exact match between data and 
+model for all wedges on, we have to iterate (reguessing
+the sequence and updating the Markov chain transition)
+until there is an exact match.
+The derived wedges are shown in Figure 1 of the paper.
+
+Once we have this realization for all of the wedges---one that
+can exactly generate the data---we turn off one or more
+of the wedges by setting them at their initial levels (say, 1929
+in the case of the Depression).    For example, to
+see how important $\log z$ is in the Great Depression, 
+we can set $\tau_{x}$, $\tau_{l}$, and $\hat g$ (in 
+all states) equal to their 1929 levels.  We hold fixed
+the underlying stochastic process.  This means that
+we hold the Markov chain transition probabilities fixed
+for each new simulation.  
+The results of the one-wedge-alone or one-wedge-off
+experiments are shown in Figures 2--4.
+
+\subsection{Postwar Period}
+
+In the postwar period, there is no need to approximate
+the stochastic process for the wedges using a Markov
+Chain because the shocks are much smaller. In this case,
+a log-linear approximation of the five-dimensional,
+continuous state model works well.  
+
+As in the Great
+Depression, we fix the stochastic process $s^t$
+when considering the marginal effect of one wedge. 
+To accomplish that, we set each of the wedges equal
+to the sum of a constant times an indicator function
+plus the corresponding state in $s$ times one minus
+the indicator function; for example,
+$$
+  \tau_{lt} = \chi \bar\tau_l + (1-\chi) s_{2t},
+$$
+where $s_{2t}$ is the second element of the 
+state vector $s_t$ and $\chi$ is equal to 0 or
+1 depending on whether variations in the
+wedge $\tau_{lt}$ are being analyzed 
+or not, respectively.\note{In earlier versions of
+the paper we set $\tau_{lt}=s_{2t}$ and 
+set it equal to a constant when its effects were
+not being analyzed.  The quantitative impact was
+very small for our prototype model with a $\tau_x$
+investment wedge.  They are not small for Christiano
+and Davis (2006), who prefer to use a $\tau_k$ wedge and 
+to set adjustment
+costs very high.   In the published version of our paper, 
+we described our current procedure which is
+consistent with our propositions that separate 
+the direct effects of fluctuations in the wedges with 
+indirect effects due to forecasting fluctuations 
+in other wedges.  Later, we show that if Christiano
+and Davis (2006) were to apply the procedure 
+that is consistent with our
+propositions, their predictions would line up 
+almost exactly with ours. }
+
+\bigskip
+\section{A Model with Capacity Utilization}
+
+In the cases where we allow for capacity utilization
+(Figures 9--12 in the paper), we
+use the following functional form for technology:
+$$F(k,zl) = k^\theta zl$$
+and redo the steps outlined above.
+
+In the log-linearized solution, we have the following new
+first-order conditions:
+$$\eqalign{
+ & \hat c_t +\hat g_t+(1+g_n)(1+g_z)\hat k_{t+1}-(1-\delta)\hat k_t
+   = \hat k_t^\theta z_tl_t\cr
+ &\psi \hat c_t
+    = (1-\tau_{lt})\hat k_t^\theta z_t (1-l_t) \cr
+ &(1+\tau_{xt}) \hat c_t^{-\sigma}
+              (1-l_t)^{\psi (1-\sigma)}
+     \cr
+ &\qquad\qquad
+       = \hat \beta E_t\hat c_{t+1}^{-\sigma}
+                (1-l_{t+1})^{\psi (1-\sigma)}\cr
+ &\qquad\qquad\qquad\qquad
+          [\theta \hat k_{t+1}^{\theta-1} z_{t+1}l_{t+1}
+              +(1-\delta)(1+\tau_{xt+1})].\cr
+}
+$$
+The new steady state in this case is $\hat k$ and $l$ that solve
+$$\eqalign{
+  & \psi [\hat k^\theta zl
+             -(1+g_n)(1+g_z)\hat k+(1-\delta)\hat k-\hat g]
+    = (1-\tau_l)\hat k^\theta z (1-l) \cr
+ &(1+\tau_x) = \hat \beta [\theta \hat k^{\theta-1} zl
+              +(1-\delta)(1+\tau_x)].\cr
+}
+$$
+Solving this system of equations is 
+like solving a problem of the form
+$ \xi_1 \hat k - \xi_2 = \xi_3 \hat k^\theta$,
+where 
+$$\eqalign{
+\xi_1&= (\psi+1-\tau_l)\xi-\psi[(1+g_n)(1+g_z)-1+\delta]\cr
+\xi_2&=\psi \hat g\cr
+\xi_3&=(1-\tau_l)z\cr
+\xi\  & =(1+\tau_x)[1-\hat \beta(1-\delta)]/(\hat\beta\theta).\cr
+}
+$$
+We compute $\hat k$ with 
+a simple Newton algorithm starting with
+$\hat k= (\xi_3/\xi_1)^{1/(1-\theta)},$
+which is the exact solution if $\hat g=0$.
+The solution for $\hat k$ 
+in the $\hat g > 0$ case will be higher.
+Once we have $\hat k$,  we have
+$l=\xi \hat k^{1-\theta}/z$.
+
+The new log-linearized first-order conditions (ignoring
+constants) imply the following for detrended consumption:
+$$\eqalign{
+  \hat c_t &\approx \hat c \log \hat c_t\cr
+           &\approx \hat k^{\theta} zl
+           [\theta \log \hat k_t + \log z_t+\log l_t]\cr
+          &\quad
+          -(1+g_z)(1+g_n)\hat k \log \hat k_{t+1} 
+          +(1-\delta)\hat k \log \hat k_t-\hat g \log\hat g_t. \cr
+}
+$$
+As before, the labor input is derived from the static
+first-order condition \Ep{foc2}
+$$\eqalign{
+    0 &\approx \psi\bigl\{\hat k^{\theta} zl
+           [\theta \log \hat k_t + \log z_t+\log l_t]\cr
+          &\qquad\quad
+          -(1+g_z)(1+g_n)\hat k \log \hat k_{t+1} 
+          +(1-\delta)\hat k \log \hat k_t-\hat g\log \hat g_t\bigr\} \cr
+          &\qquad\qquad\quad 
+                 + (1-\tau_l)\hat k^\theta 
+                          z(1-l)
+                    \bigl\{1/(1-\tau_l)\,\tau_{lt}\cr
+          &\qquad\qquad\qquad\quad 
+                               -\theta \log \hat k_t
+                                  - \log z_t
+                                  +l/(1-l) \log l_t \bigr\},\cr
+}
+$$
+which we write succinctly as
+$$
+\log l_t = \phi_{lk}\log \hat k_t
+            +\phi_{lz}\log z_t
+            +\phi_{ll}\tau_{lt}
+            +\phi_{lg}\log \hat g_t
+            +\phi_{lk'}\log \hat k_{t+1}.
+$$
+Using this equation for $\log l$, we use the other static
+first-order conditions to derive output, investment,
+and consumption as follows:
+$$\eqalign{
+\log \hat y_t &= \phi_{yk}\log \hat k_t
+            +\phi_{yz}\log z_t
+            +\phi_{yl}\tau_{lt}
+            +\phi_{yk'}\log \hat k_{t+1} \cr
+      &= 
+              (\theta+\phi_{lk})\log \hat k_t
+                        +(1+\phi_{lz}) \log z_t \cr
+      &\qquad\qquad\qquad\qquad
+                        +\phi_{ll}\tau_{lt}
+                                 +\phi_{lk'}\log \hat k_{t+1}\cr
+      \log \hat x_t &=
+                    (1+g_z)(1+g_n) \hat k/\hat x \log \hat k_{t+1}
+                    -(1-\delta) \hat k/\hat x \log \hat k_t\cr
+      \log \hat c_t &= \phi_{ck}\log \hat k_t
+            +\phi_{cz}\log z_t
+            +\phi_{cl}\tau_{lt}
+            +\phi_{cg}\log \hat g_t
+            +\phi_{ck'}\log \hat k_{t+1} \cr
+                    &= [\hat y\log y_t
+                      -\hat x\log x_t -\hat g\log \hat g_t]/\hat c.\cr
+}
+$$
+
+The new dynamic first-order condition implies the following
+for capital:
+$$ \eqalign{
+0&\approx
+  (1+\tau_x)\hat c^{-\sigma} (1-l)^{\psi(1-\sigma)} 
+        \left\{-\psi(1-\sigma) l/(1-l) \log l_t
+                  -\sigma \log \hat c_t \right\} \cr
+ & \qquad \qquad\qquad
+   +\hat c^{-\sigma} (1-l)^{\psi(1-\sigma)} \tau_{xt} \cr
+ & \qquad 
+   -\hat\beta 
+        E_t\bigl\{ \bigl[\theta \hat k^{\theta-1}zl
+           +(1-\delta)(1+\tau_x)\bigr]\cr
+ & \qquad \qquad\qquad
+       \cdot\bigl[\hat c^{-\sigma} (1-l)^{\psi(1-\sigma)}
+            \left\{-\psi(1-\sigma) l/(1-l) \log l_{t+1}
+                    -\sigma \log \hat c_{t+1} \right\}
+       \bigr]\cr
+ & \qquad \qquad\qquad
+        +\hat c^{-\sigma} (1-l)^{\psi(1-\sigma)}
+             \bigl[\theta \hat k^{\theta-1}zl
+        \cr
+ & \qquad \qquad\qquad\qquad\qquad
+       \cdot(\log l_{t+1} + \log z_{t+1}-(1-\theta)\log \hat k_{t+1})
+                  +(1-\delta)\tau_{xt+1}\bigl]\bigr\},\cr
+}
+$$
+which simplifies to
+$$ \eqalign{
+0&\approx
+  (1+\tau_x)
+        \left\{ -\psi(1-\sigma) l/(1-l) \log l_t
+                -\sigma \log \hat c_t \right\} 
+   +\tau_{xt} \cr
+ & \qquad 
+       -E_t\bigl\{ (1+\tau_x)
+            \left\{-\psi(1-\sigma) l/(1-l) \log l_{t+1}
+                   -\sigma \log \hat c_{t+1}
+            \right\}\cr
+ & \qquad \quad
+     +\hat\beta\bigl[r
+                  (\log l_{t+1} + \log z_{t+1}-(1-\theta)\log \hat k_{t+1})
+                  +(1-\delta)\tau_{xt+1}\bigr]\bigr\},\cr
+}
+$$
+where $r=\theta \hat y/\hat k$.
+          
+The form of the solution is given by \Ep{formofsolution}.
+To compute $\gamma_k$,
+we need to write out the coefficients on $\hat k_{t+2}$, 
+$\hat k_{t+1}$, and $\hat k_t$ in the dynamic first-order
+condition making use
+of the $\phi$'s from the static first-order condition.  For now, we 
+can ignore the expectations operator.  We get the following:
+$$ \eqalign{
+0&\approx
+  -(1+\tau_x)
+        \bigl\{ -\psi(1-\sigma) l/(1-l)
+              [\phi_{lk}\log \hat k_t+\phi_{lk'} \log \hat k_{t+1}] 
+   \cr
+ & \qquad\qquad\qquad \qquad
+               -\sigma 
+              [\phi_{ck}\log \hat k_t+\phi_{ck'} \log \hat k_{t+1}] 
+         \bigr\} \cr
+ & \quad 
+       +E_t(1+\tau_x)
+            \bigl\{-\psi(1-\sigma) l/(1-l) 
+              [\phi_{lk}\log \hat k_{t+1}+\phi_{lk'} \log \hat k_{t+2}] \cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad
+               -\sigma 
+              [\phi_{ck}\log \hat k_{t+1}+\phi_{ck'} \log \hat k_{t+2}] 
+            \bigr\}\cr
+ & \qquad \qquad\quad
+     +\hat\beta E_t \bigl[r
+                  (\phi_{lk}\log \hat k_{t+1}+\phi_{lk'}\hat k_{t+2}
+                     -(1-\theta)\log \hat k_{t+1})
+              \bigr],\cr
+}
+$$
+which simplifies to
+$$\eqalign{
+  0 = &[\hat\beta r\phi_{lk'}
+                 -(1+\tau_x)\psi(1-\sigma)l/(1-l)\phi_{lk'}
+         -(1+\tau_x)\sigma\phi_{ck'}] \hat k_{t+2}\cr
+      +&[\hat\beta r(\phi_{lk}-1+\theta)
+               -(1+\tau_x)\psi(1-\sigma)l/(1-l)\phi_{lk}
+               -(1+\tau_x)\sigma\phi_{ck}
+       \cr
+       &\qquad\qquad\qquad\qquad
+               +(1+\tau_x)\psi(1-\sigma)l/(1-l)\phi_{lk'}
+               +(1+\tau_x)\sigma\phi_{ck'}
+       ] \hat k_{t+1}\cr
+      -&[-(1+\tau_x)\psi(1-\sigma)l/(1-l)\phi_{lk}
+               -(1+\tau_x)\sigma\phi_{ck}
+       ] \hat k_t\cr
+      +&{\rm\ all\ other\ terms.}
+}
+$$
+
+Given $\gamma_k$, we solve a linear system
+for the other $\gamma$'s.   In particular, we have
+$$ \eqalign{
+0&\approx
+  (1+\tau_x)
+        \bigl\{-\psi(1-\sigma) l/(1-l)
+              [(\phi_{lz}+\phi_{lk'}\gamma_z)\log z_t\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad
+               +(\phi_{ll}+\phi_{lk'}\gamma_l)\tau_{lt}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad
+               +\phi_{lk'}\gamma_x\tau_{xt} 
+               +(\phi_{lg}+\phi_{lk'}\gamma_g)\log\hat g_t\cr
+ & \qquad\qquad\qquad \qquad
+               -\sigma 
+              [(\phi_{cz}+\phi_{ck'}\gamma_z)\log z_t
+               +(\phi_{cl}+\phi_{ck'}\gamma_l) \tau_{lt}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad
+               +\phi_{ck'}\gamma_x \tau_{xt}
+               +(\phi_{cg}+\phi_{ck'}\gamma_l) \log\hat g_t
+               ]\bigr\} +\tau_{xt}\cr
+}
+$$
+$$\eqalign{
+ & \qquad 
+       -E_t(1+\tau_x)
+            \bigl\{-\psi(1-\sigma) l/(1-l) 
+              [(\phi_{lk}+\phi_{lk'}\gamma_k)(\gamma_z\log z_t
+                                              +\gamma_l\tau_{lt}
+                                              +\gamma_x\tau_{xt})\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + (\phi_{lz}+\phi_{lk'}\gamma_z)\log z_{t+1}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + (\phi_{ll}+\phi_{lk'}\gamma_l)\tau_{lt+1}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + \phi_{lk'}\gamma_x\tau_{xt+1}\cr
+ & \qquad\qquad\qquad \qquad\qquad\qquad\qquad \qquad
+              + (\phi_{lg}+\phi_{lk'}\gamma_g)\log\hat g_{t+1}]\cr
+}
+$$
+$$\eqalign{
+ & \qquad\qquad\qquad\qquad\qquad \qquad
+               -\sigma 
+              [(\phi_{ck}+\phi_{ck'}\gamma_k)(\gamma_z\log z_t
+                                              +\gamma_l\tau_{lt}
+                                              +\gamma_x\tau_{xt}
+                                              +\gamma_g\log\hat g_t)\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +(\phi_{cz}+\phi_{ck'}\gamma_z)\log z_{t+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +(\phi_{cl}+\phi_{ck'}\gamma_l)\tau_{lt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +\phi_{ck'}\gamma_x\tau_{xt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+               +(\phi_{cg}+\phi_{ck'}\gamma_g)\log\hat g_{t+1}]\bigr\}\cr
+}
+$$
+$$\eqalign{
+ & \qquad \qquad\quad
+     -\hat\beta r E_t \bigl[(\phi_{lk}+\phi_{lk'}\gamma_k-1+\theta)
+                    (\gamma_z\log z_t + \gamma_l\tau_{lt}+\gamma_x\tau_{xt})\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +(\phi_{lz}+\phi_{lk'}\gamma_z+1)\log z_{t+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +(\phi_{ll}+\phi_{lk'}\gamma_l)\tau_{lt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +\phi_{lk'}\gamma_x\tau_{xt+1}\cr
+ & \qquad\qquad\qquad\qquad\qquad \qquad\qquad
+                    +(\phi_{lg}+\phi_{lk'}\gamma_g)\log\hat g_{t+1}\bigr]\cr
+ & \qquad\qquad\qquad
+     -\hat \beta (1-\delta) E_t \tau_{xt+1},\cr
+}
+$$
+and after this, the procedure is the same as for the benchmark
+model.
+
+\Appendix{B}{Data and Sources}
+
+\noindent
+In this Appendix, we describe our data and their
+sources.  Early drafts of the paper reported 
+results for the annual data described in Section 1.
+We subsequently redid the exercises for the postwar
+period using quarterly data (which can be updated
+by future users of the codes).  The Bureau of 
+Economic Analysis (BEA) has done comprehensive revisions
+of the national accounts and reenumerated many of the 
+standard national income and product account (NIPA) 
+tables.  Thus, the NIPA tables with
+annual data do not correspond to the current
+naming scheme of the BEA.  We do have all of
+the original tables that we used in this project,
+along with documentation.
+
+\section{U.S.~Historical Annual Data Measures and Sources}
+
+Here, we provide a list of the variables in the 
+model and their data analogs.  Because we work
+with data going back to 1900, the main output series 
+for the annual data is gross national product.
+
+\subsection{Measures}
+
+\item{\bul} Per-capita output ($y$)
+\itemitem{    } \ \ GNP 
+\itemitem{    } \ \ $-$ Sales tax 
+\itemitem{    } \ \ $-$ Military compensation
+\itemitem{    } \ \ $+$ Services from consumer durables (with return = 4\% )
+\itemitem{    } \ \ + Depreciation from consumer durables
+\bigskip
+\item{\bul} Per-capita investment ($x$)
+\itemitem{    } \ \ Gross private fixed investment
+\itemitem{    } \ \ + Private inventories 
+\itemitem{    } \ \ + Government gross investment
+\itemitem{    } \ \ + Net factor payments (GNP-GDP)
+\itemitem{    } \ \ + Personal consumption expenditures on durables
+\itemitem{    } \ \ $-$ Sales tax $\times$ share of durables in PCE
+\itemitem{    } \ \ All deflated by the GNP deflator and Population over 16
+\bigskip
+\item{\bul} Per-capita government ($g$)
+\itemitem{    } \ \ Government consumption
+\itemitem{    } \ \ $-$ Military compensation
+\itemitem{    } \ \ +   Military equipment
+\itemitem{    } \ \ $-$ 1/2  Military facilities
+\itemitem{    } \ \ + Net exports of goods and services
+\itemitem{    } \ \ All deflated by the GNP deflator and Population over 16
+\bigskip
+\item{\bul} Per-capita labor input ($l$)
+\itemitem{    } \ \ (Civilian annual manhours / Population over 16)
+                       / (50 weeks $\times$ 100 hours)
+
+\subsection{Sources}
+
+The specific sources of the data listed above are as follows:
+\medskip
+\itemitem{\cir} National accounts, pre-1929
+\itemitem{    } \hskip .5truein Kendrick (1961), Table A-IIb (all mil.~\$)
+\itemitem{    } \hskip 1.truein Total consumption expenditures
+\itemitem{    } \hskip 1.truein New construction and equipment
+\itemitem{    } \hskip 1.truein Change in business inventories
+\itemitem{    } \hskip 1.truein Net foreign investment
+\itemitem{    } \hskip 1.truein Government purchases of goods and services
+\itemitem{    } \hskip 1.truein GNP (commerce concept)
+\medskip
+\itemitem{    } \hskip .5truein Kendrick (1961), Table A-IIa (in mil.~1929 \$)
+\itemitem{    } \hskip 1.truein GNP 
+\itemitem{    } \hskip 1.truein Change in business inventories
+\bigskip
+\itemitem{\cir} National accounts, post-1929
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 1.1 (in bil.~\$)
+\itemitem{    } \hskip 1.truein Gross domestic product (GDP)
+\itemitem{    } \hskip 1.truein Personal consumption expenditures (PCE)
+\itemitem{    } \hskip 1.5truein PCE durable goods
+\itemitem{    } \hskip 1.5truein PCE nondurable goods
+\itemitem{    } \hskip 1.5truein PCE services
+\itemitem{    } \hskip 1.truein Gross private domestic investment (GPDI) 
+\itemitem{    } \hskip 1.5truein GPDI fixed investment
+\itemitem{    } \hskip 1.5truein GPDI change in private inventories
+\itemitem{    } \hskip 1.truein Net exports of goods and services 
+\itemitem{    } \hskip 1.truein Government consumption expenditures 
+                           and gross investment 
+\medskip
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 1.9 (in bil.~\$)
+\itemitem{    } \hskip 1.truein Gross national product (GNP)
+\medskip
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 3.9 (in bil.~\$)
+\itemitem{    } \hskip 1.truein Government consumption expenditures 
+\medskip
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 5.1 (in bil.~\$)
+\itemitem{    } \hskip 1.truein Gross government investment
+\medskip
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 3.7 (in bil.~\$)
+\itemitem{    } \hskip 1.truein National defense gross investment in structures
+\itemitem{    } \hskip 1.truein National defense gross investment in 
+                  equipment and software
+\medskip 
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 3.5 (in bil.~\$)
+\itemitem{    } \hskip 1.truein Federal excise taxes
+\itemitem{    } \hskip 1.truein State and local sales taxes
+\itemitem{    } \hskip 1.truein State and local other taxes
+\medskip 
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 6.2 (in mil.~\$)
+\itemitem{    } \hskip 1.truein Compensation of military employees
+\medskip 
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 6.3 (in mil.~\$)
+\itemitem{    } \hskip 1.truein Wage and salary accruals for military
+\bigskip 
+\itemitem{\cir} Fixed assets and investments
+\itemitem{    } \hskip .5truein www.bea.gov, FA Table 1.1 (in mil.~\$ year-end)
+\itemitem{    } \hskip 1.truein Current-cost net stock of fixed assets, 
+                 private
+\itemitem{    } \hskip 1.truein Current-cost net stock of consumer 
+                 durable goods
+\medskip 
+\itemitem{    } \hskip .5truein www.bea.gov, FA Table 7.1 (in mil.~\$ year-end)
+\itemitem{    } \hskip 1.truein Current-cost net stock of fixed assets, 
+                 government
+\itemitem{    } \hskip 1.truein Current-cost net stock of fixed assets, 
+                 government national defense, 
+\itemitem{    } \hskip 1.5truein equipment and software
+\itemitem{    } \hskip 1.truein Current-cost net stock of fixed assets, 
+                 government national defense, 
+\itemitem{    } \hskip 1.5truein military facilities
+\medskip 
+\itemitem{    } \hskip .5truein www.bea.gov, FA Table 1.5 (in mil.~\$)
+\itemitem{    } \hskip 1.truein Historical-cost investment in fixed 
+                 assets, private
+\itemitem{    } \hskip 1.truein Historical-cost investment in consumer 
+                 durable goods
+\medskip 
+\itemitem{    } \hskip .5truein www.bea.gov, FA Table 7.5 (in mil.~\$)
+\itemitem{    } \hskip 1.truein Historical-cost investment in fixed assets, 
+                 government
+\itemitem{    } \hskip 1.truein Historical-cost investment in fixed assets, 
+                 government national 
+\itemitem{    } \hskip 1.5truein defense, equipment and software
+\itemitem{    } \hskip 1.truein Historical-cost investment in fixed assets, 
+                 government national 
+\itemitem{    } \hskip 1.5truein defense, military facilities
+\bigskip 
+\itemitem{\cir} Civilian manhours, pre-1947
+\itemitem{    } \hskip .5truein Kendrick (1961), Table A-X (millions)
+\bigskip 
+\itemitem{\cir} Civilian manhours, post-1947
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 6.5 (thousands)
+\itemitem{    } \hskip 1.truein Full-time equivalent employees
+\itemitem{    } \hskip 1.truein Full-time equivalent employees, military
+\medskip 
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 6.8 (thousands)
+\itemitem{    } \hskip 1.truein Persons engaged in production 
+\itemitem{    } \hskip 1.truein Persons engaged in production, military
+\medskip 
+\itemitem{    } \hskip .5truein www.bea.gov, old NIPA Table 6.9 (mil.~of hours)
+\itemitem{    } \hskip 1.truein Hours worked by full-time and part-time employees
+
+\bigskip
+\itemitem{\cir} Population over 16
+\itemitem{    } \hskip .5truein {\it Historical Statistics}, Series A6-8
+\itemitem{    } \hskip .5truein {\it Economic Report of the President} (2001), 
+Table B-34.
+
+
+
+
+\subsection{Appendix Figures}
+
+Figures A1 and A2 are the efficiency and tax wedges, respectively,
+over the entire twentieth century.
+% In usdata.m: 
+% psi=2.24;theta=.35;
+% lam=1.016.^(t-1929);
+% A=(Ypc./lam)./( (Kpc./lam).^theta .* L.^(1-theta)); 
+% taun = 1-(psi/(1-theta)) *(Cpc./Ypc) .*(L./(1-L));
+
+
+\section{U.S.~Postwar Quarterly Data Measures and Sources}
+
+For the quarterly series, we have total hours data only
+after 1959:1.  Since there are no world wars in our postwar
+sample, we do not adjust for military compensation.
+The main output series that we use for
+the postwar series is gross domestic product.  
+
+\subsection{Measures}
+
+\item{\bul} Per-capita output ($y$)
+\itemitem{    } \ \ Real GDP 
+\itemitem{    } \ \ $-$ Sales tax deflated by the personal consumption 
+expenditures (PCE) deflator
+\itemitem{    } \ \ $+$ Services from consumer durables (with return = 4\%)
+                        deflated by the PCE durable deflator
+\itemitem{    } \ \ + Depreciation from consumer durables deflated
+                       by the PCE durable deflator
+\itemitem{    } \ \ All divided by non-institutional population 16--64
+\bigskip
+\item{\bul} Per-capita investment ($x$)
+\itemitem{    } \ \ Real gross private domestic investment (fixed plus inventories)
+\itemitem{    } \ \ + Real government gross investment
+\itemitem{    } \ \ + Real personal consumption expenditures on durables
+\itemitem{    } \ \ $-$ Sales tax deflated by PCE deflator
+                    $\times$ share of durables in PCE 
+\itemitem{    } \ \ All divided by non-institutional population 16--64
+\bigskip
+\item{\bul} Per-capita government ($g$)
+\itemitem{    } \ \ Real government consumption
+\itemitem{    } \ \ + Real net exports of goods and services
+\itemitem{    } \ \ All divided by non-institutional population 16--64
+\bigskip
+\item{\bul} Per-capita labor input ($l$)
+\itemitem{    } \ \ Total hours from the current population survey
+\itemitem{    } \ \ + Military hours 
+\itemitem{    } \ \ All divided by non-institutional population 16--64
+
+\subsection{Sources}
+
+The specific sources of the data listed above are as follows:
+\medskip
+\itemitem{\cir} National accounts, post-1947, quarterly
+\itemitem{    } \hskip .5truein www.bea.gov, new NIPA Table 1.1.6 
+(in bil.~chained 2000 \$)
+\itemitem{    } \hskip 1.truein Gross domestic product (GDP)
+\itemitem{    } \hskip 1.truein Personal consumption expenditures (PCE)
+\itemitem{    } \hskip 1.truein Gross private domestic investment (GPDI) 
+\itemitem{    } \hskip 1.truein Net exports of goods and services 
+\itemitem{    } \hskip 1.truein Government consumption expenditures 
+                           and gross investment 
+\medskip
+\itemitem{    } \hskip .5truein www.bea.gov, new NIPA Table 1.1.5 (in bil.~\$)
+\itemitem{    } \hskip 1.truein PCE durable goods
+\itemitem{    } \hskip 1.truein PCE nondurable goods
+\itemitem{    } \hskip 1.truein PCE services
+\medskip
+\itemitem{    } \hskip .5truein www.bea.gov, new NIPA Table 1.1.9 
+                        (in 2000 = 100)
+\itemitem{    } \hskip 1.truein Deflator, PCE durable goods
+\itemitem{    } \hskip 1.truein Deflator, PCE nondurable goods
+\itemitem{    } \hskip 1.truein Deflator, PCE services
+\medskip
+\itemitem{    } \hskip .5truein www.bea.gov, new NIPA Table 3.9.5 (in bil.~\$)
+\itemitem{    } \hskip 1.truein Government consumption expenditures 
+\medskip 
+\itemitem{    } \hskip .5truein www.bea.gov, new NIPA Table 3.2 (in bil.~\$)
+\itemitem{    } \hskip 1.truein Federal excise taxes
+\medskip 
+\itemitem{    } \hskip .5truein www.bea.gov, new NIPA Table 3.3 (in bil.~\$)
+\itemitem{    } \hskip 1.truein State and local sales taxes
+\itemitem{    } \hskip 1.truein State and local other taxes
+\bigskip 
+\itemitem{\cir} Flow of funds accounts, post-1952, quarterly
+\itemitem{    } \hskip .5truein www.federalreserve.gov, Flow Table 10 (in mil.~\$)
+\itemitem{    } \hskip 1.truein Consumption of fixed capital, consumer durables
+\medskip 
+\itemitem{    } \hskip .5truein www.federalreserve.gov, Level Table 100 (in bil.~\$)
+\itemitem{    } \hskip 1.truein Current-cost net stock of consumer durables
+\medskip 
+\itemitem{\cir} Hours and population, post-1959, quarterly
+\itemitem{    } \hskip .5truein Prescott, Ueberfeldt, and Cociuba (2005), Hours.xls
+\itemitem{    } \hskip 1.truein Non-institutional hours from the current
+population survey
+\itemitem{    } \hskip 1.truein Non-institutional population, ages 16--64
+\bigskip
+
+
+
+
+\Appendix{C}{Additional Material Not Reported in Text}
+
+
+\noindent
+In this Appendix, we describe further details on 
+results that were mentioned only briefly in the main
+text of the paper.
+
+\section{Results for Government Consumption Wedge}
+
+Figures A3 and A4 show results with varying
+government consumption wedges in the benchmark model
+for the Great Depression and the 1982 recession, respectively.
+The results for extensions of the benchmark
+model---with variable capital utilization and 
+with adjustment costs---are almost identical
+to Figure A3 and therefore not shown.
+
+\section{Model with Maximum Investment Wedge}
+
+In the paper, we reported on results for the {\it Model with Maximum
+Investment Wedge}.  In this case, the investment
+wedge was chosen to be as large as it needed to 
+be in order for investment in the model and data
+to line up.  In Figure A5, we display the investment
+series---both model and data---along with consumption
+and output.  (Government consumption in the model
+is set equal to the 1929 level, but there is little
+change in the data over the period 1929--1939.)
+Notice that consumption in the model rises significantly
+as investment falls implying a consumption anomaly.
+
+\section{Wedges for the Capital Utilization Model}
+
+Figure A6 shows all wedges for the model with 
+variable capital utilization.  In Figure 9 of the 
+paper we displayed only the efficiency wedge.
+Here, we provide the exact analogue of Figure 1
+with all wedges but the government consumption wedge.
+
+\section{Results for an Alternative Investment Wedge}
+
+Figure A7 shows that our accounting procedure is
+not sensitive to choosing $\tau_k$ as the investment
+wedge rather than $\tau_x$.  This figure shows the 
+model's prediction for output based on the two prototype
+models described in Sections A.1 and A.2.4.  
+For both, we set the adjustment costs to 
+be extreme ($\eta=1$) so that we could compare
+the results to Christiano and Davis (2006).  
+
+The line marked {\it Prediction With $\tau_x$ Wedge and Extreme
+Costs}
+in Figure A7
+is the same as that in Figure 14 in our paper.
+The line marked {\it Prediction With $\tau_k$ Wedge
+and Extreme Costs}
+is what Christiano and Davis (2006)
+would find if they were to apply the same accounting
+procedure that we do.
+Here, we use 
+Christiano and Davis' (2006) 
+estimates for the 
+stochastic process, namely,
+$$\EQNalign{
+  s_{t+1} = \left[\matrix{-.0100\cr
+                           .0279\cr
+                           .0010\cr
+                           -.0002}\right]
+          & + \left[\matrix{.9026 & .0296  & -0.0009 & -.0007\cr
+                            .0766 & .9350  & .4492   & .0078\cr
+                            .0171 & -.0013 & .9333   & .0000\cr
+                            .0079 & .0050  & .0056   & 0.9976\cr
+                    }\right] s_{t}\cr
+\noalign{\bigskip}
+          &
+          + \left[\matrix{-.0130 & 0 & 0 & 0\cr
+                          -.0013 & .0065 &  0  & 0\cr
+                           .0040 & .0007 & -.0017 &  0\cr
+                           .0017 & .0077 & -.0069 & .0137\cr
+                         }\right] \epsilon_{s,t+1}.
+}
+$$
+
+In Figure A8, we redisplay the line marked {\it Prediction With
+$\tau_k$ Wedge and Extreme Costs} from Figure A7.  In Figure A8, 
+we label it
+{\it Prediction Using a Theoretically-Consistent Methodology}.
+We want to compare this result with the result that
+Christiano and Davis (2006) actually report, what we
+refer to as {\it Prediction Using an Alternative Methodology.}
+
+As we noted earlier,
+our propositions distinguish between the direct
+effect and the forecasting effect of fluctuations
+in wedges.   This turned out not to be 
+quantitatively important for the 
+prototype model with a $\tau_x$ investment
+wedge.\note{%
+Even so, we redid all of our numerical results 
+applying the accounting procedure that is consistent with 
+our propositions.}
+However, it is for the $\tau_k$ prototype model
+as Figure A8 shows.
+In fact, because Christiano and Davis (2006)
+are not consistently applying
+the propositions, they find that the investment
+wedge accounts for one-half of the downfall in output.
+In fact, this wedge accounts for only about 
+one-fifth of the downfall
+with the caveat that, even then, adjustment costs have to be
+extreme.
+
+In summary, our main conclusion---that the investment wedge
+plays a decidedly tertiary role---is not sensitive to
+using the alternative prototype model proposed by Christiano
+and Davis (2006).
+
+\section{Proof of Propositions}
+
+Here, we provide a proof of Proposition 1.  The
+logic behind the other proofs is the same.
+
+The first-order conditions for the gross output
+problem are 
+$p_{1t}q_{1t}=\gamma q_t$ 
+and
+$p_{2t}q_{2t}=(1-\gamma) q_t$.
+The first-order conditions for the sector $i$ gross
+output problem are
+$\theta p_{it}q_{it}/m_{it}=1+\tau_{it}$
+and $(1-\theta)p_{it}q_{it}/z_{it}=v_t$.
+Thus, 
+$m_{1t}=\theta\gamma q_t/(1+\tau_{1t})$
+and 
+$m_{2t}=\theta\gamma q_t/(1+\tau_{2t})$
+so 
+$m_t=\theta q_t[\gamma/(1+\tau_{1t})+(1-\gamma)/(1+\tau_{2t})]$.
+The first-order conditions also imply $z_{1t}=\gamma z_t$,
+$z_{2t}=(1-\gamma)z_t$, and $v_t=(1-\theta)q_t/z_t$.
+Hence,
+$$
+ y_t = q_t - m_t = [1-\theta(a_{1t}+a_{2t})]q_t,
+\EQN A1
+$$
+and substituting the expressions for $m_{it}$ and $z_{it}$
+into $q_t=(m_{1t}^\theta z_{1t}^{1-\theta})^\gamma
+          (m_{2t}^\theta z_{2t}^{1-\theta })^{1-\gamma}$ 
+and manipulating gives
+$$
+q_{t}=\kappa (a_{1t}^{1-\gamma }a_{2t}^{\gamma })^{\theta \over 1-\theta} z_t.  
+\EQN {A2}
+$$
+Combining the expressions for $y_t$ and $q_t$ and using 
+$z_t=F(k_t,l_t)$ gives the expression for $A_t$.
+
+To verify our expression for $(1-\tau _{lt})$, compare the first-order
+condition $v_{t}F_{lt}=w_{t}$ from the composite goods producer in the
+detailed economy to the first-order condition 
+$(1-\tau_{lt})A_tF_{lt}=w_t$
+in the prototype economy to note that 
+$(1-\tau_{lt})=v_t/A_t$
+and use $v_t=(1-\theta )q_t/z$, \Ep{A2}, 
+and the expression for $A_t$.
+The derivation of the expression for $(1-\tau _{kt})$ is analogous. 
+
+\section{MLE Estimates for Alternative Models}
+
+In Table A1, we report the parameter estimates for
+the model with variable capital utilization  and annual data
+over the period 1901--1940.
+In Tables A2 and A3, we report the estimates for
+the model with adjustment costs, at the BGG level
+and four times the BGG level, based on annual data
+for 1901--1940.  The quarterly estimates for the 
+adjustment-cost models are reported in Tables A4 and
+A5.  These estimates are based on quarterly data
+for the period 1959:1--2004:3.   
+
+The hillclimbing procedure that we used had no problems
+finding maxima (at least locally) with the annual
+dataset during the 1901--1940 period.  Estimation in 
+the postwar period was more difficult, and the hillclimbing
+procedure oftentimes had difficulty finding higher points
+on the likelihood surface.  Thus, in all cases for the postwar,
+we initialized guesses using estimates based on 
+annual data for  the period 1901--2000, which were
+converted to quarterly estimates.
+We also perturbed the parameter estimates (after
+the hillclimbing routine could not find a higher point)
+many times in search of higher points.  
+We did not find our results to be sensitive to
+the estimates of the stochastic process.
+
+
+\newpage
+\centerline{\twelvepoint\bf  References}
+\bigskip
+\bigskip
+{
+                                                                                
+\baselineskip=13pt
+\parskip = 5pt
+\parindent= -.25truein
+\leftskip = .25truein
+                                                                                
+\vskip -10pt
+
+Christiano, Lawrence and Joshua Davis. 2006.
+Two Flaws in Business Cycle Accounting.
+Manuscript, Northwestern University.
+
+Federal Reserve Board of Governors.
+{\it Flow of Funds Accounts}. 1945--2005.
+Washington, DC: Federal Reserve Board.
+(Contains flow and level tables, the latest of which
+are available at www.federalreserve.gov.)
+
+Kendrick, John W. 1961. 
+{\it Productivity Trends in the United States}.
+Princeton, NJ: Princeton University Press.
+
+Prescott, Edward C., Alexander Ueberfeldt, and Simona Cociuba. 2005.
+U.S.~Hours and Productivity Behavior Using CPS Hours
+Worked Data: 1959-I to 2004-IV.
+Manuscript, Federal Reserve Bank of Minneapolis.
+
+Tauchen, George. 1986.
+Finite State Markov-Chain Approximations to Univariate and 
+ Vector Autoregressions.
+{\it Economic Letters}, 20(2): 177--181.   
+
+U.S.~Department of Commerce. 
+Bureau of the Census. 1975.
+{\it Historical Statistics of the United States, Colonial to 1970}.
+Washington, DC: U.S. Government Printing Office.
+
+U.S. Department of Commerce. 
+Bureau of Economic Analysis. 1929--2005.
+{\it Survey of Current Business}.
+Washington, DC: U.S. Government Printing Office.
+(Contains NIPA tables and fixed asset tables, the latest of which
+               are available at www.bea.gov.)
+
+U.S.~Executive Office. Council of Economic Advisers. 2001.
+{\it Economic Report of the President.}
+Washington, DC: U.S. Government Printing Office.
+
+}
+
+\newpage
+{\ }
+\vskip -1truein
+\def\epsfsize#1#2{.6#1}
+\centerline{\epsffile{/home/erm/papers/econ2/results/figures/FigureA1.ps}}
+                                                                                
+\newpage
+{\ }
+\vskip -1truein
+\def\epsfsize#1#2{.6#1}
+\centerline{\epsffile{/home/erm/papers/econ2/results/figures/FigureA2.ps}}
+
+\newpage
+{\ }
+\vskip -1truein
+\def\epsfsize#1#2{.6#1}
+\centerline{\epsffile{/home/erm/papers/econ2/results/figures/FigureA3.ps}}
+
+\newpage
+{\ }
+\vskip -1truein
+\def\epsfsize#1#2{.6#1}
+\centerline{\epsffile{/home/erm/papers/econ2/results/figures/FigureA4.ps}}
+
+\newpage
+{\ }
+\vskip -1truein
+\def\epsfsize#1#2{.6#1}
+\centerline{\epsffile{/home/erm/papers/econ2/results/figures/FigureA5.ps}}
+
+\newpage
+{\ }
+\vskip -1truein
+\def\epsfsize#1#2{.6#1}
+\centerline{\epsffile{/home/erm/papers/econ2/results/figures/FigureA6.ps}}
+
+\newpage
+{\ }
+\vskip -1truein
+\def\epsfsize#1#2{.6#1}
+\centerline{\epsffile{/home/erm/papers/econ2/results/figures/FigureA7.ps}}
+
+\newpage
+{\ }
+\vskip -1truein
+\def\epsfsize#1#2{.6#1}
+\centerline{\epsffile{/home/erm/papers/econ2/results/figures/FigureA8.ps}}
+
+\newpage
+\centerline{\bf Table A1}
+\centerline{\bf Parameters 
+for the Model with Variable Capital Utilization}
+\centerline{\bf  Annual Data, 1901--1940 }
+\medskip
+\hrule
+\vskip 1pt
+\hrule
+$$\eqalign{
+%\noalign{\smallskip}
+%&\hskip -.1truein {\bf Annual\ Data,\ 1901\!-\!1940}\cr
+\noalign{\bigskip}
+  &\hskip .75truein P =\ \left[\matrix{
+              {.666}\atop {(\scriptscriptstyle{.415,.820})} 
+                   & {.171}\atop{(\scriptscriptstyle{.0626,.278})} 
+                   & {-.192}\atop{(\scriptscriptstyle{-.390,.0205})} 
+                   & 0 \cr
+\noalign{\vskip 3pt}
+              {-.178}\atop{(\scriptscriptstyle{-.342,.0122})} 
+                   & {1.08}\atop{(\scriptscriptstyle{.926,1.10})} 
+                   & {.285}\atop{(\scriptscriptstyle{.105,.500})} 
+                   & 0 \cr
+\noalign{\vskip 3pt}
+             {-.0402}\atop{(\scriptscriptstyle{-.434,.367})} 
+                   & {.0391}\atop{(\scriptscriptstyle{-.208,.317})} 
+                   & {.108}\atop{(\scriptscriptstyle{-.267,.289})} 
+                   & 0\cr
+\noalign{\vskip 3pt}
+                   0
+                   & 0 
+                   & 0
+                   & {.744}\atop{(\scriptscriptstyle{.468,.782})} \cr
+        }
+        \right]\cr
+\noalign{\bigskip}
+\noalign{\bigskip}
+  &\hskip .75truein Q =\ \left[\matrix{
+            {.0325}\atop{(\scriptscriptstyle{.0249,.0373})} 
+                & 0 
+                & 0 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {.0109}\atop{(\scriptscriptstyle{.00414,.0207})} 
+                & {.0342}\atop{(\scriptscriptstyle{.0247,.0389})} 
+                & 0 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {.00971}\atop{(\scriptscriptstyle{-.00976,.0265})} 
+                & {-.000895}\atop{(\scriptscriptstyle{-.0153,.0160})} 
+                & {.0375}\atop{(\scriptscriptstyle{.0187,.0501})} 
+                & 0 \cr
+\noalign{\vskip 3pt}
+                0
+                & 0
+                & 0
+                & {.222}\atop{(\scriptscriptstyle{.147,.281})} \cr
+           }
+        \right] \cr
+\noalign{\bigskip}
+& {\rm Mean}(s)
+  = [.744\,(.708,.787),\ .229\,(.175,.288),\ 
+                      .282\,(.227,.333),\ -2.78\,(-2.94,-2.53)]\cr
+}
+$$
+\hrule
+\vskip 1pt
+\hrule
+\medskip
+{ \baselineskip 10pt
+
+\item{} {\eightpoint Note: Parameters were estimated using maximum
+likelihood with data on output, labor, investment, and government
+consumption.
+To ensure stationarity, we added a penalty term to the likelihood
+function proportional to $\max(|\lambda_{\rm max}|-.995,0)^2$,
+where $\lambda_{\rm max}$ is the maximal eigenvalue of $P$.
+Numbers in parentheses are 90\% confidence
+intervals for a bootstrapped distribution with 500 replications.}
+                                                                                
+}
+                                                                                
+
+
+\newpage
+\centerline{\bf Table A2}
+\centerline{\bf Parameters 
+for the Model with Adjustment Costs at the BGG Level}
+\centerline{\bf  Annual Data, 1901--1940 }
+\medskip
+\hrule
+\vskip 1pt
+\hrule
+$$\eqalign{
+%\noalign{\smallskip}
+%&\hskip -.1truein {\bf Annual\ Data,\ 1901\!-\!1940}\cr
+\noalign{\bigskip}
+  &\hskip .75truein P =\ \left[\matrix{
+              {.564}\atop {(\scriptscriptstyle{.225,.767})} 
+                   & {.0898}\atop{(\scriptscriptstyle{.0213,.192})} 
+                   & {-.190}\atop{(\scriptscriptstyle{-.405,.0241})} 
+                   & 0 \cr
+\noalign{\vskip 3pt}
+              {.0470}\atop{(\scriptscriptstyle{-.246,.317})} 
+                   & {.995}\atop{(\scriptscriptstyle{.879,1.07})} 
+                   & {.219}\atop{(\scriptscriptstyle{.00612,.455})} 
+                   & 0 \cr
+\noalign{\vskip 3pt}
+             {-.378}\atop{(\scriptscriptstyle{-.919,.00349})} 
+                   & {.0545}\atop{(\scriptscriptstyle{-.190,.225})} 
+                   & {.337}\atop{(\scriptscriptstyle{-.0208,.601})} 
+                   & 0\cr
+\noalign{\vskip 3pt}
+                   0
+                   & 0 
+                   & 0
+                   & {.766}\atop{(\scriptscriptstyle{.401,.842})} \cr
+        }
+        \right]\cr
+\noalign{\bigskip}
+\noalign{\bigskip}
+  &\hskip .75truein Q =\ \left[\matrix{
+            {.0567}\atop{(\scriptscriptstyle{.0431,.0641})} 
+                & 0 
+                & 0 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {-.00425}\atop{(\scriptscriptstyle{-.0210,.0114})} 
+                & {.0554}\atop{(\scriptscriptstyle{.0380,.0638})} 
+                & 0 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {-.0432}\atop{(\scriptscriptstyle{-.0839,-.0103})} 
+                & {.0206}\atop{(\scriptscriptstyle{-.00282,.0409})} 
+                & {.0768}\atop{(\scriptscriptstyle{.0453,.0922})} 
+                & 0 \cr
+\noalign{\vskip 3pt}
+                0
+                & 0
+                & 0
+                & {.221}\atop{(\scriptscriptstyle{.143,.271})} \cr
+           }
+        \right] \cr
+\noalign{\bigskip}
+& {\rm Mean}(s)
+  = [.537\,(.499,.582),\ -.196\,(-.277,-.0941),\ 
+                      .291\,(.191,.393),\ -2.80\,(-2.97,-2.53)]\cr
+}
+$$
+\hrule
+\vskip 1pt
+\hrule
+\medskip
+{ \baselineskip 10pt
+                                                                                
+\item{} {\eightpoint See footnotes to Table A1.}
+
+}
+
+%\bigskip
+
+
+\newpage
+\centerline{\bf Table A3}
+\centerline{\bf Parameters 
+for the Model with Adjustment Costs at 4 times the BGG Level}
+\centerline{\bf  Annual Data, 1901--1940 }
+\medskip
+\hrule
+\vskip 1pt
+\hrule
+$$\eqalign{
+%\noalign{\smallskip}
+%&\hskip -.1truein {\bf Annual\ Data,\ 1901\!-\!1940}\cr
+\noalign{\bigskip}
+  &\hskip .75truein P =\ \left[\matrix{
+              {.432}\atop {(\scriptscriptstyle{-.0446,.625})} 
+                   & {.121}\atop{(\scriptscriptstyle{.0476,.276})} 
+                   & {-.0866}\atop{(\scriptscriptstyle{-.191,-.0167})} 
+                   & 0 \cr
+\noalign{\vskip 3pt}
+              {.178}\atop{(\scriptscriptstyle{-.160,.603})} 
+                   & {.963}\atop{(\scriptscriptstyle{.796,1.03})} 
+                   & {.0938}\atop{(\scriptscriptstyle{.0169,.196})} 
+                   & 0 \cr
+\noalign{\vskip 3pt}
+             {-.659}\atop{(\scriptscriptstyle{-1.00,1.00})} 
+                   & {.112}\atop{(\scriptscriptstyle{-.419,.331})} 
+                   & {.560}\atop{(\scriptscriptstyle{.264,.942})} 
+                   & 0\cr
+\noalign{\vskip 3pt}
+                   0
+                   & 0 
+                   & 0
+                   & {.783}\atop{(\scriptscriptstyle{.433,.874})} \cr
+        }
+        \right]\cr
+\noalign{\bigskip}
+\noalign{\bigskip}
+  &\hskip .75truein Q =\ \left[\matrix{
+            {.0561}\atop{(\scriptscriptstyle{.0422,.0635})} 
+                & 0 
+                & 0 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {-.00327}\atop{(\scriptscriptstyle{-.0209,.0143})} 
+                & {.0553}\atop{(\scriptscriptstyle{.0381,.0637})} 
+                & 0 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {-.176}\atop{(\scriptscriptstyle{-.252,-.0896})} 
+                & {.0811}\atop{(\scriptscriptstyle{.0247,.137})} 
+                & {.189}\atop{(\scriptscriptstyle{.119,.216})} 
+                & 0 \cr
+\noalign{\vskip 3pt}
+                0
+                & 0
+                & 0
+                & {.221}\atop{(\scriptscriptstyle{.143,.271})} \cr
+           }
+        \right] \cr
+\noalign{\bigskip}
+& {\rm Mean}(s)
+  = [.536\,(.497,.577),\ -.200\,(-.274,-.0962),\ 
+                      .292\,(.163,.432),\ -2.81\,(-3.00,-2.54)]\cr
+}
+$$
+\hrule
+\vskip 1pt
+\hrule
+\medskip
+{ \baselineskip 10pt
+                                                                                
+\item{} {\eightpoint See footnotes to Table A1.}
+
+}
+
+% A4:
+%  -0.02593003143300  -0.02606184437574  -0.02582513727466
+%   0.32528078240235   0.32509529754454   0.32542637467004
+%   0.47640296988723   0.47615437754812   0.47644392281429
+%  -1.52572392233495  -1.52585919158196  -1.52539951477464
+
+%   0.98814714427224   0.98778603498219   0.98845592338782
+%  -0.00393620952383  -0.00427457976845  -0.00381089232356
+%   0.00739476978480   0.00717194283672   0.00744481871123
+%  -0.00154763964840  -0.00189988543225  -0.00113335210194
+%   0.02347540555172   0.02317549494312   0.02389753009218
+%   0.99522631431640   0.99340031776425   0.99525568484684
+%  -0.07813326483521  -0.07822096658493  -0.07795594109085
+%  -0.01292726594313  -0.01337987268383  -0.01282330502371
+%   0.05213951101474   0.05114164861296   0.05213995058101
+%   0.03785132235434   0.03742531716084   0.03809635811273
+%   0.87933464895897   0.87918748861040   0.87989414805935
+%   0.04800537603439   0.04744605247261   0.04817189345267
+%  -0.05623786887083  -0.05705311211362  -0.05623786812953
+%  -0.02974898581502  -0.03031793563749  -0.02967043228482
+%   0.14558343713444   0.14543892403670   0.14650252963377
+%   0.96500911999557   0.96418535249112   0.96507887177841
+%   0.01143591934237   0.01086446554766   0.01199525827391
+%   0.00132263476266   0.00072272505497   0.00198247543326
+%  -0.00924790891037  -0.00987114817555  -0.00863183594142
+%  -0.00038806619786  -0.00091033505320   0.00025218732691
+%   0.00640541868455   0.00575960701346   0.00701166479057
+%   0.00264329092744   0.00175280222628   0.00324958905672
+%   0.00619191723283   0.00540291740960   0.00681142882766
+%   0.02206456706386   0.02127018943454   0.02266601525908
+%   0.01348046236832   0.01262397697590   0.01413874049684
+%   0.00697830381845   0.00626451974025   0.00761658601290
+
+
+\newpage
+\centerline{\bf Table A4}
+\centerline{\bf Parameters 
+for the Model with Adjustment Costs at the BGG Level}
+\centerline{\bf  Quarterly Data, 1959:1--2004:3 }
+\medskip
+\hrule
+\vskip 1pt
+\hrule
+$$\eqalign{
+%\noalign{\smallskip}
+%&\hskip -.1truein {\bf Quarterly\ Data,\ 1959\!:1\!-\!2004\!:3}\cr
+\noalign{\bigskip}
+  &\hskip .75truein P =\ \left[\matrix{
+              {.988}\atop {(\scriptscriptstyle{.988,.988})} 
+                   & {.0235}\atop{(\scriptscriptstyle{.0232,.0239})} 
+                   & {.0521}\atop{(\scriptscriptstyle{.0511,.0521})} 
+                   & {-.0562}\atop{(\scriptscriptstyle{-.0571,-.0562})} \cr
+\noalign{\vskip 3pt}
+              {-.00394}\atop{(\scriptscriptstyle{-.00427,-.00381})} 
+                   & {.995}\atop{(\scriptscriptstyle{.926,1.10})} 
+                   & {.0379}\atop{(\scriptscriptstyle{.0374,.0381})} 
+                   & {-.0297}\atop{(\scriptscriptstyle{-.0303,-.0297})} \cr
+\noalign{\vskip 3pt}
+             {.00739}\atop{(\scriptscriptstyle{.00717,.00744})} 
+                   & {-.0781}\atop{(\scriptscriptstyle{-.0782,-.0780})} 
+                   & {.879}\atop{(\scriptscriptstyle{.879,.880})} 
+                   & {.146}\atop{(\scriptscriptstyle{.145,.147})} \cr
+\noalign{\vskip 3pt}
+             {-.00155}\atop{(\scriptscriptstyle{-.00190,-.00113})} 
+                   & {-.0129}\atop{(\scriptscriptstyle{-.0134,-.0128})} 
+                   & {.0480}\atop{(\scriptscriptstyle{.0474,.0482})} 
+                   & {.965}\atop{(\scriptscriptstyle{.964,.965})} \cr
+        }
+        \right]\cr
+\noalign{\bigskip}
+\noalign{\bigskip}
+  &\hskip .75truein Q =\ \left[\matrix{
+            {.0114}\atop{(\scriptscriptstyle{.0109,.0120})} 
+                & 0 
+                & 0 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {.00132}\atop{(\scriptscriptstyle{.000723,.00198})} 
+                & {.00641}\atop{(\scriptscriptstyle{.00576,.00701})} 
+                & 0 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {-.00925}\atop{(\scriptscriptstyle{-.00987,-.00863})} 
+                & {.00264}\atop{(\scriptscriptstyle{.00175,.00325})} 
+                & {.0221}\atop{(\scriptscriptstyle{.0213,.0227})} 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {-.000388}\atop{(\scriptscriptstyle{-.000910,.000252})} 
+                & {.00619}\atop{(\scriptscriptstyle{.00540,.00681})} 
+                & {.0135}\atop{(\scriptscriptstyle{.0126,.0141})} 
+                & {.00698}\atop{(\scriptscriptstyle{.00626,.00762})} \cr
+           }
+        \right] \cr
+\noalign{\bigskip}
+& {\rm Mean}(s)
+  = [-.0239\,(-.0261,-.0258),\ .325\,(.325,.325),\ 
+                      .476\,(.476,.476),\ -1.53\,(-1.53,-1.53)]\cr
+}
+$$
+\hrule
+\vskip 1pt
+\hrule
+\medskip
+{ \baselineskip 10pt
+                                                                                
+\item{} {\eightpoint See footnotes to Table A1.}
+
+}
+
+% A5:
+%  -0.03868373032989  -0.03868401127952  -0.03868352091685
+%   0.32533115894097   0.32533076342042   0.32533131262676
+%   0.42386985342091   0.42386965571428   0.42386998980220
+%  -1.53913101241965  -1.53913133840198  -1.53913081793379
+%   1.01420535776153   1.01420536134203   1.01421293421703
+%   0.00700407325041   0.00699903050713   0.00700407160174
+%  -0.10552749200191  -0.10552749181397  -0.10552596070579
+%  -0.03794064209269  -0.03794210579936  -0.03794064228212
+%  -0.04443387632167  -0.04444041116046  -0.04443387402647
+%   0.95319275816302   0.95317713255821   0.95319275371482
+%   0.10009893037604   0.10009893116483   0.10010158752171
+%  -0.01576973857835  -0.01577213732362  -0.01576973861925
+%   0.03612391751414   0.03609963495900   0.03612391601289
+%   0.01732329566843   0.01728774729174   0.01732328745167
+%   0.82961577117656   0.82961577371188   0.82962010969731
+%  -0.03018624159039  -0.03019078375273  -0.03018623642559
+%  -0.01684629253098  -0.01686990218482  -0.01684629390460
+%   0.00403375819985   0.00399873550270   0.00403375009292
+%   0.13978989734296   0.13978989983818   0.13979429147891
+%   1.04444661366546   1.04444145665586   1.04444662698571
+%   0.01137088090910   0.01136788622594   0.01137487629863
+%   0.00148119047057   0.00147671763890   0.00148560446021
+%  -0.02717953211122  -0.02718032511022  -0.02717852164585
+%  -0.00002984273316  -0.00003167746727  -0.00002871809365
+%   0.00626157343799   0.00625767287506   0.00626549162188
+%   0.01220319595520   0.01220215496172   0.01220475121525
+%   0.00589079806760   0.00588843899562   0.00589209546809
+%   0.02431630028343   0.02431467690438   0.02431822285346
+%   0.00929368330591   0.00929162679219   0.00929509621744
+%   0.01154144364817   0.01153961477381   0.01154401874170
+
+\newpage
+\centerline{\bf Table A5}
+\centerline{\bf Parameters 
+for the Model with Adjustment Costs at 4 times the BGG Level}
+\centerline{\bf  Quarterly Data, 1959:1--2004:3 }
+\medskip
+\hrule
+\vskip 1pt
+\hrule
+$$\eqalign{
+%\noalign{\smallskip}
+%&\hskip -.1truein {\bf Quarterly\ Data,\ 1959\!:1\!-\!2004\!:3}\cr
+\noalign{\bigskip}
+  &\hskip .75truein P =\ \left[\matrix{
+              {1.014}\atop {(\scriptscriptstyle{1.014,1.014})} 
+                   & {-.0444}\atop{(\scriptscriptstyle{-.0444,-.0444})} 
+                   & {.0361}\atop{(\scriptscriptstyle{.0361,.0361})} 
+                   & {-.0168}\atop{(\scriptscriptstyle{-.0168,-.0168})} \cr
+\noalign{\vskip 3pt}
+              {.00700}\atop{(\scriptscriptstyle{.00700,.00700})} 
+                   & {.953}\atop{(\scriptscriptstyle{.953,.953})} 
+                   & {.0173}\atop{(\scriptscriptstyle{.0173,.0173})} 
+                   & {.00403}\atop{(\scriptscriptstyle{.00400,.00403})} \cr
+\noalign{\vskip 3pt}
+             {-.106}\atop{(\scriptscriptstyle{-.106,.-.106})} 
+                   & {.100}\atop{(\scriptscriptstyle{.100,.100})} 
+                   & {.830}\atop{(\scriptscriptstyle{.830,.830})} 
+                   & {.140}\atop{(\scriptscriptstyle{.140,.140})} \cr
+\noalign{\vskip 3pt}
+             {-.0379}\atop{(\scriptscriptstyle{-.0379,-.0379})} 
+                   & {-.0158}\atop{(\scriptscriptstyle{-.0158,-.0158})} 
+                   & {-.0302}\atop{(\scriptscriptstyle{-.0302,-.0302})} 
+                   & {1.044}\atop{(\scriptscriptstyle{1.044,1.044})} \cr
+        }
+        \right]\cr
+\noalign{\bigskip}
+\noalign{\bigskip}
+  &\hskip .75truein Q =\ \left[\matrix{
+            {.0114}\atop{(\scriptscriptstyle{.0114,.0114})} 
+                & 0 
+                & 0 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {.00148}\atop{(\scriptscriptstyle{.00148,.00149})} 
+                & {.00626}\atop{(\scriptscriptstyle{.00626,.00627})} 
+                & 0 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {-.0272}\atop{(\scriptscriptstyle{-.0272,-.0272})} 
+                & {.0122}\atop{(\scriptscriptstyle{.0122,.0122})} 
+                & {.0243}\atop{(\scriptscriptstyle{.0243,.0243})} 
+                & 0 \cr
+\noalign{\vskip 3pt}
+            {-.0000298}\atop{(\scriptscriptstyle{-.0000317,-.0000287})} 
+                & {.00589}\atop{(\scriptscriptstyle{.00589,.00589})} 
+                & {.00929}\atop{(\scriptscriptstyle{.00929,.00929})} 
+                & {.0115}\atop{(\scriptscriptstyle{.0115,.0115})} \cr
+           }
+        \right] \cr
+\noalign{\bigskip}
+& {\rm Mean}(s)
+  = [-.0387\,(-.0387,-.0387),\ .325\,(.325,.325),\ 
+                      .424\,(.424,.424),\ -1.54\,(-1.54,-1.54)]\cr
+}
+$$
+\hrule
+\vskip 1pt
+\hrule
+\medskip
+{ \baselineskip 10pt
+                                                                                
+\item{} {\eightpoint See footnotes to Table A1.}
+
+}
+
+
+\bye
+

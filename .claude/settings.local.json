@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c ' *)",
+      "Bash(python _update_hw7.py)",
+      "Bash(python)"
+    ]
+  }
+}

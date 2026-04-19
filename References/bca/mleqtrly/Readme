@@ -1,0 +1,40 @@
+This directory contains files used to do the maximum likelihood
+estimation for the postwar period and to generate results in 
+Figures 5-8, 13-14, and the technical appendix of
+                                                                                
+    Business Cycle Accounting
+    Staff Report 328
+    by V.V. Chari, Patrick Kehoe, and Ellen McGrattan
+                                                                                
+The files pwbca.m and pwbca_adj.m are the main routines
+for generating postwar results.  For full details on 
+computation and estimation, see the appendix in directory 
+./tex/appendices.
+
+
+FILE           DESCRIPTION
+------------   ----------------------------------------------------------------
+batch          command for running batch
+./data         subdirectory with data
+fixexp.m       A,B,C matrices allowing for fixed expecations on s[t]
+fixexpadj.m    version of fixexp.m with adjustment costs
+kpstats.m      computes standard business cycle moments for wedges and outputs
+mleq.m         likelihood function 
+mleqadj.m      version of mleq.m with adjustment costs
+mleseq.m       subroutine for computing standard errors for mleq.m
+mleseqadj.m    subroutine for computing standard errors for mleqadj.m
+pwbca.m        results using likelihood estimates from runmle.m/mleq.m
+pwbca_adj.m    version of pwbca with adjustment costs
+res_adjust.m   first-order conditions in economy with adjustment costs
+res_adjust2.m  same as res_adjust except that expectations are on s[t]
+res_wedge.m    first-order conditions in benchmark economy
+res_wedge2.m   same as res_wedge except for expectations are on s[t]
+restart.m      Restart file used when bootstrap draw implies no equilibrium
+runmle.m       main driver for MLE parameter estimates and standard errors
+runmleadj.m    analogue of runmle for model with adjustment costs
+runmleadje.m   analogue of runmle for model with extreme adjustment costs
+stats.m        subroutine for kpstats.m
+./tauk         files related to model with alternative investment wedge
+usdata.m       code to generate data in uszvarq.dat
+uszvarq.dat    data called into MLE routines
+

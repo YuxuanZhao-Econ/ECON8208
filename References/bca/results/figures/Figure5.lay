@@ -1,0 +1,468 @@
+#!MC 900
+$!VarSet |LFDSFN1| = '"pwfig1.dat"'
+$!VarSet |LFDSVL1| = '"V1" "V2" "V3" "V4" "V5" "V6"'
+$!SETSTYLEBASE FACTORY
+$!PAPER 
+  BACKGROUNDCOLOR = WHITE
+  ISTRANSPARENT = YES
+  ORIENTPORTRAIT = YES
+  SHOWGRID = YES
+  SHOWRULER = YES
+  SHOWPAPER = YES
+  PAPERSIZE = LETTER
+  PAPERSIZEINFO
+    {
+    LETTER
+      {
+      WIDTH = 8.5
+      HEIGHT = 11
+      LEFTHARDCLIPOFFSET = 0.125
+      RIGHTHARDCLIPOFFSET = 0.125
+      TOPHARDCLIPOFFSET = 0.125
+      BOTTOMHARDCLIPOFFSET = 0.125
+      }
+    }
+  RULERSPACING = ONEINCH
+  PAPERGRIDSPACING = HALFINCH
+  REGIONINWORKAREA
+    {
+    X1 = -0.05
+    Y1 = -0.05
+    X2 = 8.55
+    Y2 = 11.05
+    }
+$!COLORMAP 
+  CONTOURCOLORMAP = SMRAINBOW
+$!COLORMAPCONTROL RESETTOFACTORY
+### Frame Number 1 ###
+$!READDATASET  '|LFDSFN1|' 
+  INCLUDETEXT = NO
+  INCLUDEGEOM = NO
+  VARLOADMODE = BYNAME
+  VARNAMELIST = '|LFDSVL1|' 
+$!REMOVEVAR |LFDSVL1|
+$!FRAMELAYOUT 
+  SHOWBORDER = NO
+  HEADERCOLOR = RED
+  XYPOS
+    {
+    X = 0.125
+    Y = 0.125
+    }
+  WIDTH = 8.25
+  HEIGHT = 10.75
+$!FRAMEMODE  = XY
+$!FRAMENAME  = 'Frame 001' 
+$!DELETEXYMAPS 
+$!ACTIVEXYMAPS  =  [1-5]
+$!GLOBALXY 
+  DATALABELS
+    {
+    DISTANCESKIP = 5
+    }
+  LEGEND
+    {
+    XYPOS
+      {
+      X = 60.275
+      Y = 84.791
+      }
+    }
+$!XYMAP  [1]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 3
+    }
+  LINES
+    {
+    COLOR = BLUE
+    LINETHICKNESS = 0.25
+    }
+  SYMBOLS
+    {
+    COLOR = GREEN
+    FILLCOLOR = GREEN
+    }
+  BARCHARTS
+    {
+    COLOR = GREEN
+    FILLCOLOR = GREEN
+    }
+  ERRORBARS
+    {
+    COLOR = GREEN
+    }
+$!XYMAP  [2]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 4
+    }
+  LINES
+    {
+    COLOR = CUSTOM36
+    LINETHICKNESS = 0.25
+    }
+  SYMBOLS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  BARCHARTS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  ERRORBARS
+    {
+    COLOR = BLUE
+    }
+$!XYMAP  [3]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 5
+    }
+  LINES
+    {
+    COLOR = RED
+    LINETHICKNESS = 0.25
+    }
+  SYMBOLS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  BARCHARTS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  ERRORBARS
+    {
+    COLOR = BLUE
+    }
+$!XYMAP  [4]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINETHICKNESS = 0.25
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [5]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 6
+    YAXIS = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = DOTTED
+    LINETHICKNESS = 0.05
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYAXIS 
+  XDETAIL 1
+    {
+    SHOWLABELS = NO
+    AUTOGRID = NO
+    AXISPOSITION = 20
+    RANGEMIN = 1979
+    RANGEMAX = 1986
+    GRANCHOR = 1
+    GRSPACING = 1
+    LINETHICKNESS = 0.2
+    NUMMINORTICKS = 3
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 0.5
+      LINETHICKNESS = 0.2
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  YDETAIL 1
+    {
+    AUTOGRID = NO
+    RANGEMIN = 90
+    RANGEMAX = 110
+    GRSPACING = 5
+    LINETHICKNESS = 0.2
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 0.5
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  YDETAIL 2
+    {
+    SHOWLABELS = NO
+    AUTOGRID = NO
+    AXISPOSITION = 88
+    RANGEMIN = 90
+    RANGEMAX = 110
+    GRSPACING = 5
+    LINETHICKNESS = 0.2
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  GRIDAREA
+    {
+    EXTENTS
+      {
+      Y1 = 20
+      Y2 = 75
+      }
+    DRAWBORDER = YES
+    LINETHICKNESS = 0.2
+    }
+  DEPXTOYRATIO = 1
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 19
+    Y = 76.8465116279
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 18
+    }
+  TEXT = ' ' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 19
+    Y = 24.144744186
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 18
+    }
+  TEXT = ' ' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 8.5
+    Y = 83.5
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 19
+    }
+  TEXT = '\n' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 35.7570138168
+    Y = 27.3592380237
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = 'Output' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 70.0922961348
+    Y = 55.8198196374
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = 'Labor Wedge' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 66.8892862459
+    Y = 30.3301732538
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = 'Efficiency Wedge' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 27
+    Y = 76.5
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 16
+    }
+  LINESPACING = 1.3
+  TEXT = '                            Figure 5\nU.S. Output and Three Measured Wedges' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 45.6415291151
+    Y = 65.59849373
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = 'Investment Wedge' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 8.3
+    Y = 85.5
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    }
+  TEXT = 'Examining the 1982 U.S. Recession\nQuarterly, 1979:1`-1985:4; Normalized to Equal 100 in 1979:1' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 15.5
+    Y = 17.6
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = '1979         1980         1981         1982         1983         1984         1985' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 8.3
+    Y = 88
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 16
+    }
+  TEXT = 'Figures 5`-8\n' 
+$!ATTACHGEOM 
+  XYZPOS
+    {
+    X = 1984.1409205
+    Y = 94.4826679704
+    }
+  ARROWHEADSTYLE = FILLED
+  ARROWHEADATTACHMENT = ATEND
+  ARROWHEADSIZE = 1.25
+  RAWDATA
+1
+2
+0 0 
+-0.223345682025 1.50772404671 
+$!REMOVEVAR |LFDSFN1|
+$!SETSTYLEBASE CONFIG

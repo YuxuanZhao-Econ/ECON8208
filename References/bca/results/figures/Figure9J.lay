@@ -1,0 +1,467 @@
+#!MC 900
+$!VarSet |LFDSFN1| = '"gdfig1.dat" "cufig1.dat"'
+$!VarSet |LFDSVL1| = '"V1" "V2" "V3" "V4" "V5" "V6"'
+$!SETSTYLEBASE FACTORY
+$!PAPER 
+  BACKGROUNDCOLOR = WHITE
+  ISTRANSPARENT = YES
+  ORIENTPORTRAIT = YES
+  SHOWGRID = YES
+  SHOWRULER = YES
+  SHOWPAPER = YES
+  PAPERSIZE = LETTER
+  PAPERSIZEINFO
+    {
+    LETTER
+      {
+      WIDTH = 8.5
+      HEIGHT = 11
+      LEFTHARDCLIPOFFSET = 0.125
+      RIGHTHARDCLIPOFFSET = 0.125
+      TOPHARDCLIPOFFSET = 0.125
+      BOTTOMHARDCLIPOFFSET = 0.125
+      }
+    }
+  RULERSPACING = ONEINCH
+  PAPERGRIDSPACING = HALFINCH
+  REGIONINWORKAREA
+    {
+    X1 = -0.05
+    Y1 = -0.05
+    X2 = 8.55
+    Y2 = 11.05
+    }
+$!COLORMAP 
+  CONTOURCOLORMAP = SMRAINBOW
+$!COLORMAPCONTROL RESETTOFACTORY
+### Frame Number 1 ###
+$!READDATASET  '|LFDSFN1|' 
+  INCLUDETEXT = NO
+  INCLUDEGEOM = NO
+  VARLOADMODE = BYNAME
+  VARNAMELIST = '|LFDSVL1|' 
+$!REMOVEVAR |LFDSVL1|
+$!FRAMELAYOUT 
+  SHOWBORDER = NO
+  HEADERCOLOR = RED
+  XYPOS
+    {
+    X = 0.125
+    Y = 0.125
+    }
+  WIDTH = 8.25
+  HEIGHT = 10.75
+$!FRAMEMODE  = XY
+$!FRAMENAME  = 'Frame 001' 
+$!DELETEXYMAPS 
+$!ACTIVEXYMAPS  =  [2,5,7]
+$!GLOBALXY 
+  DATALABELS
+    {
+    DISTANCESKIP = 5
+    }
+  LEGEND
+    {
+    XYPOS
+      {
+      X = 60.275
+      Y = 84.791
+      }
+    }
+$!XYMAP  [1]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = CUSTOM38
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [2]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 3
+    }
+  LINES
+    {
+    COLOR = BLACK
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    COLOR = GREEN
+    FILLCOLOR = GREEN
+    }
+  BARCHARTS
+    {
+    COLOR = GREEN
+    FILLCOLOR = GREEN
+    }
+  ERRORBARS
+    {
+    COLOR = GREEN
+    }
+$!XYMAP  [3]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 4
+    }
+  LINES
+    {
+    COLOR = CUSTOM36
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  BARCHARTS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  ERRORBARS
+    {
+    COLOR = BLUE
+    }
+$!XYMAP  [4]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [5]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    ZONE = 2
+    XAXISVAR = 1
+    YAXISVAR = 3
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = LONGDASH
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    COLOR = GREEN
+    FILLCOLOR = GREEN
+    }
+  BARCHARTS
+    {
+    COLOR = GREEN
+    FILLCOLOR = GREEN
+    }
+  ERRORBARS
+    {
+    COLOR = GREEN
+    }
+$!XYMAP  [6]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    ZONE = 2
+    XAXISVAR = 1
+    YAXISVAR = 4
+    }
+  LINES
+    {
+    COLOR = BLACK
+    PATTERNLENGTH = 1
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  BARCHARTS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  ERRORBARS
+    {
+    COLOR = BLUE
+    }
+$!XYMAP  [7]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 6
+    YAXIS = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = DOTTED
+    PATTERNLENGTH = 1
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYAXIS 
+  XDETAIL 1
+    {
+    AUTOGRID = NO
+    AXISPOSITION = 20
+    RANGEMIN = 1929
+    RANGEMAX = 1939
+    GRANCHOR = 1
+    GRSPACING = 1
+    LINETHICKNESS = 0.3
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  YDETAIL 1
+    {
+    RANGEMIN = 75
+    RANGEMAX = 110
+    GRSPACING = 10
+    LINETHICKNESS = 0.3
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 0.5
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  YDETAIL 2
+    {
+    SHOWLABELS = NO
+    AXISPOSITION = 88
+    RANGEMIN = 75
+    RANGEMAX = 110
+    GRSPACING = 10
+    LINETHICKNESS = 0.3
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  GRIDAREA
+    {
+    EXTENTS
+      {
+      Y1 = 20
+      Y2 = 75
+      }
+    DRAWBORDER = YES
+    LINETHICKNESS = 0.3
+    }
+  DEPXTOYRATIO = 1
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 12
+    Y = 76.5
+    }
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 16
+    }
+  LINESPACING = 1.3
+  TEXT = '                                                  Figure 9\nMeasured Efficiency Wedges for Two Capital Utilization Specifications' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 19
+    Y = 76.8465116279
+    }
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 18
+    }
+  TEXT = ' ' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 19
+    Y = 24.144744186
+    }
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 18
+    }
+  TEXT = ' ' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 8.5
+    Y = 83.5
+    }
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 19
+    }
+  TEXT = '\n' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 60.1755361007
+    Y = 64.3802531097
+    }
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = 'Variable' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 69.9722584118
+    Y = 50.2401297999
+    }
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = 'Fixed' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 8.3
+    Y = 85.5
+    }
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 16
+    }
+  LINESPACING = 1.05
+  TEXT = 'Varying the Capital Utilization Specification\nDuring the Great Depression Period, 1929`-39' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 8.3
+    Y = 89
+    }
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 16
+    }
+  TEXT = 'Figures 9`-12\n' 
+$!REMOVEVAR |LFDSFN1|
+$!SETSTYLEBASE CONFIG

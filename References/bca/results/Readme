@@ -1,0 +1,112 @@
+This directory contains the main figures and tables for
+
+   Business Cycle Accounting
+   Econometrica
+   by V.V. Chari, Patrick Kehoe, and Ellen McGrattan
+
+Instructions are given below to generate all of the results.
+
+
+
+ * Instructions to Generate Figures for the Great Depression
+   ---------------------------------------------------------
+
+     For Figures 1-4 and A3
+        % cd ./sr328/depression
+        % matlab 
+          >> benchplots
+
+     For Figures 9-12
+        % cd ./sr328/depression
+        % matlab 
+          >> caputplots
+
+     For Figures 13-14
+        % cd ./sr328/depression
+        % matlab 
+          >> adjcostplots
+
+ * Instructions to Generate Figures for the 1982 Recession
+   -------------------------------------------------------
+
+     For Figures 5-8 and A4
+        % cd ./sr328/mleqtrly
+        % matlab 
+          >> pwbca
+
+     For Figures 13-14
+        % cd ./sr328/mleqtrly
+        % matlab 
+          >> pwbca_adj 
+        (Note that users can choose (1) no adjustment costs, (2) BGG
+         level of costs, or (3) 4 times the BGG level) 
+
+ * Instructions to Generate Tables
+   -------------------------------
+
+     For Table I, Top
+        % cd ./sr328/mleannual
+        % matlab 
+          >> runmle1
+
+     For Table I, Bottom
+        % cd ./sr328/mleqtrly
+        % matlab 
+          >> runmle1
+
+     For Table A1
+        % cd ./sr328/depression
+        % matlab 
+          >> runmle1cu
+
+     For Table A2
+        % cd ./sr328/depression
+        % matlab 
+          >> runmle1adj
+
+     For Table A3
+        % cd ./sr328/depression
+        % matlab 
+          >> runmle1adje
+
+     For Table A4
+        % cd ./sr328/mleqtrly
+        % matlab 
+          >> runmleadj
+
+     For Table A5
+        % cd ./sr328/mleqtrly
+        % matlab 
+          >> runmleadj
+
+ * Instructions to Generate Figures in the Appendix
+   ------------------------------------------------
+
+     For Figures A1-A2
+        % cd ./sr328/mleannual
+        % matlab 
+          >> usdata
+        (Note: The results are in matrix long)
+
+     For Figures A3-A4, see instructions above
+
+     For Figure A5
+        % cd ./sr328/depression
+        % cp bench.dat.case10 bench.dat
+        % matlab
+          >> benchsim
+
+     For Figure A6
+        % cd ./sr328/depression
+        % matlab
+          >> caputplots
+    
+     For Figure A7
+        % cd ./sr328/mleqtrly/tauk
+        % matlab
+          >> pwbca_tauk
+
+     For Figure A8
+        % cd ./sr328/mleqtrly/tauk
+        % matlab
+          >> pwbca_test

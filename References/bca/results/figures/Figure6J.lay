@@ -1,0 +1,676 @@
+#!MC 900
+$!VarSet |LFDSFN1| = '"pwfig2_4d.dat" "pwfig2mz.dat" "pwfig2ml.dat"'
+$!VarSet |LFDSVL1| = '"V1" "V2" "V3" "V4"'
+$!SETSTYLEBASE FACTORY
+$!PAPER 
+  BACKGROUNDCOLOR = WHITE
+  ISTRANSPARENT = YES
+  ORIENTPORTRAIT = YES
+  SHOWGRID = YES
+  SHOWRULER = YES
+  SHOWPAPER = YES
+  PAPERSIZE = LETTER
+  PAPERSIZEINFO
+    {
+    LETTER
+      {
+      WIDTH = 8.5
+      HEIGHT = 11
+      LEFTHARDCLIPOFFSET = 0.125
+      RIGHTHARDCLIPOFFSET = 0.125
+      TOPHARDCLIPOFFSET = 0.125
+      BOTTOMHARDCLIPOFFSET = 0.125
+      }
+    }
+  RULERSPACING = ONEINCH
+  PAPERGRIDSPACING = HALFINCH
+  REGIONINWORKAREA
+    {
+    X1 = -0.05
+    Y1 = -0.05
+    X2 = 8.55
+    Y2 = 11.05
+    }
+$!COLORMAP 
+  CONTOURCOLORMAP = SMRAINBOW
+$!COLORMAPCONTROL RESETTOFACTORY
+### Frame Number 1 ###
+$!READDATASET  '|LFDSFN1|' 
+  INCLUDETEXT = NO
+  INCLUDEGEOM = NO
+  VARLOADMODE = BYNAME
+  VARNAMELIST = '|LFDSVL1|' 
+$!REMOVEVAR |LFDSVL1|
+$!FRAMELAYOUT 
+  SHOWBORDER = NO
+  HEADERCOLOR = RED
+  XYPOS
+    {
+    X = 0.125
+    Y = 0.125
+    }
+  WIDTH = 8.25
+  HEIGHT = 10.75
+$!FRAMEMODE  = XY
+$!FRAMENAME  = 'Frame 001' 
+$!DELETEXYMAPS 
+$!ACTIVEXYMAPS  =  [1-9]
+$!GLOBALXY 
+  DATALABELS
+    {
+    DISTANCESKIP = 5
+    }
+  LEGEND
+    {
+    SHOW = YES
+    TEXTSHAPE
+      {
+      FONT = TIMES
+      HEIGHT = 2.15
+      }
+    BOX
+      {
+      BOXTYPE = NONE
+      }
+    XYPOS
+      {
+      X = 34.075
+      Y = 68.942
+      }
+    }
+$!XYMAP  [1]
+  NAME = 'Model With Efficiency Wedge' 
+  ASSIGN
+    {
+    ZONE = 2
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = LONGDASH
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    SYMBOLSHAPE
+      {
+      GEOMSHAPE = CIRCLE
+      }
+    COLOR = RED
+    FILLCOLOR = RED
+    SIZE = 0.75
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [2]
+  NAME = 'Model With Efficiency Wedge' 
+  ASSIGN
+    {
+    ZONE = 2
+    XAXISVAR = 1
+    YAXISVAR = 3
+    YAXIS = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = LONGDASH
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    SYMBOLSHAPE
+      {
+      GEOMSHAPE = CIRCLE
+      }
+    COLOR = RED
+    FILLCOLOR = GREEN
+    SIZE = 0.75
+    }
+  BARCHARTS
+    {
+    COLOR = GREEN
+    FILLCOLOR = GREEN
+    }
+  ERRORBARS
+    {
+    COLOR = GREEN
+    }
+$!XYMAP  [3]
+  NAME = 'Model With Efficiency Wedge' 
+  ASSIGN
+    {
+    ZONE = 2
+    XAXISVAR = 1
+    YAXISVAR = 4
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = LONGDASH
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    SYMBOLSHAPE
+      {
+      GEOMSHAPE = CIRCLE
+      }
+    COLOR = RED
+    FILLCOLOR = BLUE
+    SIZE = 0.75
+    }
+  BARCHARTS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  ERRORBARS
+    {
+    COLOR = BLUE
+    }
+$!XYMAP  [4]
+  NAME = 'Model With Labor Wedge' 
+  ASSIGN
+    {
+    ZONE = 3
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = DASHDOTDOT
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    COLOR = CUSTOM36
+    FILLCOLOR = RED
+    SIZE = 1
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [5]
+  NAME = 'Model With Labor Wedge' 
+  ASSIGN
+    {
+    ZONE = 3
+    XAXISVAR = 1
+    YAXISVAR = 3
+    YAXIS = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = DASHDOTDOT
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    COLOR = CUSTOM36
+    FILLCOLOR = GREEN
+    SIZE = 1
+    }
+  BARCHARTS
+    {
+    COLOR = GREEN
+    FILLCOLOR = GREEN
+    }
+  ERRORBARS
+    {
+    COLOR = GREEN
+    }
+$!XYMAP  [6]
+  NAME = 'Model With Labor Wedge' 
+  ASSIGN
+    {
+    ZONE = 3
+    XAXISVAR = 1
+    YAXISVAR = 4
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = DASHDOTDOT
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    COLOR = CUSTOM36
+    FILLCOLOR = BLUE
+    SIZE = 1
+    }
+  BARCHARTS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  ERRORBARS
+    {
+    COLOR = BLUE
+    }
+$!XYMAP  [7]
+  NAME = 'Data' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    SHOW = NO
+    SYMBOLSHAPE
+      {
+      GEOMSHAPE = CIRCLE
+      }
+    COLOR = CUSTOM38
+    FILLCOLOR = RED
+    SIZE = 0.75
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [8]
+  NAME = 'Data' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 3
+    YAXIS = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    SHOW = NO
+    SYMBOLSHAPE
+      {
+      GEOMSHAPE = CIRCLE
+      }
+    COLOR = CUSTOM38
+    FILLCOLOR = GREEN
+    SIZE = 0.75
+    }
+  BARCHARTS
+    {
+    COLOR = GREEN
+    FILLCOLOR = GREEN
+    }
+  ERRORBARS
+    {
+    COLOR = GREEN
+    }
+$!XYMAP  [9]
+  NAME = 'Data' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 4
+    }
+  LINES
+    {
+    COLOR = BLACK
+    PATTERNLENGTH = 1.5
+    LINETHICKNESS = 0.3
+    }
+  SYMBOLS
+    {
+    SHOW = NO
+    SYMBOLSHAPE
+      {
+      GEOMSHAPE = CIRCLE
+      }
+    COLOR = CUSTOM38
+    FILLCOLOR = BLUE
+    SIZE = 0.75
+    }
+  BARCHARTS
+    {
+    COLOR = BLUE
+    FILLCOLOR = BLUE
+    }
+  ERRORBARS
+    {
+    COLOR = BLUE
+    }
+$!XYAXIS 
+  XDETAIL 1
+    {
+    SHOWLABELS = NO
+    AUTOGRID = NO
+    AXISPOSITION = 7
+    RANGEMIN = 1979
+    RANGEMAX = 1986
+    GRANCHOR = 1
+    GRSPACING = 1
+    LINETHICKNESS = 0.3
+    NUMMINORTICKS = 3
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 0.5
+      LINETHICKNESS = 0.2
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  YDETAIL 1
+    {
+    AUTOGRID = NO
+    RANGEMIN = 10
+    RANGEMAX = 110
+    GRSPACING = 10
+    LINETHICKNESS = 0.3
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 0.5
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  YDETAIL 2
+    {
+    AXISPOSITION = 88
+    RANGEMIN = 50
+    RANGEMAX = 150
+    GRSPACING = 10
+    LINETHICKNESS = 0.3
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 0.5
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  GRIDAREA
+    {
+    EXTENTS
+      {
+      Y1 = 7
+      Y2 = 93
+      }
+    DRAWBORDER = YES
+    LINETHICKNESS = 0.3
+    }
+  DEPXTOYRATIO = 1
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 18
+    Y = 86.5
+    }
+  ZONE = 7
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 18
+    }
+  TEXT = 'Output' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 74.6954432335
+    Y = 45.1141157382
+    }
+  ZONE = 7
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 18
+    }
+  TEXT = 'Labor' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 18
+    Y = 20
+    }
+  ZONE = 7
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 18
+    }
+  TEXT = 'Investment' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 24
+    Y = 96.0107906976
+    }
+  ZONE = 7
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 20
+    }
+  TEXT = '\n' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 19
+    Y = 94.5
+    }
+  ZONE = 7
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 16
+    }
+  LINESPACING = 1.3
+  TEXT = '                                      Figure 6\nData and Predictions of the Models with Just One Wedge' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 15.6
+    Y = 4.6
+    }
+  ZONE = 7
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = '1979         1980         1981         1982         1983         1984         1985' 
+$!ATTACHGEOM 
+  XYZPOS
+    {
+    X = 1937.74166361
+    Y = 62.4738073377
+    }
+  ZONE = 7
+  ARROWHEADSTYLE = FILLED
+  ARROWHEADATTACHMENT = ATEND
+  ARROWHEADSIZE = 1.25
+  RAWDATA
+1
+2
+0 0 
+1 0 
+$!ATTACHGEOM 
+  XYZPOS
+    {
+    X = 1984.95881378
+    Y = 53.7640710881
+    }
+  ZONE = 7
+  ARROWHEADSTYLE = FILLED
+  ARROWHEADATTACHMENT = ATEND
+  ARROWHEADSIZE = 1.25
+  RAWDATA
+1
+3
+0 0 
+0 -1.11688280106 
+0.721578359604 -1.11688280106 
+### Frame Number 2 ###
+$!CREATENEWFRAME 
+$!FRAMELAYOUT 
+  SHOWBORDER = NO
+  HEADERCOLOR = CYAN
+  XYPOS
+    {
+    X = 0.36459
+    Y = 4.2985
+    }
+  WIDTH = 0.76794
+  HEIGHT = 3.2686
+$!FRAMENAME  = 'Frame 004' 
+$!SKETCHAXIS 
+  DEPXTOYRATIO = 1
+  XDETAIL
+    {
+    RANGEMIN = 0
+    RANGEMAX = 1.00001649183
+    GRSPACING = 0.25
+    }
+  YDETAIL
+    {
+    RANGEMIN = 0
+    RANGEMAX = 4.25639230303
+    GRSPACING = 0.5
+    }
+### Frame Number 3 ###
+$!CREATENEWFRAME 
+$!FRAMELAYOUT 
+  SHOWBORDER = NO
+  HEADERCOLOR = BLUE
+  XYPOS
+    {
+    X = 7.4589
+    Y = 7.27
+    }
+  WIDTH = 0.53024
+  HEIGHT = 3.15
+$!FRAMENAME  = 'Frame 003' 
+$!SKETCHAXIS 
+  DEPXTOYRATIO = 1
+  XDETAIL
+    {
+    RANGEMIN = 0
+    RANGEMAX = 0.999992205778
+    GRSPACING = 0.5
+    }
+  YDETAIL
+    {
+    RANGEMIN = 0
+    RANGEMAX = 5.94065979217
+    GRSPACING = 0.5
+    }
+### Frame Number 4 ###
+$!CREATENEWFRAME 
+$!FRAMELAYOUT 
+  SHOWBORDER = NO
+  HEADERCOLOR = GREEN
+  XYPOS
+    {
+    X = 7.4772
+    Y = 0.6604
+    }
+  WIDTH = 0.67652
+  HEIGHT = 3.6427
+$!FRAMENAME  = 'Frame 002' 
+$!SKETCHAXIS 
+  DEPXTOYRATIO = 1
+  XDETAIL
+    {
+    RANGEMIN = 0
+    RANGEMAX = 1.00000747264
+    GRSPACING = 0.5
+    }
+  YDETAIL
+    {
+    RANGEMIN = 0
+    RANGEMAX = 5.3845078055
+    GRSPACING = 1
+    }
+$!REMOVEVAR |LFDSFN1|
+$!SETSTYLEBASE CONFIG

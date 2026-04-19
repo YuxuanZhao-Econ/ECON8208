@@ -1,0 +1,956 @@
+%!PS-Adobe-2.0
+%%Creator: TECPLOT
+%%Pages:1
+%%BoundingBox: -1 -1 613 793
+%%DocumentFonts: Helvetica Helvetica-Bold Symbol Times-Roman Times-Bold Times-Italic Times-BoldItalic Courier Courier-Bold
+%%EndComments
+/tecplotdict 120 dict def
+tecplotdict begin
+/ed  {exch def} def
+/ftl {findfont exch scalefont setfont} def
+/ftr {/ISOLatin1-Times-Roman ftl} def
+/ftb {/ISOLatin1-Times-Bold ftl} def
+/fti {/ISOLatin1-Times-Italic ftl} def
+/ftib {/ISOLatin1-Times-BoldItalic ftl} def
+/fcr {/ISOLatin1-Courier ftl} def
+/fcb {/ISOLatin1-Courier-Bold ftl} def
+/fhn {/ISOLatin1-Helvetica ftl} def
+/fhb {/ISOLatin1-Helvetica-Bold ftl} def
+/fsy {/Symbol ftl} def
+/gs /gsave load def
+/gr /grestore load def
+/np /newpath load def
+/cp /closepath load def
+/g /setgray load def
+/lc {setlinecap} def
+/lj /setlinejoin load def
+/x /setrgbcolor load def
+/sd /setdash load def
+/sw {setlinewidth} def
+/cpt /currentpoint load def
+/m {moveto} def
+/rm /rmoveto load def
+/l /lineto load def
+/r /rlineto load def
+/sf /setflat load def
+/s /stroke load def
+/q {cpt s m} def
+/ro /rotate load def
+/sh /show load def
+/clp {cp gr gs np m l l l cp clip np cp} def
+/dorect
+{
+/height ed
+/width  ed
+m
+0 height r
+width 0 r
+0 height neg r
+cp
+} def
+/er {cp np dorect g fill 0 g cp} def
+/erc {cp np dorect x fill 0 g cp} def
+/br {cp np dorect g cp s} def
+/brc {cp np dorect x cp s} def
+/ii 0 def
+/n 0 def
+/CurA 0 def
+/Ry 0 def
+/Rx 0 def
+/CA 0 def
+/SA 0 def
+/SJ 0 def
+/SI 0 def
+/bi 0 def
+/i 0 def
+/ib 0 def
+/ig 0 def
+/ir 0 def
+/ishade 0 def
+/bshade 0 def
+/dcs
+{
+m
+dup dup dup
+-2 div dup
+rm
+0 r
+0 exch r
+neg 0 r
+cp
+} bind def
+/pg
+{
+/size ed
+/Ny ed
+/Nx ed
+/Y2 ed
+/X2 ed
+/Y1 ed
+/X1 ed
+Ny 1 gt
+{/Dy Y2 Y1 sub Ny 1 sub div def}
+{/Dy 0.0 def}
+ifelse
+Nx 1 gt
+{/Dx X2 X1 sub Nx 1 sub div def}
+{/Dx 0.0 def}
+ifelse
+Y1 Dy Y2 Dy 2 div add
+{
+X1 Dx X2 Dx 2 div add
+{
+1 index
+size 3 1 roll
+dcs fill
+Dx 0.0 eq
+{exit}
+if
+} for
+pop
+Dy 0.0 eq
+{exit}
+if
+} for
+} bind def
+/z
+{
+/ii ed
+rea ii get
+gra ii get
+bla ii get
+} def
+/lrgb
+{
+/ii ed
+/blue ed
+/green ed
+/red ed
+bla ii blue put
+gra ii green put
+rea ii red put
+} def
+/trace
+{
+cp np
+m
+1 1 n 
+{
+pop
+r
+} for
+cp
+} def
+/f
+{
+/ishade ed
+/n ed 
+s
+trace
+ishade g fill
+} def
+/b
+{
+/bshade ed
+/n ed 
+m
+1 1 n 
+{
+pop
+r
+} for
+bshade g s
+} def
+/fb
+{
+/bshade ed
+/ishade ed
+/n ed 
+s 
+n 2 mul 2 add copy
+trace
+ishade g fill
+trace
+bshade g s
+} def
+/c
+{
+/n ed 
+s 
+trace
+s
+} def
+/fc
+{
+/i ed
+/n ed 
+s 
+trace
+i z x fill
+} def
+/fd
+{
+/ib ed
+/ig ed
+/ir ed
+/n ed 
+s 
+trace
+ir ig ib x fill
+} def
+/bc
+{
+/i ed
+/n ed 
+m
+1 1 n 
+{
+pop
+r
+} for
+i z x s
+} def
+/fbc
+{
+/ii ed
+/bi ed
+/n ed 
+s 
+n 2 mul 2 add copy
+trace
+ii z x fill
+trace
+bi z x s
+} def
+/fbd
+{
+/ib ed
+/ig ed
+/ir ed
+/bi ed
+/n ed 
+s
+n 2 mul 2 add copy
+trace
+ir ig ib x fill
+trace
+bi z x s
+} def
+/e
+{
+/Ry ed
+/Rx ed
+/CA ed
+/SA ed
+/SJ ed
+/SI ed
+/DelX SA cos Rx mul def
+/DelY SA sin Ry mul def
+/XI SI DelX add def
+/YI SJ DelY add def
+/OCX DelX def
+/OCY DelY def
+/N 0 def
+SA CA add
+CA
+SA 360 add
+{
+/CurA ed
+/CX CurA cos Rx mul def
+/CY CurA sin Ry mul def
+OCX CX sub 
+OCY CY sub 
+/OCX CX def
+/OCY CY def
+/N N 1 add def
+}
+for
+XI YI N
+} def
+%%EndProlog
+%%Page:? 1
+/getisofont
+{
+findfont
+dup length dict begin
+{
+1 index /FID ne {def}{pop pop} ifelse
+} forall
+/Encoding ISOLatin1Encoding def
+currentdict
+end
+} def
+/Helvetica             getisofont /ISOLatin1-Helvetica             exch definefont pop
+/Helvetica-Bold        getisofont /ISOLatin1-Helvetica-Bold        exch definefont pop
+/Helvetica-Oblique     getisofont /ISOLatin1-Helvetica-Oblique     exch definefont pop
+/Helvetica-BoldOblique getisofont /ISOLatin1-Helvetica-BoldOblique exch definefont pop
+/Times-Roman           getisofont /ISOLatin1-Times-Roman           exch definefont pop
+/Times-Bold            getisofont /ISOLatin1-Times-Bold            exch definefont pop
+/Times-BoldItalic      getisofont /ISOLatin1-Times-BoldItalic      exch definefont pop
+/Times-Italic          getisofont /ISOLatin1-Times-Italic          exch definefont pop
+/Courier               getisofont /ISOLatin1-Courier               exch definefont pop
+/Courier-Bold          getisofont /ISOLatin1-Courier-Bold          exch definefont pop
+/Courier-Oblique       getisofont /ISOLatin1-Courier-Oblique       exch definefont pop
+/Courier-BoldOblique   getisofont /ISOLatin1-Courier-BoldOblique   exch definefont pop
+initmatrix
+5 setmiterlimit
+0.025 0.025 scale np
+gs
+359 359 359 31321 24121 31321 24121 359 clp
+1 360 360 23760 30960 er
+93 sw
+2 lc
+0 lj
+[] 0 sd
+0 3449 6552 17820 17028 br
+3448 6551 3448 23581 21270 23581 21270 6551 clp
+1782.000 919.514 1782.000 -19.866 1782.000 280.961 1782.000 998.975 1782.000 1177.770 1782.000 1734.018 1782.000 -1691.448 1782.000 -2000.791 1782.000 -263.934 1782.000 -1373.591
+3448.800 17904.000 10 93 sw
+0 lc
+0 lj
+[697 232] 0 sd
+0 b
+1782.000 116.359 1782.000 -1438.866 1782.000 414.348 1782.000 1183.445 1782.000 445.566 1782.000 -1416.161 1782.000 -990.461 1782.000 -2613.798 1782.000 -2060.389 1782.000 -1816.320
+3448.800 17904.000 10 [426 116 77 116 77 116] 0 sd
+0 b
+1782.000 -252.582 1782.000 -258.257 1782.000 -130.548 1782.000 -805.993 1782.000 -996.139 1782.000 -0.000 1782.000 2568.391 1782.000 1419.000 1782.000 -573.277 1782.000 116.359
+3448.800 17904.000 10 [464 186 93 186] 0 sd
+0 b
+1782.000 981.948 1782.000 -1240.207 1782.000 556.248 1782.000 1637.527 1782.000 1152.227 1782.000 859.914 1782.000 -1827.673 1782.000 -3757.511 1782.000 -1921.325 1782.000 -2789.755
+3448.800 17904.000 10 [] 0 sd
+0 b
+1782.000 -0.000 1782.000 -0.000 1782.000 -0.000 1782.000 -0.000 1782.000 -0.000 1782.000 -0.000 1782.000 -0.000 1782.000 -0.000 1782.000 -0.000 1782.000 -0.000
+3448.800 17904.000 10 31 sw
+2 lc
+[1 115] 0 sd
+0 b
+359 359 359 31321 24121 31321 24121 359 clp
+0 g
+62 sw
+0 lc
+0 lj
+[] 0 sd
+3449 6552 m
+3449 6862 l
+s
+5231 6552 m
+5231 6862 l
+s
+7013 6552 m
+7013 6862 l
+s
+8795 6552 m
+8795 6862 l
+s
+10577 6552 m
+10577 6862 l
+s
+12359 6552 m
+12359 6862 l
+s
+14141 6552 m
+14141 6862 l
+s
+15923 6552 m
+15923 6862 l
+s
+17705 6552 m
+17705 6862 l
+s
+19487 6552 m
+19487 6862 l
+s
+21269 6552 m
+21269 6862 l
+s
+93 sw
+2 lc
+3449 6552 m
+21269 6552 l
+s
+62 sw
+0 lc
+3449 6552 m
+3759 6552 l
+s
+3449 9390 m
+3759 9390 l
+s
+3449 12228 m
+3759 12228 l
+s
+3449 15066 m
+3759 15066 l
+s
+3449 17904 m
+3759 17904 l
+s
+3449 20742 m
+3759 20742 l
+s
+3449 23580 m
+3759 23580 l
+s
+93 sw
+2 lc
+3449 6552 m
+3449 23580 l
+s
+62 sw
+0 lc
+20959 6552 m
+21269 6552 l
+s
+20959 9390 m
+21269 9390 l
+s
+20959 12228 m
+21269 12228 l
+s
+20959 15066 m
+21269 15066 l
+s
+20959 17904 m
+21269 17904 l
+s
+20959 20742 m
+21269 20742 l
+s
+20959 23580 m
+21269 23580 l
+s
+93 sw
+2 lc
+21269 6552 m
+21269 23580 l
+s
+-1238 -0 0 421 1238 -0 2830 5821 3 6 sw
+1 1 fb
+619.2 ftr
+0 g
+2830 5821 m
+(1) sh
+3139 5821 m
+(9) sh
+3449 5821 m
+(2) sh
+3758 5821 m
+(9) sh
+-1238 -0 0 421 1238 -0 4612 5821 3 1 1 fb
+619.2 ftr
+0 g
+4612 5821 m
+(1) sh
+4921 5821 m
+(9) sh
+5231 5821 m
+(3) sh
+5540 5821 m
+(0) sh
+-1238 -0 0 421 1238 -0 6394 5821 3 1 1 fb
+619.2 ftr
+0 g
+6394 5821 m
+(1) sh
+6703 5821 m
+(9) sh
+7013 5821 m
+(3) sh
+7322 5821 m
+(1) sh
+-1238 -0 0 421 1238 -0 8176 5821 3 1 1 fb
+619.2 ftr
+0 g
+8176 5821 m
+(1) sh
+8485 5821 m
+(9) sh
+8795 5821 m
+(3) sh
+9104 5821 m
+(2) sh
+-1238 -0 0 421 1238 -0 9958 5821 3 1 1 fb
+619.2 ftr
+0 g
+9958 5821 m
+(1) sh
+10267 5821 m
+(9) sh
+10577 5821 m
+(3) sh
+10886 5821 m
+(3) sh
+-1238 -0 0 421 1238 -0 11740 5821 3 1 1 fb
+619.2 ftr
+0 g
+11740 5821 m
+(1) sh
+12049 5821 m
+(9) sh
+12359 5821 m
+(3) sh
+12668 5821 m
+(4) sh
+-1238 -0 0 421 1238 -0 13522 5821 3 1 1 fb
+619.2 ftr
+0 g
+13522 5821 m
+(1) sh
+13831 5821 m
+(9) sh
+14141 5821 m
+(3) sh
+14450 5821 m
+(5) sh
+-1238 -0 0 421 1238 -0 15304 5821 3 1 1 fb
+619.2 ftr
+0 g
+15304 5821 m
+(1) sh
+15613 5821 m
+(9) sh
+15923 5821 m
+(3) sh
+16232 5821 m
+(6) sh
+-1238 -0 0 421 1238 -0 17086 5821 3 1 1 fb
+619.2 ftr
+0 g
+17086 5821 m
+(1) sh
+17395 5821 m
+(9) sh
+17705 5821 m
+(3) sh
+18014 5821 m
+(7) sh
+-1238 -0 0 421 1238 -0 18868 5821 3 1 1 fb
+619.2 ftr
+0 g
+18868 5821 m
+(1) sh
+19177 5821 m
+(9) sh
+19487 5821 m
+(3) sh
+19796 5821 m
+(8) sh
+-1238 -0 0 421 1238 -0 20650 5821 3 1 1 fb
+619.2 ftr
+0 g
+20650 5821 m
+(1) sh
+20959 5821 m
+(9) sh
+21269 5821 m
+(3) sh
+21578 5821 m
+(9) sh
+-619 -0 0 421 619 -0 2592 6341 3 1 1 fb
+619.2 ftr
+0 g
+2592 6341 m
+(6) sh
+2902 6341 m
+(0) sh
+-619 -0 0 421 619 -0 2592 9179 3 1 1 fb
+619.2 ftr
+0 g
+2592 9179 m
+(7) sh
+2902 9179 m
+(0) sh
+-619 -0 0 421 619 -0 2592 12017 3 1 1 fb
+619.2 ftr
+0 g
+2592 12017 m
+(8) sh
+2902 12017 m
+(0) sh
+-619 -0 0 421 619 -0 2592 14855 3 1 1 fb
+619.2 ftr
+0 g
+2592 14855 m
+(9) sh
+2902 14855 m
+(0) sh
+-929 -0 0 421 929 -0 2282 17693 3 1 1 fb
+619.2 ftr
+0 g
+2282 17693 m
+(1) sh
+2592 17693 m
+(0) sh
+2902 17693 m
+(0) sh
+-929 -0 0 421 929 -0 2282 20531 3 1 1 fb
+619.2 ftr
+0 g
+2282 20531 m
+(1) sh
+2592 20531 m
+(1) sh
+2902 20531 m
+(0) sh
+-929 -0 0 421 929 -0 2282 23369 3 1 1 fb
+619.2 ftr
+0 g
+2282 23369 m
+(1) sh
+2592 23369 m
+(2) sh
+2902 23369 m
+(0) sh
+720 fhn
+720 fhn
+600 ftr
+5230 12057 m
+(O) sh
+5668 12057 m
+(u) sh
+5968 12057 m
+(t) sh
+6130 12057 m
+(p) sh
+6430 12057 m
+(u) sh
+6730 12057 m
+(t) sh
+600 ftr
+16740 9018 m
+(L) sh
+17102 9018 m
+(a) sh
+17365 9018 m
+(b) sh
+17665 9018 m
+(o) sh
+17965 9018 m
+(r) sh
+18315 9018 m
+(W) sh
+18877 9018 m
+(e) sh
+19140 9018 m
+(d) sh
+19440 9018 m
+(g) sh
+19740 9018 m
+(e) sh
+600 ftr
+15372 15485 m
+(E) sh
+15735 15485 m
+(f) sh
+15935 15485 m
+(f) sh
+16135 15485 m
+(i) sh
+16297 15485 m
+(c) sh
+16560 15485 m
+(i) sh
+16722 15485 m
+(e) sh
+16985 15485 m
+(n) sh
+17285 15485 m
+(c) sh
+17547 15485 m
+(y) sh
+17997 15485 m
+(W) sh
+18560 15485 m
+(e) sh
+18822 15485 m
+(d) sh
+19122 15485 m
+(g) sh
+19422 15485 m
+(e) sh
+640 ftr
+11255 24876 m
+(F) sh
+11615 24876 m
+(i) sh
+11789 24876 m
+(g) sh
+12109 24876 m
+(u) sh
+12429 24876 m
+(r) sh
+12642 24876 m
+(e) sh
+13082 24876 m
+(1) sh
+6775 24044 m
+(U) sh
+7242 24044 m
+(.) sh
+7415 24044 m
+(S) sh
+7775 24044 m
+(.) sh
+8109 24044 m
+(O) sh
+8575 24044 m
+(u) sh
+8895 24044 m
+(t) sh
+9069 24044 m
+(p) sh
+9389 24044 m
+(u) sh
+9709 24044 m
+(t) sh
+10042 24044 m
+(a) sh
+10322 24044 m
+(n) sh
+10642 24044 m
+(d) sh
+11122 24044 m
+(T) sh
+11509 24044 m
+(h) sh
+11829 24044 m
+(r) sh
+12042 24044 m
+(e) sh
+12322 24044 m
+(e) sh
+12762 24044 m
+(M) sh
+13335 24044 m
+(e) sh
+13615 24044 m
+(a) sh
+13895 24044 m
+(s) sh
+14149 24044 m
+(u) sh
+14469 24044 m
+(r) sh
+14682 24044 m
+(e) sh
+14962 24044 m
+(d) sh
+15442 24044 m
+(W) sh
+16042 24044 m
+(e) sh
+16322 24044 m
+(d) sh
+16642 24044 m
+(g) sh
+16962 24044 m
+(e) sh
+17242 24044 m
+(s) sh
+600 ftr
+14616 20524 m
+(I) sh
+14816 20524 m
+(n) sh
+15116 20524 m
+(v) sh
+15416 20524 m
+(e) sh
+15679 20524 m
+(s) sh
+15916 20524 m
+(t) sh
+16078 20524 m
+(m) sh
+16541 20524 m
+(e) sh
+16804 20524 m
+(n) sh
+17104 20524 m
+(t) sh
+17416 20524 m
+(W) sh
+17978 20524 m
+(e) sh
+18241 20524 m
+(d) sh
+18541 20524 m
+(g) sh
+18841 20524 m
+(e) sh
+640 ftr
+2332 27503 m
+(E) sh
+2719 27503 m
+(x) sh
+3039 27503 m
+(a) sh
+3319 27503 m
+(m) sh
+3812 27503 m
+(i) sh
+3985 27503 m
+(n) sh
+4305 27503 m
+(i) sh
+4479 27503 m
+(n) sh
+4799 27503 m
+(g) sh
+5279 27503 m
+(t) sh
+5452 27503 m
+(h) sh
+5772 27503 m
+(e) sh
+6212 27503 m
+(U) sh
+6679 27503 m
+(.) sh
+6852 27503 m
+(S) sh
+7212 27503 m
+(.) sh
+7545 27503 m
+(G) sh
+8012 27503 m
+(r) sh
+8225 27503 m
+(e) sh
+8505 27503 m
+(a) sh
+8785 27503 m
+(t) sh
+9119 27503 m
+(D) sh
+9585 27503 m
+(e) sh
+9865 27503 m
+(p) sh
+10185 27503 m
+(r) sh
+10399 27503 m
+(e) sh
+10679 27503 m
+(s) sh
+10932 27503 m
+(s) sh
+11185 27503 m
+(i) sh
+11359 27503 m
+(o) sh
+11679 27503 m
+(n) sh
+2332 26831 m
+(A) sh
+2799 26831 m
+(n) sh
+3119 26831 m
+(n) sh
+3439 26831 m
+(u) sh
+3759 26831 m
+(a) sh
+4039 26831 m
+(l) sh
+4212 26831 m
+(l) sh
+4385 26831 m
+(y) sh
+4705 26831 m
+(,) sh
+5039 26831 m
+(1) sh
+5359 26831 m
+(9) sh
+5679 26831 m
+(2) sh
+5999 26831 m
+(9) sh
+640 fsy
+6319 26831 m
+(-) sh
+640 ftr
+6665 26831 m
+(3) sh
+6985 26831 m
+(9) sh
+7305 26831 m
+(;) sh
+7639 26831 m
+(N) sh
+8105 26831 m
+(o) sh
+8425 26831 m
+(r) sh
+8639 26831 m
+(m) sh
+9132 26831 m
+(a) sh
+9412 26831 m
+(l) sh
+9585 26831 m
+(i) sh
+9759 26831 m
+(z) sh
+10039 26831 m
+(e) sh
+10319 26831 m
+(d) sh
+10799 26831 m
+(t) sh
+10972 26831 m
+(o) sh
+11452 26831 m
+(E) sh
+11839 26831 m
+(q) sh
+12159 26831 m
+(u) sh
+12479 26831 m
+(a) sh
+12759 26831 m
+(l) sh
+13092 26831 m
+(1) sh
+13412 26831 m
+(0) sh
+13732 26831 m
+(0) sh
+14212 26831 m
+(i) sh
+14385 26831 m
+(n) sh
+14865 26831 m
+(1) sh
+15185 26831 m
+(9) sh
+15505 26831 m
+(2) sh
+15825 26831 m
+(9) sh
+640 ftr
+2332 28554 m
+(F) sh
+2692 28554 m
+(i) sh
+2865 28554 m
+(g) sh
+3185 28554 m
+(u) sh
+3505 28554 m
+(r) sh
+3719 28554 m
+(e) sh
+3999 28554 m
+(s) sh
+4412 28554 m
+(1) sh
+640 fsy
+4732 28554 m
+(-) sh
+640 ftr
+5079 28554 m
+(4) sh
+gr end
+showpage

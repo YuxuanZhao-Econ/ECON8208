@@ -1,0 +1,23 @@
+This directory contains data files used for the maximum likelihood
+estimation with quarterly data in
+                                                                                
+    Business Cycle Accounting
+    Staff Report 328
+    by V.V. Chari, Patrick Kehoe, and Ellen McGrattan
+                                                                                
+For full details, see the appendix in directory ./tex.
+                                                                                
+FILE             DESCRIPTION
+------------     ----------------------------------------------------
+Hours.pdf        Prescott, Ueberfeldt, and Cociuba (2005) 
+Hours.xls        Data for constructing hours and productivity series in PUC.
+hours.dat        2 columns from Hours.xls
+atab10d.pdf      Flow of Funds Table F10, page from book
+atab10d.dat      Flow of Funds Table F10 data
+btab100d.pdf     Flow of Funds Table L100, page from book
+btab100d.dat     Flow of Funds Table L100 data
+nipa###.doc      NIPA table corresponding to ###, description
+nipa###.dat      NIPA table corresponding to ###, raw data
+
+Ellen McGrattan
+February 2005

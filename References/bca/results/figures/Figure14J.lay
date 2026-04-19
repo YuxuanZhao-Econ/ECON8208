@@ -1,0 +1,695 @@
+#!MC 900
+$!VarSet |LFDSFN1| = '"pwfig1.dat" "pwfig3mx_adj.dat" "pwfig3mx_adje.dat"'
+$!VarSet |LFDSVL1| = '"V1" "V2" "V3" "V4" "V5" "V6"'
+$!VarSet |LFDSFN2| = '"gdfig1.dat" "acfig3mx.dat" "acfig3mxe.dat"'
+$!VarSet |LFDSVL2| = '"V1" "V2" "V3" "V4" "V5" "V6"'
+$!SETSTYLEBASE FACTORY
+$!PAPER 
+  BACKGROUNDCOLOR = WHITE
+  ISTRANSPARENT = YES
+  ORIENTPORTRAIT = YES
+  SHOWGRID = YES
+  SHOWRULER = YES
+  SHOWPAPER = YES
+  PAPERSIZE = LETTER
+  PAPERSIZEINFO
+    {
+    LETTER
+      {
+      WIDTH = 8.5
+      HEIGHT = 11
+      LEFTHARDCLIPOFFSET = 0.125
+      RIGHTHARDCLIPOFFSET = 0.125
+      TOPHARDCLIPOFFSET = 0.125
+      BOTTOMHARDCLIPOFFSET = 0.125
+      }
+    }
+  RULERSPACING = ONEINCH
+  PAPERGRIDSPACING = HALFINCH
+  REGIONINWORKAREA
+    {
+    X1 = -0.05
+    Y1 = -0.05
+    X2 = 8.55
+    Y2 = 11.05
+    }
+$!COLORMAP 
+  CONTOURCOLORMAP = SMRAINBOW
+$!COLORMAPCONTROL RESETTOFACTORY
+### Frame Number 1 ###
+$!READDATASET  '|LFDSFN1|' 
+  INCLUDETEXT = NO
+  INCLUDEGEOM = NO
+  VARLOADMODE = BYNAME
+  VARNAMELIST = '|LFDSVL1|' 
+$!REMOVEVAR |LFDSVL1|
+$!FRAMELAYOUT 
+  SHOWBORDER = NO
+  HEADERCOLOR = GREEN
+  XYPOS
+    {
+    X = 0.125
+    Y = 5.75
+    }
+  WIDTH = 8.25
+  HEIGHT = 5.25
+$!FRAMEMODE  = XY
+$!FRAMENAME  = 'Frame 002' 
+$!DELETEXYMAPS 
+$!ACTIVEXYMAPS  =  [1-4]
+$!GLOBALXY 
+  DATALABELS
+    {
+    DISTANCESKIP = 5
+    }
+$!XYMAP  [1]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 6
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = DOTTED
+    PATTERNLENGTH = 3
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [2]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    PATTERNLENGTH = 3
+    LINETHICKNESS = 0.6
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [3]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    ZONE = 2
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = DASHDOT
+    PATTERNLENGTH = 3
+    LINETHICKNESS = 0.6
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [4]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    ZONE = 3
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = LONGDASH
+    PATTERNLENGTH = 3
+    LINETHICKNESS = 0.6
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYAXIS 
+  XDETAIL 1
+    {
+    SHOWLABELS = NO
+    AUTOGRID = NO
+    RANGEMIN = 1979
+    RANGEMAX = 1986
+    GRSPACING = 1
+    LINETHICKNESS = 0.5
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1.5
+      LINETHICKNESS = 0.2
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  YDETAIL 1
+    {
+    RANGEMIN = 88
+    RANGEMAX = 104
+    GRSPACING = 2
+    LINETHICKNESS = 0.5
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 3.5
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1.5
+      LINETHICKNESS = 0.2
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  GRIDAREA
+    {
+    EXTENTS
+      {
+      Y2 = 86
+      }
+    DRAWBORDER = YES
+    LINETHICKNESS = 0.5
+    }
+  DEPXTOYRATIO = 1
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 14.75
+    Y = 6
+    }
+  ZONE = 4
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    }
+  TEXT = '  1979          1980          1981          1982          1983          1984          1985        ' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 23.7551388829
+    Y = 87.5
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = 'B. 1982 U.S. Recession, Quarterly, 1979:1`-1985:4' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 60.9789259653
+    Y = 23.3422064478
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  LINESPACING = 1.1
+  TEXT = 'U.S. Output' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 46.8287527689
+    Y = 52.561372375
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  LINESPACING = 1.1
+  TEXT = 'Extreme Costs' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 53.4466511749
+    Y = 76.5276545401
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  LINESPACING = 1.1
+  TEXT = 'BGG Costs' 
+### Frame Number 2 ###
+$!CREATENEWFRAME 
+$!READDATASET  '|LFDSFN2|' 
+  INCLUDETEXT = NO
+  INCLUDEGEOM = NO
+  VARLOADMODE = BYNAME
+  VARNAMELIST = '|LFDSVL2|' 
+$!REMOVEVAR |LFDSVL2|
+$!FRAMELAYOUT 
+  SHOWBORDER = NO
+  HEADERCOLOR = RED
+  XYPOS
+    {
+    X = 0.125
+    Y = 0.7
+    }
+  WIDTH = 8.25
+  HEIGHT = 5.25
+$!FRAMEMODE  = XY
+$!FRAMENAME  = 'Frame 001' 
+$!DELETEXYMAPS 
+$!ACTIVEXYMAPS  =  [1-4]
+$!GLOBALXY 
+  DATALABELS
+    {
+    DISTANCESKIP = 5
+    }
+  LEGEND
+    {
+    XYPOS
+      {
+      X = 60.275
+      Y = 84.791
+      }
+    }
+$!XYMAP  [1]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 6
+    YAXIS = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = DOTTED
+    PATTERNLENGTH = 3
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [2]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    PATTERNLENGTH = 3
+    LINETHICKNESS = 0.6
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [3]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    ZONE = 2
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = DASHDOT
+    PATTERNLENGTH = 3
+    LINETHICKNESS = 0.6
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYMAP  [4]
+  NAME = '&DV&' 
+  ASSIGN
+    {
+    ZONE = 3
+    XAXISVAR = 1
+    YAXISVAR = 2
+    }
+  LINES
+    {
+    COLOR = BLACK
+    LINEPATTERN = LONGDASH
+    PATTERNLENGTH = 3
+    LINETHICKNESS = 0.6
+    }
+  SYMBOLS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  BARCHARTS
+    {
+    COLOR = RED
+    FILLCOLOR = RED
+    }
+  ERRORBARS
+    {
+    COLOR = RED
+    }
+$!XYAXIS 
+  XDETAIL 1
+    {
+    AUTOGRID = NO
+    AXISPOSITION = 7
+    RANGEMIN = 1929
+    RANGEMAX = 1939
+    GRANCHOR = 1
+    GRSPACING = 1
+    LINETHICKNESS = 0.5
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 3.5
+        }
+      OFFSET = 2
+      }
+    TICKS
+      {
+      LENGTH = 1.5
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 0.5
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  YDETAIL 1
+    {
+    RANGEMIN = 60
+    RANGEMAX = 110
+    GRSPACING = 10
+    LINETHICKNESS = 0.5
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 3.5
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1.5
+      LINETHICKNESS = 0.2
+      }
+    MINORTICKS
+      {
+      LENGTH = 0.5
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  YDETAIL 2
+    {
+    SHOWLABELS = NO
+    AUTOGRID = NO
+    AXISPOSITION = 88
+    RANGEMIN = 60
+    RANGEMAX = 110
+    GRSPACING = 10
+    LINETHICKNESS = 0.5
+    NUMMINORTICKS = 0
+    TICKLABEL
+      {
+      TEXTSHAPE
+        {
+        FONT = TIMES
+        HEIGHT = 2
+        }
+      }
+    TICKS
+      {
+      LENGTH = 1
+      LINETHICKNESS = 0.2
+      }
+    TITLE
+      {
+      TITLEMODE = NONE
+      }
+    }
+$!XYAXIS 
+  GRIDAREA
+    {
+    EXTENTS
+      {
+      Y1 = 7
+      Y2 = 86
+      }
+    DRAWBORDER = YES
+    LINETHICKNESS = 0.5
+    }
+  DEPXTOYRATIO = 1
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 19
+    Y = 76.8465116279
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 18
+    }
+  TEXT = ' ' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 19
+    Y = 24.144744186
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 18
+    }
+  TEXT = ' ' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 8.5
+    Y = 83.5
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = HELV
+    HEIGHT = 19
+    }
+  TEXT = '\n' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 25
+    Y = 87.5127046866
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  TEXT = 'A. U.S. Great Depression, Annually, 1929`-39' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 54.7052539851
+    Y = 15.3504880213
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  LINESPACING = 1.1
+  TEXT = 'U.S. Output' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 39.0912239934
+    Y = 54.0301685892
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  LINESPACING = 1.1
+  TEXT = 'Extreme Costs' 
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 62.0206695478
+    Y = 72.4755989352
+    }
+  ZONE = 2
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 15
+    }
+  LINESPACING = 1.1
+  TEXT = 'BGG Costs' 
+### Frame Number 3 ###
+$!CREATENEWFRAME 
+$!FRAMELAYOUT 
+  SHOWBORDER = NO
+  HEADERCOLOR = BLUE
+  XYPOS
+    {
+    X = 0.125
+    Y = 0.125
+    }
+  WIDTH = 8.25
+  HEIGHT = 1
+$!FRAMENAME  = 'Frame 003' 
+$!SKETCHAXIS 
+  DEPXTOYRATIO = 1
+  XDETAIL
+    {
+    RANGEMIN = 0
+    RANGEMAX = 7.53104395604
+    GRSPACING = 1
+    }
+  YDETAIL
+    {
+    RANGEMIN = 0
+    RANGEMAX = 0.912853812853
+    GRSPACING = 0.1
+    }
+$!ATTACHTEXT 
+  XYPOS
+    {
+    X = 12.4905312079
+    Y = 26.3888888889
+    }
+  TEXTSHAPE
+    {
+    FONT = TIMES
+    HEIGHT = 17
+    }
+  TEXT = '            Figure 14.  U.S. Output and Predictions of Model \nWith Alternative Adjustment Costs and Just the Investment Wedge\n               (Normalized to Equal 100 in 1929 or 1979:1)' 
+$!REMOVEVAR |LFDSFN2|
+$!REMOVEVAR |LFDSFN1|
+$!SETSTYLEBASE CONFIG

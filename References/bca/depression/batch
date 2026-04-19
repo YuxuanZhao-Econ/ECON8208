@@ -1,0 +1,7 @@
+#If running in batch mode, turn prt to 0 in uncmin.m
+
+nohup matlab -nodisplay -nojvm -nosplash < setupadje.m > setupadje.out &
+
+
+
+

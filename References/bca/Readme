@@ -1,0 +1,17 @@
+This directory contains material for Staff Report 328
+
+    V.V. Chari, Patrick Kehoe, and Ellen McGrattan 
+    Business Cycle Accounting
+    Econometrica, forthcoming
+
+Directory      DESCRIPTION
+----------     ----------------------------------------------------
+depression     Codes for computing decision functions (Great Depression)   
+mleannual      Codes and annual data for maximum likelihood estimation 
+mleqtrly       Codes and quarterly data for maximum likelihood estimation 
+results        Figures in the main text and appendices
+tex            TeX files for paper, slides, appendices
+
+Ellen McGrattan
+October, 2006
+

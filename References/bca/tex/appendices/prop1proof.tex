@@ -1,0 +1,57 @@
+
+\documentclass[12pt,leqno,fleqn]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{srav3}
+
+%TCIDATA{TCIstyle=frb/frb.lat,srav3,sr}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=4.10.0.2345}
+%TCIDATA{Created=Thu Jan 10 10:22:45 2002}
+%TCIDATA{LastRevised=Monday, December 29, 2003 11:27:17}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="FRB\Staff Report Style A (v3) [endnotes]">}
+%TCIDATA{Language=American English}
+%TCIDATA{CSTFile=sr.cst}
+
+\input{tcilatex}
+\input{lefttag.sty}
+
+\begin{document}
+
+
+\begin{center}
+\textbf{Proof of Proposition 1 }
+\end{center}
+
+\textit{Proof. }The first order conditions for the gross output problem are $%
+p_{1t}q_{1t}=\gamma q_{t}$ and $p_{2t}q_{2t}=(1-\gamma )q_{t}.$The first
+order conditions for the sector $i$ gross output problem are $\theta
+p_{it}q_{it}/m_{it}=1+\tau _{it}$ and $(1-\theta )p_{it}q_{it}/z_{it}=v_{t}.$
+Thus, $m_{1t}=\theta \gamma q_{t}/(1+\tau _{1t})$ and $m_{2t}=\theta
+(1-\gamma )q_{t}/(1+\tau _{2t})$ so $m_{t}=\theta q_{t}[\gamma /(1+\tau
+_{1t})+(1-\gamma )/(1+\tau _{2t})]$. The first order conditions also imply $%
+z_{1t}=\gamma z_{t}$, $z_{2t}=(1-\gamma )z_{t}$ and $v_{t}=(1-\theta
+)q_{t}/z_{t}.$ Hence, 
+\begin{equation}
+y_{t}=q_{t}-m_{t}=[1-\theta (a_{1t}+a_{2t})]q_{t}  \label{A1}
+\end{equation}%
+and substituting the expressions for $m_{it}$ and $z_{it}$ into $%
+q_{t}=(m_{1t}^{\theta }z_{1t}^{1-\theta })^{\gamma }(m_{2t}^{\theta
+}z_{2t}^{1-\theta })^{1-\gamma }$ and manipulating gives%
+\begin{equation}
+q_{t}=\kappa (a_{1t}^{1-\gamma }a_{2t}^{\gamma })^{\frac{\theta }{1-\theta }%
+}z_{t}.  \label{A2}
+\end{equation}%
+Combining the expressions for $y_{t}$ and $q_{t}$ and using $%
+z_{t}=F(k_{t},l_{t})$ gives the expression for $A_{t}.$
+
+To verify our expression for $(1-\tau _{lt})$ compare the first order
+condition $v_{t}F_{lt}=w_{t}$ from the composite goods producer in the
+detailed economy to the first order condition $(1-\tau
+_{lt})A_{t}F_{lt}=w_{t}\ $in the prototype economy to note that $(1-\tau
+_{lt})=v_{t}/A_{t}\ $and use $v_{t}=(1-\theta )q_{t}/z,(\ref{A2}),$ and the
+expression for $A_{t}.$ The derivation of the expression for $(1-\tau _{kt})$
+is analogous. $Q.E.D.$
+
+\end{document}

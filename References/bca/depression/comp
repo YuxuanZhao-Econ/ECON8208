@@ -1,0 +1,8 @@
+#pgf90 -r8 -fast -o c.out adjcost.f90 ../../../ftools/misc/qgausl.f90 \
+#pgf90 -r8 -fast -o b.out caputil.f90 ../../../ftools/misc/qgausl.f90 \
+pgf90 -r8 -fast -o a.out bench.f90 ../../../ftools/misc/qgausl.f90 \
+                 ../../../ftools/misc/uni.f  \
+                 ../../../ftools/misc/qcksrt3.f \
+                 ../../../ftools/SPARSKIT2/ITSOL/ilut.f     \
+                 ../../../ftools/SPARSKIT2/BLASSM/matvec.f  -l lapack -l blas
+'rm' *.o

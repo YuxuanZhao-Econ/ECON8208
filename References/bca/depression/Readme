@@ -1,0 +1,43 @@
+This directory contains files used to compute nonlinear decision
+functions for the period of the Great Depression, see:
+
+    Business Cycle Accounting
+    Staff Report 328
+    by V.V. Chari, Patrick Kehoe, and Ellen McGrattan
+
+The main results are in ../results/*.dat which are created
+by running benchsim.m or caputsim.m (in this directory) with the 
+appropriate bench.dat, caputil.dat, or adjcost.dat file read in.  
+For details on creating the figures, see the README in the ./results
+directory.  For full details on the computation, see the appendix 
+in directory ./tex/appendices.
+
+FILE             DESCRIPTION
+------------     ----------------------------------------------------
+adjcost.f90      Extension of bench.f90 to allow for adjustment costs
+adjcost.inp.*    Input files for adjcost.f90
+adjcost.dat.*    Output files from adjcost.f90, inputs for benchsim.m
+adjcostplots.m   Plots results for adjustment-cost model in the paper
+bench.f90        Code to compute equilibria in benchmark model
+bench.inp.*      Input files for bench.f90
+bench.dat.*      Output files from bench.f90, inputs for benchsim.m
+benchplots.m     Plots results for benchmark prototype model in the paper
+benchsim.m       Plots results from bench.f90 or adjcost.f90
+bfunc.m          Plots decision rules for bench.f90
+caputil.f90      Code to compute equilibria w/ variable capital utilization
+caputil.inp.*    Input files for caputil.f90
+caputil.dat.*    Output files from caputil.f90, inputs for caputsim.m
+caputplots.m     Plots results for variable capital utilization model in paper
+caputsim.m       Plots results from caputil.f90
+comp             Compilation command, for use with Portland Group F90
+cufunc.m         Plots decision rules for caputil.f90
+mleout*.mat      Stored results from MLE estimation
+setup.m          Sets up state vector and transition matrix for bench.f90
+setupadj*.m      Sets up state vector and transition matrix for adjcost.f90
+setupcu.m        Sets up state vector and transition matrix for caputil.f90
+tauch3D*.m       Computes transition probabilities for 3D Markov Chain
+tauchen*.mat     Intermediates file created by setup*.m
+
+
+Ellen McGrattan
+October, 2006

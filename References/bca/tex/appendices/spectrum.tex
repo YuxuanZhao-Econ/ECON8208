@@ -1,0 +1,78 @@
+\magnification = 1200
+\def\bul{$\bullet$}
+
+\item{\bul} Let's start with some definitions.
+Define $\rho(s)$ to be the correlation function,
+$$\rho(s) = cor(X_t,X_{t-s})
+$$
+Define the spectral density function, $f$ to be
+$$
+f(\omega) = {1\over 2\pi}\sum_{s=-\infty}^{\infty}
+e^{-i\omega s} \rho(s), -\pi \leq \omega\leq \pi
+$$
+It is related to the correlation function:
+$$
+\rho(s)=\int_{-\pi}^\pi e^{i\omega s} f(\omega)d\omega
+$$
+
+\item{\bul} Recall: if $z=x+iy$ is complex
+and $x$ and $y$ are real, then
+$$\eqalign{
+e^z     &= e^xe^{iy}=e^x(\cos y + i \sin y)\cr
+e^{-iy} &=cos(y) -i sin y \cr
+e^{iy}  &= cos y + i sin y \cr
+sin(y)  &= {e^{iy}-e^{-iy}\over 2i} \cr
+cos(y)  &= {e^{iy}+e^{-iy}\over 2}\cr
+cos(y)  &= Re e^{iy} \cr
+}
+$$
+
+\item{\bul} Simplifying the spectral density function
+$$\eqalign{
+    f(\omega) & = {1\over 2\pi}
+                \sum_{s=-\infty}^{\infty} e^{-i\omega s} \rho(s)\cr
+              &= {1\over 2\pi}\rho(0) 
+                    + {1\over 2\pi}\sum_{s=-\infty}^{-1} e^{-i\omega s} \rho(s)
+                    + {1\over 2\pi}\sum_{s=1}^{\infty} e^{-i\omega s} \rho(s)
+                     \cr
+              &= {1\over 2\pi}\rho(0) 
+                    + {1\over \pi}\sum_{s=1}^{\infty}
+                             \left({e^{-i\omega s}+e^{i\omega s}\over 2}
+                             \right) \rho(s)
+                     \cr
+              &= {1\over 2\pi}\rho(0) 
+                    + {1\over \pi}\sum_{s=1}^{\infty}
+                             \cos(s\omega) \rho(s)
+                     \cr
+}
+$$
+
+\item{\bul}
+Example: AR(1):
+$$\eqalign{
+  X_t  &= a X_{t-1} + \epsilon_t\cr
+  cor( X_t,X_{t-k} ) & = a^k\cr
+  \rho(s) & = a^{|s|}\cr
+}
+$$
+and
+$$\eqalign{
+     f(\omega) &= {1\over 2\pi}\left[1 + 2 
+                       \sum_{s=1}^\infty a^s cos(s\omega)\right]\cr
+               &  {1\over 2\pi}\left[1 + 2 
+                       \sum_{s=1}^\infty a^s Re e^{i\omega s}\right]\cr
+               &  {1\over 2\pi}Re \left[1 + 2 
+                       \sum_{s=1}^\infty a^s e^{i\omega s}\right]\cr
+               &  {1\over 2\pi}Re \left[1 + 2 
+                       \sum_{s=1}^\infty a^s e^{i\omega s}\right]\cr
+               &  {1\over 2\pi}Re \left[1 + 2 { a e^{i\omega}\over
+                                                1-a e^{i\omega}}
+               &  {1\over 2\pi}{1-a^2\over 1-2a \cos\omega + a^2}\cr
+}
+$$
+where the last step can be verified by equating 
+$a e^{i\omega}/(1-a e^{i\omega})$ to an arbitrary $x+iy$ and solving for
+the real part, $x$.
+
+
+\bye
