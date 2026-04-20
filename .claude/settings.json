@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python HW7/_rewrite_step5.py)"
+    ]
+  }
+}

@@ -3,7 +3,12 @@
     "allow": [
       "Bash(python -c ' *)",
       "Bash(python _update_hw7.py)",
-      "Bash(python)"
+      "Bash(python)",
+      "Bash(python HW7/_trim_step5.py)",
+      "Bash(python HW7/_rewrite_step6.py)",
+      "Bash(python HW7/_trim_step6.py)",
+      "Bash(python HW7/_rewrite_step7.py)",
+      "Bash(python HW7/_rewrite_step8.py)"
     ]
   }
 }
