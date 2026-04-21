@@ -8,6 +8,7 @@ using Optim
 
 export build_bca_per_capita,
        build_bca_quarterly_per_capita,
+       ckm_steady_state_k_over_y,
        detrend_and_static_wedges,
        pack_bca_theta,
        unpack_bca_theta,
@@ -15,6 +16,8 @@ export build_bca_per_capita,
        res_wedge_residual,
        stable_root_quadratic,
        bca_state_space,
+       fixexp_state_space,
+       ckm_counterfactual_observations,
        ckm_loglinear_wedge_inputs,
        kalman_loglik,
        bca_negloglik,
@@ -90,25 +93,50 @@ function build_bca_per_capita(df, hours_df)
 end
 
 # -------------------------------------------------------
+# Model-implied steady-state capital-to-output ratio (k/y)_ss from the
+# Euler equation k/y = beta_hat * theta / ((1 + tau_x)(1 - beta_hat*(1-delta))),
+# with beta_hat = beta*(1+gamma_z)^(-sigma). This is the CKM pwbca.m default
+# used to anchor K_0 = (k/y)_ss * y_0 in quarterly perpetual inventory.
+# Input:
+#   params : NamedTuple with beta, sigma, gamma_z, theta, delta
+# Keyword:
+#   tau_x  : steady-state investment wedge (default 0.0)
+# Output:
+#   scalar (k/y)_ss
+# -------------------------------------------------------
+function ckm_steady_state_k_over_y(params; tau_x = 0.0)
+    betah = params.beta * (1.0 + params.gamma_z)^(-params.sigma)
+    return betah * params.theta / ((1.0 + tau_x) * (1.0 - betah * (1.0 - params.delta)))
+end
+
+# -------------------------------------------------------
 # Build the quarterly per-capita BCA panel from Yichen's cleaned CSV.
 # Converts SAAR nominal series to quarterly real per-capita flows (dividing
 # by 4 after deflating), normalises hours so 1948Q1 matches the annual
 # ~0.25 convention, and builds the capital stock by quarterly perpetual
-# inventory.
+# inventory, anchored at K_0 = (k/y)_ss * y_0 where (k/y)_ss is the
+# model-implied steady-state ratio (CKM pwbca.m convention).
 # Input:
 #   csv_path : path to cleaned_data_from_yichen.csv
 # Keyword:
-#   delta_annual : annual depreciation rate (default 0.072); converted to
-#                  quarterly as 1 - (1 - delta_annual)^(1/4)
-#   k_over_y     : initial capital-to-output ratio (default 10.0)
+#   params   : NamedTuple of deep parameters (needed for the model-implied
+#              (k/y)_ss and for the quarterly delta); required unless both
+#              `k_over_y` and `delta_q` are passed explicitly
+#   tau_x_ss : assumed steady-state tau_x when deriving (k/y)_ss (default 0.0)
+#   k_over_y : override for the initial K/Y ratio; if omitted, computed from
+#              ckm_steady_state_k_over_y(params; tau_x = tau_x_ss)
+#   delta_q  : override for the quarterly depreciation rate; defaults to
+#              params.delta when params is supplied
 # Output:
 #   bca_data_q : DataFrame with columns year (fractional Q label), y, c, x,
 #                g, h, k_data; filtered for positive wedge inputs and hours
 #                in (0, 1)
 # -------------------------------------------------------
 function build_bca_quarterly_per_capita(csv_path::AbstractString;
-                                        delta_annual = 0.072,
-                                        k_over_y     = 10.0)
+                                        params   = nothing,
+                                        tau_x_ss = 0.0,
+                                        k_over_y = nothing,
+                                        delta_q  = nothing)
     raw = DataFrame(CSV.File(csv_path))
 
     parse_qlabel(lbl) = parse(Int, lbl[4:end]) + (parse(Int, lbl[2:2]) - 1) / 4
@@ -130,7 +158,15 @@ function build_bca_quarterly_per_capita(csv_path::AbstractString;
     h_raw = Float64.(raw.total_worked_hours) ./ pop
     h_pc  = h_raw .* (0.25 / h_raw[1])
 
-    delta_q = 1.0 - (1.0 - delta_annual)^(1 / 4)
+    if delta_q === nothing
+        params === nothing && error("Provide `params` (preferred) or an explicit `delta_q`.")
+        delta_q = params.delta
+    end
+    if k_over_y === nothing
+        params === nothing && error("Provide `params` to derive the model-implied (k/y)_ss, or pass `k_over_y` directly.")
+        k_over_y = ckm_steady_state_k_over_y(params; tau_x = tau_x_ss)
+    end
+
     k_pc    = similar(y_pc)
     k_pc[1] = k_over_y * y_pc[1]
     for t in 1:(length(y_pc) - 1)
@@ -477,6 +513,195 @@ function bca_state_space(theta_mle, params)
 end
 
 # -------------------------------------------------------
+# CKM fixexp.m analogue: rebuild the BCA state-space system under the
+# "fixed-expectations" counterfactual where agents' decision rule and the
+# contemporaneous observation map react only to the wedges whose As-mask
+# entry is 1. The chain rule on res_wedge2.m's state definition
+#   log z_eff  = As(1) * log z  + (1-As(1)) * log zbar,
+#   tau_l_eff  = As(2) * tau_l  + (1-As(2)) * tau_lbar,  ... etc.
+# evaluated at the steady state is equivalent to elementwise-scaling the
+# wedge derivatives of the Euler residual (b0, b1) by As, which is what
+# we do here. The same is true for the observation map: direct wedge
+# entries in row_y, row_h get multiplied by As(1), As(2), As(4); row_x has
+# no direct wedge columns; row_g is [0,0,0,0,As(4)].
+# Input:
+#   theta_mle : 30-dim parameter vector (used only via unpack_bca_theta /
+#               bca_steady_state)
+#   params    : NamedTuple of deep parameters
+#   As        : 4-vector mask for (log z, tau_h, tau_x, log g)
+# Output:
+#   NamedTuple with the same fields as bca_state_space (Sbar, P0, P, Q,
+#   A, B, C, X0, Y0, gamma, steady_state) but with all As-gated quantities
+#   applied (the steady state itself is unchanged).
+# -------------------------------------------------------
+function fixexp_state_space(theta_mle, params, As)
+    @assert length(As) == 4 "As must be a 4-vector for (log z, tau_h, tau_x, log g)."
+    As_v = Float64.(collect(As))
+
+    Sbar, P0, P, Q = unpack_bca_theta(theta_mle)
+    ss = bca_steady_state(Sbar, params)
+    k = ss.k; x = ss.x; y = ss.y; l = ss.h
+    z = ss.z; taul = ss.tau_h; taux = ss.tau_x; g = ss.g
+
+    psi = params.psi
+    gn = params.gamma_n; gz = params.gamma_z
+    theta = params.theta; delta = params.delta
+
+    Zss = [log(k), log(k), log(k), log(z), log(z),
+           taul, taul, taux, taux, log(g), log(g)]
+    dR  = zeros(11)
+    for i in 1:11
+        step = max(abs(Zss[i]) * 1e-5, 1e-8)
+        Zp = copy(Zss); Zm = copy(Zss)
+        Zp[i] += step; Zm[i] -= step
+        dR[i] = (res_wedge_residual(Zp, params) - res_wedge_residual(Zm, params)) / (2.0 * step)
+    end
+
+    a0, a1, a2 = dR[1], dR[2], dR[3]
+    b0_raw = dR[[4, 6, 8, 10]]
+    b1_raw = dR[[5, 7, 9, 11]]
+    b0 = b0_raw .* As_v
+    b1 = b1_raw .* As_v
+    gammak = stable_root_quadratic(a0, a1, a2)
+    M      = (a0 * gammak + a1) * Matrix{Float64}(I, 4, 4) + a0 * P'
+    gamma_s = -(M \ (P' * b0 + b1))
+    gamma0  = (1.0 - gammak) * log(k) - dot(gamma_s, [log(z), taul, taux, log(g)])
+    gamma   = [gammak; gamma_s; gamma0]
+
+    philh  = -(psi * y * (1.0 - theta)
+              + (1.0 - theta) * (1.0 - taul) * y * (1.0 - l) / l * theta
+              + (1.0 - theta) * (1.0 - taul) * y)
+    philk  =  (psi * y * theta + psi * (1.0 - delta) * k
+              - (1.0 - theta) * (1.0 - taul) * y * (1.0 - l) / l * theta) / philh
+    philz  =  (psi * y * (1.0 - theta)
+              - (1.0 - theta)^2 * (1.0 - taul) * y * (1.0 - l) / l) / philh
+    phill  =  ((1.0 - theta) * (1.0 - taul) * y * (1.0 - l) / l * (1.0 / (1.0 - taul))) / philh
+    philg  =  (-psi * g) / philh
+    philkp =  (-psi * (1.0 + gz) * (1.0 + gn) * k) / philh
+
+    phiyk  = theta + (1.0 - theta) * philk
+    phiyz  = (1.0 - theta) * (1.0 + philz)
+    phiyl  = (1.0 - theta) * phill
+    phiyg  = (1.0 - theta) * philg
+    phiykp = (1.0 - theta) * philkp
+
+    phixk  = -k / x * (1.0 - delta)
+    phixkp =  k / x * (1.0 + gz) * (1.0 + gn)
+
+    A = [reshape(gamma, 1, 6);
+         hcat(zeros(4, 1), P, reshape(P0, 4, 1));
+         0.0 0.0 0.0 0.0 0.0 1.0]
+    B = [zeros(1, 4); Q; zeros(1, 4)]
+
+    row_y = [phiyk, phiyz * As_v[1], phiyl * As_v[2], 0.0, phiyg * As_v[4]]' .+ phiykp .* gamma[1:5]'
+    row_x = [phixk, 0.0,              0.0,             0.0, 0.0            ]' .+ phixkp .* gamma[1:5]'
+    row_h = [philk, philz * As_v[1], phill * As_v[2], 0.0, philg * As_v[4]]' .+ philkp .* gamma[1:5]'
+    row_g = [0.0 0.0 0.0 0.0 As_v[4]]
+    C5 = [row_y; row_x; row_h; row_g]
+
+    X0 = [log(k), log(z), taul, taux, log(g), 1.0]
+    Y0 = [log(y), log(x), log(l), log(g)]
+    phi0 = Y0 - C5 * X0[1:5]
+    C = hcat(C5, phi0)
+
+    return (
+        Sbar = Sbar, P0 = P0, P = P, Q = Q,
+        A = A, B = B, C = C, X0 = X0, Y0 = Y0,
+        gamma = gamma,
+        steady_state = ss,
+    )
+end
+
+# -------------------------------------------------------
+# CKM pwbca.m-style counterfactual observation paths.
+# Mirrors pwbca.m lines 105-123. Builds the "observation matrix" Xt_data of
+# shape T x 6 from the data-implied log-linear wedge paths
+#   Xt_data = [lkt  lzt  tault  tauxt  lgt  ones(T,1)],
+# builds five C-matrices via fixexp_state_space:
+#   C0 = As = [0,0,0,0]   (all wedges muted)
+#   Cz = As = [1,0,0,0]   (only efficiency wedge active)
+#   Cl = As = [0,1,0,0]   (only labor wedge active)
+#   Cx = As = [0,0,1,0]   (only investment wedge active)
+#   Cg = As = [0,0,0,1]   (only government wedge active)
+# plus the full MLE C. The formula (pwbca.m lines 116-123)
+#   YM_j = (Xt_data - Xt_data[ref, :]) * (C_j - C0)' + YM0[ref, :]
+# with YM0 = Xt_data * C' returns the counterfactual path of
+# (log y, log x, log h, log g) attributable to wedge j, rebased at the
+# chosen reference period. "All-but-one" versions sum the individual wedge
+# impacts minus the appropriate number of baselines (e.g. no-investment =
+# C_z + C_l + C_g - 2 C0).
+# Input:
+#   theta_mle : 30-dim parameter vector
+#   params    : NamedTuple of deep parameters
+#   lkt, lzt, tault, tauxt, lgt : T-vectors of data-implied wedge paths
+#   ref_index : integer row of Xt_data used as the rebase point (defaults to
+#               1; pwbca.m uses Y0 = 81 which is 1979:1, the plot reference)
+# Output:
+#   NamedTuple with fields
+#     YM_all : T x 4 model-implied observation path using the estimated C
+#              (same as simulate_bca_observables with logk0 = lkt[1]; included
+#              for completeness)
+#     YM0    : T x 4 observation path with every wedge muted (As = 0)
+#     YMz    : T x 4 observation path with only the efficiency wedge active
+#     YMl    : T x 4 observation path with only the labor wedge active
+#     YMx    : T x 4 observation path with only the investment wedge active
+#     YMg    : T x 4 observation path with only the government wedge active
+#     YMnoz  : T x 4 observation path with every wedge except z active
+#     YMnol  : T x 4 observation path with every wedge except labor active
+#     YMnox  : T x 4 observation path with every wedge except investment active
+#     YMnog  : T x 4 observation path with every wedge except government active
+#     Cmats  : NamedTuple of the raw fixexp-derived C matrices
+#              (C_all, C0, Cz, Cl, Cx, Cg)
+# -------------------------------------------------------
+function ckm_counterfactual_observations(theta_mle, params,
+                                         lkt, lzt, tault, tauxt, lgt;
+                                         ref_index::Integer = 1)
+    T = length(lkt)
+    @assert length(lzt) == T && length(tault) == T && length(tauxt) == T && length(lgt) == T
+    @assert 1 <= ref_index <= T
+
+    ss_all = bca_state_space(theta_mle, params)
+    ss_0   = fixexp_state_space(theta_mle, params, [0.0, 0.0, 0.0, 0.0])
+    ss_z   = fixexp_state_space(theta_mle, params, [1.0, 0.0, 0.0, 0.0])
+    ss_l   = fixexp_state_space(theta_mle, params, [0.0, 1.0, 0.0, 0.0])
+    ss_x   = fixexp_state_space(theta_mle, params, [0.0, 0.0, 1.0, 0.0])
+    ss_g   = fixexp_state_space(theta_mle, params, [0.0, 0.0, 0.0, 1.0])
+
+    C_all = ss_all.C
+    C0    = ss_0.C
+    Cz    = ss_z.C
+    Cl    = ss_l.C
+    Cx    = ss_x.C
+    Cg    = ss_g.C
+
+    Xt = hcat(lkt, lzt, tault, tauxt, lgt, ones(T))
+    YM0_data = Xt * C_all'
+
+    xref = Xt[ref_index:ref_index, :]
+    ymref = YM0_data[ref_index:ref_index, :]
+    Xt_d = Xt .- repeat(xref, T, 1)
+    ymref_rep = repeat(ymref, T, 1)
+
+    YM_all = Xt_d * C_all' .+ ymref_rep
+    YM0    = Xt_d * C0'    .+ ymref_rep
+    YMz    = Xt_d * (Cz .- C0)' .+ ymref_rep
+    YMl    = Xt_d * (Cl .- C0)' .+ ymref_rep
+    YMx    = Xt_d * (Cx .- C0)' .+ ymref_rep
+    YMg    = Xt_d * (Cg .- C0)' .+ ymref_rep
+    YMnoz  = Xt_d * (Cl .+ Cx .+ Cg .- 2 .* C0)' .+ ymref_rep
+    YMnol  = Xt_d * (Cz .+ Cx .+ Cg .- 2 .* C0)' .+ ymref_rep
+    YMnox  = Xt_d * (Cz .+ Cl .+ Cg .- 2 .* C0)' .+ ymref_rep
+    YMnog  = Xt_d * (Cz .+ Cl .+ Cx .- 2 .* C0)' .+ ymref_rep
+
+    return (
+        YM_all = YM_all, YM0 = YM0,
+        YMz = YMz, YMl = YMl, YMx = YMx, YMg = YMg,
+        YMnoz = YMnoz, YMnol = YMnol, YMnox = YMnox, YMnog = YMnog,
+        Cmats = (C_all = C_all, C0 = C0, Cz = Cz, Cl = Cl, Cx = Cx, Cg = Cg),
+    )
+end
+
+# -------------------------------------------------------
 # CKM log-linear reconstruction of capital, consumption and labor wedge
 # (mirrors mleannual/wedges.m lines 77-105). Also returns the nonlinear
 # level z and labor wedge for comparison.
@@ -537,60 +762,106 @@ function ckm_loglinear_wedge_inputs(ss, params, y_tilde, c_tilde, x_tilde, h_til
 end
 
 # -------------------------------------------------------
-# Kalman-filter log-likelihood of Y under
-#   X_{t+1} = A X_t + B eps_{t+1},   Y_t = C X_t + omega_t
-# Returns -Inf if any innovation covariance fails cholesky.
+# CKM-style steady-state Kalman-filter log-likelihood (mleq.m lines 225-246).
+# Reformulates the model
+#   X_{t+1} = A X_t + B eps_{t+1},   Y_t = C X_t + omega_t,   omega_t = D omega_{t-1} + eta_t
+# as the lagged-state observer
+#   Ybar_t = Cbar X_t + (C B eps_{t+1} + eta_{t+1}),   Ybar_t := Y_{t+1} - D Y_t
+# with Cbar = C A - D C, observation-noise covariance Rbar = R + C B B' C' and
+# state-measurement cross-covariance S = B B' C'. Solves the discrete algebraic
+# Riccati equation (DARE) iteratively for the steady-state one-step predictor
+# covariance Sigma and gain K, then runs a single pass over Ybar using those
+# fixed steady-state matrices (so Omega = Rbar + Cbar Sigma Cbar' is reused
+# every period, matching CKM's kfilter).
+# The first observation Y_1 is dropped so T_effective = T - 1.
 # Input:
-#   Y      : T x ny observation matrix
+#   Y      : T x ny raw observation matrix (full sample, including Y_1)
 #   A      : nx x nx state transition
-#   B      : nx x neps innovation loading (Q_x = B B')
+#   B      : nx x neps innovation loading (B B' is the state-noise covariance)
 #   C      : ny x nx observation matrix
 # Keyword:
-#   R      : ny x ny observation noise covariance (default 1e-6 I for numerical ridge)
-#   X0     : nx initial filtered mean  (default zeros(nx))
-#   Sigma0 : nx x nx initial filtered covariance (default 10 I)
+#   X0     : nx initial state (X_1 in CKM's convention), default zeros(nx)
+#   D      : ny x ny measurement-noise AR(1) matrix, default zeros
+#   R      : ny x ny measurement-noise covariance, default zeros
+#   tol    : DARE iteration tolerance (default 1e-10)
+#   maxit  : DARE iteration cap (default 2000)
 # Output:
-#   loglik          : scalar log likelihood
-#   innovations     : T x ny matrix of Kalman innovations
-#   filtered_states : T x nx matrix of filtered means
+#   loglik          : Gaussian log likelihood of Ybar given X_1 = X0
+#   innovations     : (T-1) x ny matrix of one-step prediction innovations
+#   filtered_states : (T-1) x nx matrix of one-step predictors X_{t|t-1}
 # -------------------------------------------------------
-function kalman_loglik(Y, A, B, C; R = nothing, X0 = nothing, Sigma0 = nothing)
-    T, ny = size(Y)
-    nx    = size(A, 1)
-    Qx    = B * B'
+function kalman_loglik(Y, A, B, C; X0 = nothing, D = nothing, R = nothing,
+                       tol = 1e-10, maxit = 2000)
+    T_full, ny = size(Y)
+    nx         = size(A, 1)
 
-    x_filt     = X0     === nothing ? zeros(nx) : Vector{Float64}(X0)
-    Sigma_filt = Sigma0 === nothing ? 10.0 .* Matrix{Float64}(I, nx, nx) : Matrix{Float64}(Sigma0)
-    Rmat       = R      === nothing ? 1e-6 .* Matrix{Float64}(I, ny, ny) : Matrix{Float64}(R)
+    x1   = X0 === nothing ? zeros(nx) : Vector{Float64}(X0)
+    Dmat = D  === nothing ? zeros(ny, ny) : Matrix{Float64}(D)
+    Rmat = R  === nothing ? zeros(ny, ny) : Matrix{Float64}(R)
 
-    loglik          = 0.0
+    Q_state = B * B'
+    Cbar    = C * A - Dmat * C
+    Rbar    = Rmat + C * Q_state * C'
+    Sxcov   = Q_state * C'
+
+    Sigma = Matrix{Float64}(I, nx, nx) .* 10.0
+    Sigma[nx, nx] = 0.0
+    K_gain = zeros(nx, ny)
+    Omega  = similar(Rbar)
+
+    converged = false
+    for _ in 1:maxit
+        Omega_k = Cbar * Sigma * Cbar' + Rbar
+        Omega_k = 0.5 .* (Omega_k + Omega_k')
+        chol_k = try
+            cholesky(Symmetric(Omega_k))
+        catch
+            return -Inf, zeros(0, ny), zeros(0, nx)
+        end
+        K_k      = (A * Sigma * Cbar' + Sxcov) / chol_k
+        Sigma_new = A * Sigma * A' + Q_state - K_k * Omega_k * K_k'
+        Sigma_new = 0.5 .* (Sigma_new + Sigma_new')
+        if maximum(abs.(Sigma_new - Sigma)) < tol
+            Sigma     = Sigma_new
+            Omega     = Omega_k
+            K_gain    = K_k
+            converged = true
+            break
+        end
+        Sigma = Sigma_new
+    end
+    if !converged
+        Omega   = Cbar * Sigma * Cbar' + Rbar
+        Omega   = 0.5 .* (Omega + Omega')
+        chol_k  = try
+            cholesky(Symmetric(Omega))
+        catch
+            return -Inf, zeros(0, ny), zeros(0, nx)
+        end
+        K_gain  = (A * Sigma * Cbar' + Sxcov) / chol_k
+    end
+
+    chol = try
+        cholesky(Symmetric(Omega))
+    catch
+        return -Inf, zeros(0, ny), zeros(0, nx)
+    end
+    logdet_Omega = 2.0 * sum(log, diag(chol.U))
+
+    Ybar = Y[2:T_full, :] .- Y[1:(T_full - 1), :] * Dmat'
+    T    = T_full - 1
+
     innovations     = zeros(T, ny)
     filtered_states = zeros(T, nx)
 
+    x_pred = x1
+    loglik = 0.0
     for t in 1:T
-        x_pred     = A * x_filt
-        Sigma_pred = A * Sigma_filt * A' + Qx
-
-        nu    = vec(Y[t, :]) - C * x_pred
-        Omega = C * Sigma_pred * C' + Rmat
-        Omega = 0.5 .* (Omega + Omega')
-
-        chol = try
-            cholesky(Symmetric(Omega))
-        catch
-            return -Inf, innovations, filtered_states
-        end
-        logdet_Omega = 2.0 * sum(log, diag(chol.U))
-        quad         = dot(nu, chol \ nu)
-        loglik      += -0.5 * (logdet_Omega + quad + ny * log(2.0 * pi))
-
-        K_gain     = (Sigma_pred * C') / Omega
-        x_filt     = x_pred + K_gain * nu
-        Sigma_filt = Sigma_pred - K_gain * C * Sigma_pred
-        Sigma_filt = 0.5 .* (Sigma_filt + Sigma_filt')
-
+        nu = vec(Ybar[t, :]) - Cbar * x_pred
         innovations[t, :]     .= nu
-        filtered_states[t, :] .= x_filt
+        filtered_states[t, :] .= x_pred
+        loglik += -0.5 * (logdet_Omega + dot(nu, chol \ nu) + ny * log(2.0 * pi))
+        x_pred = A * x_pred + K_gain * nu
     end
 
     return loglik, innovations, filtered_states
@@ -598,8 +869,10 @@ end
 
 # -------------------------------------------------------
 # MLE objective: build the state-space from theta, then run kalman_loglik
-# Returns -L(theta) with a soft stationarity penalty on rho(P) and a large
-# fallback value so a minimizer never sees NaN / Inf.
+# and add the CKM soft stationarity penalty 500000 * max(rho(P) - 0.995, 0)^2
+# scaled by 0.5 (matching mleq.m line 246). The penalty is always added, so
+# the likelihood surface stays smooth and the optimizer can cross the 0.995
+# boundary without discontinuity.
 # Input:
 #   theta_mle : 30-dim parameter vector
 #   params    : NamedTuple of deep parameters
@@ -612,12 +885,10 @@ function bca_negloglik(theta_mle, params, Y)
         ss = bca_state_space(theta_mle, params)
 
         rho_max = maximum(abs.(eigvals(ss.P)))
-        if rho_max >= 0.995
-            return 1e10 + 1e8 * (rho_max - 0.995)^2
-        end
+        penalty = 500000.0 * max(rho_max - 0.995, 0.0)^2
 
         ll, _, _ = kalman_loglik(Y, ss.A, ss.B, ss.C; X0 = ss.X0)
-        return isfinite(ll) ? -ll : 1e12
+        return isfinite(ll) ? -ll + 0.5 * penalty : 1e12
     catch
         return 1e12
     end
