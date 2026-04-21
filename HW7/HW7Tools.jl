@@ -2,13 +2,14 @@ module HW7Tools
 
 using LinearAlgebra
 using DataFrames
-import Pkg
-if Base.find_package("Optim") === nothing
-    Pkg.add("Optim")
-end
+using CSV
+using Plots
 using Optim
 
-export pack_bca_theta,
+export build_bca_per_capita,
+       build_bca_quarterly_per_capita,
+       detrend_and_static_wedges,
+       pack_bca_theta,
        unpack_bca_theta,
        bca_steady_state,
        res_wedge_residual,
@@ -24,10 +25,198 @@ export pack_bca_theta,
        simulate_bca_observables,
        benchplots_level_contribution,
        bca_one_wedge_accounting,
+       bca_all_but_one_accounting,
+       one_wedge_panel,
+       all_but_one_panel,
+       two_wedge_panel,
        normalize_level,
        log_deviation_from_level,
        subwindow_idx
 
+
+# -------------------------------------------------------
+# Build the annual per-capita BCA panel from the HW6-style cleaned frames.
+# Uses the HW6 "share x real-GDP" convention to get real per-capita c, x, k,
+# attaches the hours fraction h from the BEA 6.9B / 6.7B subpanel, and
+# constructs the resource-constraint residual g = y - c - x.
+# Input:
+#   df       : DataFrame from ECON8208Tools.compute_data_moments_hw6 (wide
+#              national accounts panel with gdp_real, gdp_nominal, pce,
+#              gross_investment, private_fixed_assets, population, year)
+#   hours_df : DataFrame with columns year, h (hours fraction)
+# Output:
+#   bca_data : DataFrame with columns year, y, c, x, g, h, k_data, filtered
+#              to rows where every wedge input is strictly positive and
+#              h in (0, 1)
+# -------------------------------------------------------
+function build_bca_per_capita(df, hours_df)
+    hours_small = select(hours_df, :year, :h)
+    df = leftjoin(df, hours_small, on = :year)
+    df = filter(row -> !ismissing(row.h), df)
+    df = sort(df, :year)
+
+    years = Float64.(df.year)
+    gdp_r = Float64.(df.gdp_real)
+    gdp_n = Float64.(df.gdp_nominal)
+    pce   = Float64.(df.pce)
+    inv_n = Float64.(df.gross_investment)
+    fa_n  = Float64.(df.private_fixed_assets)
+    pop   = Float64.(df.population)
+
+    y_pc = gdp_r ./ pop
+    c_pc = (pce   ./ gdp_n) .* y_pc
+    x_pc = (inv_n ./ gdp_n) .* y_pc
+    k_pc = (fa_n  ./ gdp_n) .* y_pc
+    h_pc = Float64.(df.h)
+    g_pc = y_pc .- c_pc .- x_pc
+
+    bca_data = DataFrame(
+        year   = years,
+        y      = y_pc,
+        c      = c_pc,
+        x      = x_pc,
+        g      = g_pc,
+        h      = h_pc,
+        k_data = k_pc,
+    )
+
+    bca_data = filter(
+        row -> row.y > 0 && row.c > 0 && row.x > 0 && row.g > 0 &&
+               row.h > 0 && row.h < 1 && row.k_data > 0,
+        bca_data,
+    )
+
+    return bca_data
+end
+
+# -------------------------------------------------------
+# Build the quarterly per-capita BCA panel from Yichen's cleaned CSV.
+# Converts SAAR nominal series to quarterly real per-capita flows (dividing
+# by 4 after deflating), normalises hours so 1948Q1 matches the annual
+# ~0.25 convention, and builds the capital stock by quarterly perpetual
+# inventory.
+# Input:
+#   csv_path : path to cleaned_data_from_yichen.csv
+# Keyword:
+#   delta_annual : annual depreciation rate (default 0.072); converted to
+#                  quarterly as 1 - (1 - delta_annual)^(1/4)
+#   k_over_y     : initial capital-to-output ratio (default 10.0)
+# Output:
+#   bca_data_q : DataFrame with columns year (fractional Q label), y, c, x,
+#                g, h, k_data; filtered for positive wedge inputs and hours
+#                in (0, 1)
+# -------------------------------------------------------
+function build_bca_quarterly_per_capita(csv_path::AbstractString;
+                                        delta_annual = 0.072,
+                                        k_over_y     = 10.0)
+    raw = DataFrame(CSV.File(csv_path))
+
+    parse_qlabel(lbl) = parse(Int, lbl[4:end]) + (parse(Int, lbl[2:2]) - 1) / 4
+    years_full = parse_qlabel.(String.(raw.time_label))
+
+    GDP_n = Float64.(raw.GDP)
+    PGDP  = Float64.(raw.PGDP)
+    inv_n = Float64.(raw.gross_investment) .+ Float64.(raw.durable_goods)
+    gov_n = Float64.(raw.government_consumption) .+ Float64.(raw.net_exports)
+    c_n   = GDP_n .- inv_n .- gov_n
+    pop   = Float64.(raw.iP)
+
+    y_saar = (GDP_n ./ PGDP) ./ pop         # SAAR real per-capita output
+    y_pc   = y_saar ./ 4.0                  # convert to quarterly flow
+    c_pc   = (c_n   ./ GDP_n) .* y_pc
+    x_pc   = (inv_n ./ GDP_n) .* y_pc
+    g_pc   = (gov_n ./ GDP_n) .* y_pc
+
+    h_raw = Float64.(raw.total_worked_hours) ./ pop
+    h_pc  = h_raw .* (0.25 / h_raw[1])
+
+    delta_q = 1.0 - (1.0 - delta_annual)^(1 / 4)
+    k_pc    = similar(y_pc)
+    k_pc[1] = k_over_y * y_pc[1]
+    for t in 1:(length(y_pc) - 1)
+        k_pc[t + 1] = (1.0 - delta_q) * k_pc[t] + x_pc[t]
+    end
+
+    bca_data = DataFrame(
+        year   = years_full,
+        y      = y_pc,
+        c      = c_pc,
+        x      = x_pc,
+        g      = g_pc,
+        h      = h_pc,
+        k_data = k_pc,
+    )
+
+    bca_data = filter(
+        row -> row.y > 0 && row.c > 0 && row.x > 0 && row.g > 0 &&
+               row.h > 0 && row.h < 1 && row.k_data > 0,
+        bca_data,
+    )
+
+    return bca_data
+end
+
+# -------------------------------------------------------
+# Detrend the per-capita BCA data and invert the static (log z, tau_h, log g)
+# wedges from first-order conditions. Builds the Kalman-filter observation
+# vector Y_t = (log y_tilde, log x_tilde, log h, log g_tilde)'.
+# Input:
+#   bca_data : DataFrame with columns year, y, c, x, g, h, k_data
+#   params   : NamedTuple with beta, psi, sigma, gamma_n, gamma_z, theta, delta
+# Output:
+#   NamedTuple with the detrended series (y_tilde, c_tilde, x_tilde, g_tilde,
+#   h_tilde, k_tilde), the static wedges (log_z, tau_h, log_g), the observables
+#   matrix Yobs (T x 4), the wide DataFrame bca_static, and scalar helpers
+#   (T, trend, Ggrowth).
+# -------------------------------------------------------
+function detrend_and_static_wedges(bca_data, params)
+    T        = nrow(bca_data)
+    t_index  = collect(0:(T - 1))
+    trend    = (1.0 + params.gamma_z) .^ t_index
+    Ggrowth  = (1.0 + params.gamma_n) * (1.0 + params.gamma_z)
+
+    y_tilde      = bca_data.y      ./ trend
+    c_tilde      = bca_data.c      ./ trend
+    x_tilde      = bca_data.x      ./ trend
+    g_tilde      = bca_data.g      ./ trend
+    k_data_tilde = bca_data.k_data ./ trend
+    h_tilde      = bca_data.h
+
+    if any(g_tilde .<= 0)
+        error("Some residual government/resource wedge observations are nonpositive; log(g_tilde) is not defined.")
+    end
+    log_g = log.(g_tilde)
+
+    k_tilde = copy(k_data_tilde)
+
+    log_z = (log.(y_tilde) .- params.theta .* log.(k_tilde) .-
+             (1.0 - params.theta) .* log.(h_tilde)) ./ (1.0 - params.theta)
+
+    tau_h = 1.0 .- (params.psi / (1.0 - params.theta)) .*
+                    (c_tilde ./ y_tilde) .*
+                    (h_tilde ./ (1.0 .- h_tilde))
+
+    Yobs = hcat(log.(y_tilde), log.(x_tilde), log.(h_tilde), log_g)
+
+    bca_static = DataFrame(
+        year    = bca_data.year,
+        y_tilde = y_tilde,
+        c_tilde = c_tilde,
+        x_tilde = x_tilde,
+        h_tilde = h_tilde,
+        g_tilde = g_tilde,
+        k_tilde = k_tilde,
+        log_z   = log_z,
+        tau_h   = tau_h,
+        log_g   = log_g,
+    )
+
+    return (T = T, trend = trend, Ggrowth = Ggrowth,
+            y_tilde = y_tilde, c_tilde = c_tilde, x_tilde = x_tilde,
+            g_tilde = g_tilde, h_tilde = h_tilde, k_tilde = k_tilde,
+            log_z = log_z, tau_h = tau_h, log_g = log_g,
+            Yobs = Yobs, bca_static = bca_static)
+end
 
 # -------------------------------------------------------
 # Pack the wedge-process vector theta_mle = [Sbar (4); vec(P) (16); lower_triangle(Q) (10)]
@@ -640,9 +829,9 @@ end
 # Output:
 #   T-vector level contribution of the wedge to output
 # -------------------------------------------------------
-function benchplots_level_contribution(Y_case, Y_no_shock, y_data0)
-    y_case     = exp.(Y_case[:, 1])
-    y_no_shock = exp.(Y_no_shock[:, 1])
+function benchplots_level_contribution(Y_case, Y_no_shock, y_data0; col = 1)
+    y_case     = exp.(Y_case[:, col])
+    y_no_shock = exp.(Y_no_shock[:, col])
     return (y_case .- y_no_shock .- y_case[1] .+ y_no_shock[1]) .+ y_data0
 end
 
@@ -677,15 +866,28 @@ function bca_one_wedge_accounting(ss_hat, wedges, ckm_final_inputs, Yobs, years)
     Y_x,   _ = simulate_bca_observables(counterfactual_wedge_paths([3],    S_actual, S_first), ss_hat; logk0 = logk0)
     Y_g,   _ = simulate_bca_observables(counterfactual_wedge_paths([4],    S_actual, S_first), ss_hat; logk0 = logk0)
 
-    y_data_level = exp.(Yobs[:, 1])
-    y_data0      = y_data_level[1]
-    y_all_level  = exp.(Y_all[:, 1])
-    y_no_level   = exp.(Y_no[:, 1])
+    y_data_level = exp.(Yobs[:, 1]);  y_data0 = y_data_level[1]
+    x_data_level = exp.(Yobs[:, 2]);  x_data0 = x_data_level[1]
+    h_data_level = exp.(Yobs[:, 3]);  h_data0 = h_data_level[1]
 
-    y_z_contrib = benchplots_level_contribution(Y_z, Y_no, y_data0)
-    y_h_contrib = benchplots_level_contribution(Y_h, Y_no, y_data0)
-    y_x_contrib = benchplots_level_contribution(Y_x, Y_no, y_data0)
-    y_g_contrib = benchplots_level_contribution(Y_g, Y_no, y_data0)
+    y_all_level = exp.(Y_all[:, 1]);  y_no_level = exp.(Y_no[:, 1])
+    x_all_level = exp.(Y_all[:, 2]);  x_no_level = exp.(Y_no[:, 2])
+    h_all_level = exp.(Y_all[:, 3]);  h_no_level = exp.(Y_no[:, 3])
+
+    y_z_contrib = benchplots_level_contribution(Y_z, Y_no, y_data0; col = 1)
+    y_h_contrib = benchplots_level_contribution(Y_h, Y_no, y_data0; col = 1)
+    y_x_contrib = benchplots_level_contribution(Y_x, Y_no, y_data0; col = 1)
+    y_g_contrib = benchplots_level_contribution(Y_g, Y_no, y_data0; col = 1)
+
+    x_z_contrib = benchplots_level_contribution(Y_z, Y_no, x_data0; col = 2)
+    x_h_contrib = benchplots_level_contribution(Y_h, Y_no, x_data0; col = 2)
+    x_x_contrib = benchplots_level_contribution(Y_x, Y_no, x_data0; col = 2)
+    x_g_contrib = benchplots_level_contribution(Y_g, Y_no, x_data0; col = 2)
+
+    h_z_contrib = benchplots_level_contribution(Y_z, Y_no, h_data0; col = 3)
+    h_h_contrib = benchplots_level_contribution(Y_h, Y_no, h_data0; col = 3)
+    h_x_contrib = benchplots_level_contribution(Y_x, Y_no, h_data0; col = 3)
+    h_g_contrib = benchplots_level_contribution(Y_g, Y_no, h_data0; col = 3)
 
     data_ld = log_deviation_from_level(y_data_level)
     all_ld  = log_deviation_from_level(y_all_level)
@@ -739,9 +941,82 @@ function bca_one_wedge_accounting(ss_hat, wedges, ckm_final_inputs, Yobs, years)
         y_h_contrib  = y_h_contrib,
         y_x_contrib  = y_x_contrib,
         y_g_contrib  = y_g_contrib,
+        x_data_level = x_data_level,
+        x_all_level  = x_all_level,
+        x_no_level   = x_no_level,
+        x_z_contrib  = x_z_contrib,
+        x_h_contrib  = x_h_contrib,
+        x_x_contrib  = x_x_contrib,
+        x_g_contrib  = x_g_contrib,
+        h_data_level = h_data_level,
+        h_all_level  = h_all_level,
+        h_no_level   = h_no_level,
+        h_z_contrib  = h_z_contrib,
+        h_h_contrib  = h_h_contrib,
+        h_x_contrib  = h_x_contrib,
+        h_g_contrib  = h_g_contrib,
     )
 
     return counterfactual_output, cf_summary, level_series
+end
+
+# -------------------------------------------------------
+# "All-but-one" accounting: for each wedge k, freeze only column k at its
+# first-sample value and let the other three move. Returns level series for
+# output, investment, and hours using the same benchplots contribution
+# formula (difference from a no-shock baseline, re-anchored at data(1)).
+# Input:
+#   ss_hat, wedges, ckm_final_inputs, Yobs, years : same as bca_one_wedge_accounting
+# Output:
+#   level_series_abo : NamedTuple with data, all, no-shock, and four
+#                      all-but-one paths for each of y, x, h. Keys follow
+#                      the pattern  <var>_noz_contrib, <var>_nol_contrib,
+#                      <var>_nox_contrib, <var>_nog_contrib.
+# -------------------------------------------------------
+function bca_all_but_one_accounting(ss_hat, wedges, ckm_final_inputs, Yobs, years)
+    S_actual = hcat(wedges.log_z_linear, wedges.tau_h_linear, wedges.tau_x, wedges.log_g)
+    S_first  = vec(S_actual[1, :])
+    logk0    = ckm_final_inputs.lkt[1]
+
+    Y_all, _ = simulate_bca_observables(S_actual, ss_hat; logk0 = logk0)
+    Y_no,  _ = simulate_bca_observables(counterfactual_wedge_paths(Int[],       S_actual, S_first), ss_hat; logk0 = logk0)
+    Y_noz, _ = simulate_bca_observables(counterfactual_wedge_paths([2, 3, 4],   S_actual, S_first), ss_hat; logk0 = logk0)
+    Y_nol, _ = simulate_bca_observables(counterfactual_wedge_paths([1, 3, 4],   S_actual, S_first), ss_hat; logk0 = logk0)
+    Y_nox, _ = simulate_bca_observables(counterfactual_wedge_paths([1, 2, 4],   S_actual, S_first), ss_hat; logk0 = logk0)
+    Y_nog, _ = simulate_bca_observables(counterfactual_wedge_paths([1, 2, 3],   S_actual, S_first), ss_hat; logk0 = logk0)
+
+    y_data_level = exp.(Yobs[:, 1]);  y_data0 = y_data_level[1]
+    x_data_level = exp.(Yobs[:, 2]);  x_data0 = x_data_level[1]
+    h_data_level = exp.(Yobs[:, 3]);  h_data0 = h_data_level[1]
+
+    y_all_level = exp.(Y_all[:, 1]);  y_no_level = exp.(Y_no[:, 1])
+    x_all_level = exp.(Y_all[:, 2]);  x_no_level = exp.(Y_no[:, 2])
+    h_all_level = exp.(Y_all[:, 3]);  h_no_level = exp.(Y_no[:, 3])
+
+    y_noz = benchplots_level_contribution(Y_noz, Y_no, y_data0; col = 1)
+    y_nol = benchplots_level_contribution(Y_nol, Y_no, y_data0; col = 1)
+    y_nox = benchplots_level_contribution(Y_nox, Y_no, y_data0; col = 1)
+    y_nog = benchplots_level_contribution(Y_nog, Y_no, y_data0; col = 1)
+
+    x_noz = benchplots_level_contribution(Y_noz, Y_no, x_data0; col = 2)
+    x_nol = benchplots_level_contribution(Y_nol, Y_no, x_data0; col = 2)
+    x_nox = benchplots_level_contribution(Y_nox, Y_no, x_data0; col = 2)
+    x_nog = benchplots_level_contribution(Y_nog, Y_no, x_data0; col = 2)
+
+    h_noz = benchplots_level_contribution(Y_noz, Y_no, h_data0; col = 3)
+    h_nol = benchplots_level_contribution(Y_nol, Y_no, h_data0; col = 3)
+    h_nox = benchplots_level_contribution(Y_nox, Y_no, h_data0; col = 3)
+    h_nog = benchplots_level_contribution(Y_nog, Y_no, h_data0; col = 3)
+
+    return (
+        years        = years,
+        y_data_level = y_data_level, y_all_level = y_all_level, y_no_level = y_no_level,
+        x_data_level = x_data_level, x_all_level = x_all_level, x_no_level = x_no_level,
+        h_data_level = h_data_level, h_all_level = h_all_level, h_no_level = h_no_level,
+        y_noz_contrib = y_noz, y_nol_contrib = y_nol, y_nox_contrib = y_nox, y_nog_contrib = y_nog,
+        x_noz_contrib = x_noz, x_nol_contrib = x_nol, x_nox_contrib = x_nox, x_nog_contrib = x_nog,
+        h_noz_contrib = h_noz, h_nol_contrib = h_nol, h_nox_contrib = h_nox, h_nog_contrib = h_nog,
+    )
 end
 
 # -------------------------------------------------------
@@ -773,6 +1048,50 @@ log_deviation_from_level(level_series) = log.(level_series) .- log(level_series[
 # -------------------------------------------------------
 function subwindow_idx(yrs, t_start, t_end)
     return findall(y -> t_start <= y <= t_end, yrs)
+end
+
+# -------------------------------------------------------
+# Plot helpers for the counterfactual experiments. Each builds a single
+# panel (Output / Hours / Investment) with Data in black plus one or more
+# model-counterfactual lines, normalised so data(1) = 100.
+# -------------------------------------------------------
+function one_wedge_panel(title_str, years_vec, data_level,
+                         z_series, h_series, x_series, g_series;
+                         show_legend = false, xlab = "", ylab = "index, first = 100")
+    scale(v) = 100 .* v ./ data_level[1]
+    p = plot(years_vec, scale(data_level), label = "Data",
+             linewidth = 3, color = :black, legend = show_legend ? :best : false)
+    plot!(p, years_vec, scale(z_series), label = "Efficiency only", linewidth = 2)
+    plot!(p, years_vec, scale(h_series), label = "Labor only",      linewidth = 2, linestyle = :dash)
+    plot!(p, years_vec, scale(x_series), label = "Investment only", linewidth = 2, linestyle = :dashdot)
+    plot!(p, years_vec, scale(g_series), label = "Government only", linewidth = 2, linestyle = :dot)
+    plot!(p, title = title_str, xlabel = xlab, ylabel = ylab)
+    return p
+end
+
+function all_but_one_panel(title_str, years_vec, data_level,
+                           noz_series, nol_series, nox_series, nog_series;
+                           show_legend = false, xlab = "", ylab = "index, first = 100")
+    scale(v) = 100 .* v ./ data_level[1]
+    p = plot(years_vec, scale(data_level), label = "Data",
+             linewidth = 3, color = :black, legend = show_legend ? :best : false)
+    plot!(p, years_vec, scale(noz_series), label = "No efficiency", linewidth = 2)
+    plot!(p, years_vec, scale(nol_series), label = "No labor",      linewidth = 2, linestyle = :dash)
+    plot!(p, years_vec, scale(nox_series), label = "No investment", linewidth = 2, linestyle = :dashdot)
+    plot!(p, years_vec, scale(nog_series), label = "No government", linewidth = 2, linestyle = :dot)
+    plot!(p, title = title_str, xlabel = xlab, ylabel = ylab)
+    return p
+end
+
+function two_wedge_panel(title_str, years_vec, data_level, subset_series;
+                         subset_label = "Efficiency + labor",
+                         show_legend = false, xlab = "", ylab = "index, first = 100")
+    scale(v) = 100 .* v ./ data_level[1]
+    p = plot(years_vec, scale(data_level), label = "Data",
+             linewidth = 3, color = :black, legend = show_legend ? :best : false)
+    plot!(p, years_vec, scale(subset_series), label = subset_label, linewidth = 2, linestyle = :dash)
+    plot!(p, title = title_str, xlabel = xlab, ylabel = ylab)
+    return p
 end
 
 end # module HW7Tools
